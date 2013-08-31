@@ -1,30 +1,13 @@
 #!/usr/bin/env python
 
-import argparse
 import os
 
+from yoda.subcommands import subcommands
 from yoda.workspace import workspace
 from yoda.config import config
 
-parser = argparse.ArgumentParser(prog="yoda")
-subparsers = parser.add_subparsers(dest="subcommand")
-
-workspace_parser = subparsers.add_parser("workspace")
-workspace_subparsers = workspace_parser.add_subparsers(
-    dest="workspace_subcommand")
-
-workspace_add_parser = workspace_subparsers.add_parser(
-    "add", help="Add workspace")
-workspace_rm_parser = workspace_subparsers.add_parser(
-    "remove", help="Remove existing workspace")
-workspace_subparsers.add_parser(
-    "list", help="Show registered workspace")
-
-workspace_add_parser.add_argument("name", type=str, help="Workspace name")
-workspace_add_parser.add_argument("path", type=str, help="Workspace path")
-workspace_rm_parser.add_argument("name", type=str, help="Workspace name")
-
-
+subcmd = subcommands()
+parser = subcmd.parse()
 args = parser.parse_args()
 
 config = config("%s/.yodarc" % os.environ.get("HOME"))
