@@ -1,0 +1,6 @@
+__pycache__
+/tests/cover
+/.coverage
+/build
+/dist
+/MANIFEST
