@@ -1,5 +1,6 @@
 from yoda.workspace import workspace as Workspace
 from yoda.subcommands import subcommand
+from yoda.output import output
 
 
 class workspace(subcommand):
@@ -26,10 +27,13 @@ class workspace(subcommand):
         rm_parser.add_argument("name", type=str, help="Workspace name")
 
     def execute(self, args):
+        out = output()
         if (args.workspace_subcommand == "add"):
             self.ws.add(args.name, args.path)
+            out.success("Workspace `%s` successfuly added" % args.name)
         elif (args.workspace_subcommand == "remove"):
             self.ws.remove(args.name)
+            out.success("Workspace `%s` successfuly removed" % args.name)
         elif (args.workspace_subcommand == "list"):
             for name, path in self.ws.list().items():
-                print("%s\t=>\t%s" % (name, path))
+                out.info("%s\t=>\t%s" % (name, path))
