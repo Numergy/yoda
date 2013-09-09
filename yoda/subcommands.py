@@ -24,7 +24,7 @@ class Subcommands:
 
     def add_command(self, command):
         command.setup(self.config, self.subparser)
-        self.commands[command.__class__.__name__] = command
+        self.commands[command.__class__.__name__.lower()] = command
 
     def parse(self):
         for key, command in self.commands.items():

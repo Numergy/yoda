@@ -41,8 +41,8 @@ class TestSubcommands(unittest.TestCase):
         """ Test add subcommand """
         self.subcmds.add_command(self.mocks["subcmd"])
 
-        self.assertTrue("Mock" in self.subcmds.commands)
-        self.assertEqual(self.mocks["subcmd"], self.subcmds.commands["Mock"])
+        self.assertTrue("mock" in self.subcmds.commands)
+        self.assertEqual(self.mocks["subcmd"], self.subcmds.commands["mock"])
 
     def test_parse(self):
         """ Test parse subcommand """
