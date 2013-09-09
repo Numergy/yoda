@@ -18,4 +18,4 @@ args = subcmd.parser.parse_args()
 try:
     subcmd.execute(args)
 except Exception as e:
-    out.err(e.message)
+    out.error(e.message)

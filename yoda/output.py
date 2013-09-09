@@ -6,14 +6,18 @@ class output:
     YELLOW = "\033[93m%s\033[0m"
     RED = "\033[91m%s\033[0m"
 
+    def __init__(self, stdout=sys.stdout, stderr=sys.stderr):
+        self.stdout = stdout
+        self.stderr = stderr
+
     def info(self, message):
-        sys.stdout.write(message + "\n")
+        self.stdout.write(message + "\n")
 
     def success(self, message):
-        sys.stdout.write(self.GREEN % message + "\n")
+        self.stdout.write(self.GREEN % message + "\n")
 
     def warn(self, message):
-        sys.stderr.write(self.YELLOW % message + "\n")
+        self.stderr.write(self.YELLOW % message + "\n")
 
-    def err(self, message):
-        sys.stderr.write(self.RED % message + "\n")
+    def error(self, message):
+        self.stderr.write(self.RED % message + "\n")
