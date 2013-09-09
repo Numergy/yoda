@@ -1,3 +1,4 @@
+import os
 import unittest
 
 from yoda.config import Config
@@ -16,7 +17,7 @@ class TestConfig(unittest.TestCase):
 
     def tearDown(self):
         """ Remove test file """
-        #TODO: os.remove(self.file)
+        os.remove(self.file)
 
     def test_get(self):
         """ Test get configuration """
