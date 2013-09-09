@@ -2,16 +2,16 @@
 
 import os
 
-from yoda.config import config
-from yoda.output import output
-from yoda.subcommands import subcommands
-from yoda.subcommand.workspace import workspace
+from yoda.config import Config
+from yoda.output import Output
+from yoda.subcommands import Subcommands
+from yoda.subcommand.workspace import Workspace
 
-yoda_config = config("%s/.yodarc" % os.environ.get("HOME"))
-out = output()
+yoda_config = Config("%s/.yodarc" % os.environ.get("HOME"))
+out = Output()
 
-subcmd = subcommands(yoda_config)
-subcmd.add_command(workspace())
+subcmd = Subcommands(yoda_config)
+subcmd.add_command(Workspace())
 parser = subcmd.parse()
 args = subcmd.parser.parse_args()
 

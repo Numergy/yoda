@@ -1,7 +1,7 @@
 import os.path
 
 
-class workspace:
+class Workspace:
 
     config = None
 

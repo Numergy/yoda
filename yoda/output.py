@@ -1,7 +1,7 @@
 import sys
 
 
-class output:
+class Output:
     GREEN = "\033[92m%s\033[0m"
     YELLOW = "\033[93m%s\033[0m"
     RED = "\033[91m%s\033[0m"

@@ -1,14 +1,14 @@
-from yoda.workspace import workspace as Workspace
-from yoda.subcommands import subcommand
-from yoda.output import output
+from yoda.workspace import Workspace as Ws
+from yoda.subcommands import Subcommand
+from yoda.output import Output
 
 
-class workspace(subcommand):
+class Workspace(Subcommand):
     ws = None
 
     def setup(self, config, subparser):
-        self.ws = Workspace(config)
-        subcommand.setup(self, config, subparser)
+        self.ws = Ws(config)
+        Subcommand.setup(self, config, subparser)
 
     def parse(self):
         parser = self.subparser.add_parser("workspace")
@@ -27,7 +27,7 @@ class workspace(subcommand):
         rm_parser.add_argument("name", type=str, help="Workspace name")
 
     def execute(self, args):
-        out = output()
+        out = Output()
         if (args.workspace_subcommand == "add"):
             self.ws.add(args.name, args.path)
             out.success("Workspace `%s` successfuly added" % args.name)

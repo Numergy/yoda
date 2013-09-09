@@ -3,10 +3,10 @@ import argparse
 
 from mock import Mock
 from ..utils import mock_config
-from yoda.subcommand.workspace import workspace
+from yoda.subcommand.workspace import Workspace
 
 
-class TestSubcommandsWorkspace(unittest.TestCase):
+class TestSubcommandWorkspace(unittest.TestCase):
     """ Workspace subcommand test suite """
     parser = None
     workspace = None
@@ -17,7 +17,7 @@ class TestSubcommandsWorkspace(unittest.TestCase):
         subparser = self.parser.add_subparsers(dest="subcommand_test")
 
         config_data = "{workspaces: {}}"
-        self.workspace = workspace()
+        self.workspace = Workspace()
         self.workspace.setup(mock_config(config_data), subparser)
 
     def tearDown(self):

@@ -1,7 +1,7 @@
 import argparse
 
 
-class subcommand:
+class Subcommand:
     config = None
     subparser = None
 
@@ -10,7 +10,7 @@ class subcommand:
         self.subparser = subparser
 
 
-class subcommands:
+class Subcommands:
     config = None
     parser = None
     subparser = None

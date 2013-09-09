@@ -1,7 +1,7 @@
 import unittest
 
 from mock import Mock
-from yoda.output import output
+from yoda.output import Output
 
 
 class TestOutput(unittest.TestCase):
@@ -16,7 +16,7 @@ class TestOutput(unittest.TestCase):
         self.stdout = self.stderr = Mock()
         self.stdout.write.return_value = None
         self.stderr.write.return_value = None
-        self.out = output(self.stdout, self.stderr)
+        self.out = Output(self.stdout, self.stderr)
 
     def test_info(self):
         """ Test printing an information message """

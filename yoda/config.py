@@ -2,7 +2,7 @@ import yaml
 import os.path
 
 
-class config:
+class Config:
 
     config_file = None
 
@@ -21,8 +21,10 @@ class config:
         return config
 
     def write(self, data):
-        """ Write config in configuration file.
-        Given config must me a dict"""
+        """
+        Write config in configuration file.
+        Data must me a dict.
+        """
         file = open(self.config_file, "w+")
         file.write(yaml.dump(data))
         file.close()

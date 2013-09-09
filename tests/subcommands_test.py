@@ -2,8 +2,8 @@ import unittest
 
 from mock import Mock
 
-from yoda.subcommands import subcommand
-from yoda.subcommands import subcommands
+from yoda.subcommands import Subcommand
+from yoda.subcommands import Subcommands
 
 
 class TestSubcommand(unittest.TestCase):
@@ -11,7 +11,7 @@ class TestSubcommand(unittest.TestCase):
 
     def test_setup(self):
         """ Test subcommand's attributes setup """
-        subcmd = subcommand()
+        subcmd = Subcommand()
         subcmd.setup("foo", "bar")
         self.assertEqual("foo", subcmd.config)
         self.assertEqual("bar", subcmd.subparser)
@@ -30,7 +30,7 @@ class TestSubcommands(unittest.TestCase):
         self.mocks["subcmd"].execute.return_value = None
 
         self.mocks["config"] = Mock()
-        self.subcmds = subcommands(self.mocks["config"])
+        self.subcmds = Subcommands(self.mocks["config"])
 
     def tearDown(self):
         """ Tear down test suite """
