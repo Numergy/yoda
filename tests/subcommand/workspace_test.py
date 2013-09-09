@@ -2,8 +2,8 @@ import unittest
 import argparse
 
 from mock import Mock
-from .utils import mock_config
-from yoda.subcmd_workspace import workspace
+from ..utils import mock_config
+from yoda.subcommand.workspace import workspace
 
 
 class TestSubcommandsWorkspace(unittest.TestCase):
