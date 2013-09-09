@@ -26,5 +26,5 @@ class Config:
         Data must me a dict.
         """
         file = open(self.config_file, "w+")
-        file.write(yaml.dump(data))
+        file.write(yaml.dump(data, default_flow_style=False))
         file.close()
