@@ -6,13 +6,12 @@ from yoda.output import Output
 class Workspace(Subcommand):
     ws = None
 
-    def setup(self, config, subparser):
+    def setup(self, name, config, subparser):
         self.ws = Ws(config)
-        Subcommand.setup(self, config, subparser)
+        Subcommand.setup(self, name, config, subparser)
 
     def parse(self):
-        parser = self.subparser.add_parser("workspace")
-        subparser = parser.add_subparsers(
+        subparser = self.parser.add_subparsers(
             dest="workspace_subcommand")
 
         add_parser = subparser.add_parser(
@@ -27,6 +26,10 @@ class Workspace(Subcommand):
         rm_parser.add_argument("name", type=str, help="Workspace name")
 
     def execute(self, args):
+        if args.workspace_subcommand is None:
+            self.parser.print_help()
+            return None
+
         out = Output()
         if (args.workspace_subcommand == "add"):
             self.ws.add(args.name, args.path)

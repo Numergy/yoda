@@ -18,7 +18,7 @@ class TestSubcommandWorkspace(unittest.TestCase):
 
         config_data = "{workspaces: {}}"
         self.workspace = Workspace()
-        self.workspace.setup(mock_config(config_data), subparser)
+        self.workspace.setup("workspace", mock_config(config_data), subparser)
 
     def tearDown(self):
         """ Tear down test suite """

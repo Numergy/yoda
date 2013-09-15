@@ -12,9 +12,14 @@ class TestSubcommand(unittest.TestCase):
     def test_setup(self):
         """ Test subcommand's attributes setup """
         subcmd = Subcommand()
-        subcmd.setup("foo", "bar")
-        self.assertEqual("foo", subcmd.config)
-        self.assertEqual("bar", subcmd.subparser)
+
+        subparser = Mock()
+        subparser.add_parser.return_value = "baz"
+
+        subcmd.setup("foo", "bar", subparser)
+        self.assertEqual("bar", subcmd.config)
+        self.assertEqual("baz", subcmd.parser)
+        subparser.add_parser.assert_called_once_with("foo")
 
 
 class TestSubcommands(unittest.TestCase):

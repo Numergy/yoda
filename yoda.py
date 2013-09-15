@@ -12,9 +12,9 @@ out = Output()
 
 subcmd = Subcommands(yoda_config)
 subcmd.add_command(Workspace())
-parser = subcmd.parse()
-args = subcmd.parser.parse_args()
+subcmd.parse()
 
+args = subcmd.parser.parse_args()
 try:
     subcmd.execute(args)
 except Exception as e:
