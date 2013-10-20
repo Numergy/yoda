@@ -65,3 +65,7 @@ class TestWorkspace(unittest.TestCase):
         config_mock_data = {"workspaces": {"foo": "/foo"}}
         ws = Workspace(mock_config(config_mock_data))
         self.assertFalse(ws.exists("bar"))
+
+    def test_not_instance_of_config(self):
+        """ Test if parameter is an instance of Config"""
+        self.assertRaises(TypeError, lambda: Workspace(()))
