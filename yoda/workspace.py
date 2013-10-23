@@ -1,4 +1,5 @@
 import os.path
+from yoda import Config
 
 
 class Workspace:
@@ -7,7 +8,8 @@ class Workspace:
 
     def __init__(self, config):
         """ Workspace object initialization """
-        #TODO: Check instance of config
+        if not isinstance(config, Config):
+            raise TypeError("Variable config is not an instance of Config")
         self.config = config
 
     def add(self, name, path):
