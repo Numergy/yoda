@@ -2,19 +2,18 @@
 
 Multiple repositories management.
 
-## Requirements
+## Installation
 
-Install requirements:
-`$ pip install -r requirements.txt`
+Available for Python 2.x & 3.x
 
-1. Python 2.x & 3.x
-2. Python Yaml
+Install yoda:
+`$ ./setup.py install`
 
+Uninstall yoda:
+`$ pip uninstall yoda`
 
 ## Running tests
 In project root directory, run following command to
-install requirements for testing:
-`$ pip install -r tests_requirements.txt`
 
 To run unittests:
 `$ nosetests`
