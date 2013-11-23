@@ -7,7 +7,7 @@ setup(
     version="0.1",
     description="",
     license="",
-    scripts=["yoda.py"],
+    scripts=["scripts/yoda"],
     packages=["yoda"],
     install_requires=[
         u"PyYaml"
