@@ -6,3 +6,5 @@ __pycache__
 /MANIFEST
 *.pyc
 yoda.egg-info
+.project
+.pydevproject
