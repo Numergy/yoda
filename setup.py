@@ -8,7 +8,7 @@ setup(
     description="",
     license="",
     scripts=["scripts/yoda"],
-    packages=["yoda"],
+    packages=["yoda", "yoda.subcommand"],
     install_requires=[
         u"PyYaml"
     ],
