@@ -19,6 +19,12 @@ class TestConfig(unittest.TestCase):
         """ Remove test file """
         os.remove(self.file)
 
+    def test_init(self):
+        file = "/tmp/yoda_config.txt"
+        conf = Config(file)
+        self.assertTrue(os.path.exists(file))
+        os.remove(file)
+
     def test_get(self):
         """ Test get configuration """
         conf = Config(self.file)

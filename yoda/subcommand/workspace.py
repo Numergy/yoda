@@ -38,6 +38,30 @@ class Workspace(Subcommand):
             self.ws.remove(args.name)
             out.success("Workspace `%s` successfuly removed" % args.name)
         elif (args.workspace_subcommand == "list"):
+            color = out.color
+            messages = []
             for name, ws in self.ws.list().items():
-                out.success("%s" % name)
-                out.info("\tpath: %s\n\n" % (ws["path"]))
+                messages.append(
+                    color.colored(
+                        (" - %s" % name),
+                        fgcolor="green",
+                        attrs=["dark"]
+                    )
+                )
+                messages.append(
+                    color.colored("\t - path: ", "blue") + "%s" % ws["path"]
+                )
+                if ("repositories" in ws):
+                    messages.append(
+                        out.color.colored("\t - repositories:", "cyan")
+                    )
+                    for repo_name, repo_path in ws["repositories"].items():
+                        messages.append(
+                            out.color.colored("\t\t - name: ", "blue")
+                            + "%s" % repo_name
+                        )
+                        messages.append(
+                            out.color.colored("\t\t - path: ", "blue")
+                            + "%s" % repo_path
+                        )
+            out.info("\n".join(messages))

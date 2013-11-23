@@ -16,6 +16,7 @@ setup(
     tests_require=[
         u"mock",
         u"nose",
-        u"pep8"
+        u"pep8",
+        u"coverage"
     ]
 )

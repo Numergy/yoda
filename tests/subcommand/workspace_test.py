@@ -1,5 +1,6 @@
 import unittest
 import argparse
+import sys
 
 from mock import Mock
 from ..utils import mock_config
@@ -16,7 +17,16 @@ class TestSubcommandWorkspace(unittest.TestCase):
         self.parser = argparse.ArgumentParser(prog="yoda_test")
         subparser = self.parser.add_subparsers(dest="subcommand_test")
 
-        config_data = "{workspaces: {}}"
+        config_data = {
+            "workspaces": {
+                "yoda": {
+                    "path": "/yoda",
+                    "repositories": {
+                        "yoda": "/project/yoda"
+                    }
+                }
+            }
+        }
         self.workspace = Workspace()
         self.workspace.setup("workspace", mock_config(config_data), subparser)
 
@@ -79,8 +89,20 @@ class TestSubcommandWorkspace(unittest.TestCase):
 
     def test_exec_list(self):
         """ Test workspace list execution """
+        ws_list = {
+            "yoda": {
+                "path": "/project/yoda",
+                "repositories": {
+                    "yoda": "/project/yoda/src"
+                }
+            },
+            "test": {
+                "path": "/project/test"
+            }
+        }
+
         ws = Mock()
-        ws.list = Mock(return_value={})
+        ws.list = Mock(return_value=ws_list)
 
         args = Mock()
         args.workspace_subcommand = "list"
@@ -89,3 +111,21 @@ class TestSubcommandWorkspace(unittest.TestCase):
         self.workspace.execute(args)
 
         ws.list.assert_called_with()
+
+    def test_exec_without_command(self):
+        """ Test workspace without subcommand """
+        ws = Mock()
+        args = Mock()
+        args.workspace_subcommand = None
+
+        self.workspace.ws = ws
+        self.assertIsNone(self.workspace.execute(args))
+
+    def test_exec_with_wrong_command(self):
+        """ Test workspace without subcommand """
+        ws = Mock()
+        args = Mock()
+        args.workspace_subcommand = "test"
+
+        self.workspace.ws = ws
+        self.assertIsNone(self.workspace.execute(args))
