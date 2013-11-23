@@ -17,6 +17,7 @@ import unittest
 import os.path
 
 from .utils import mock_config
+from .utils import Sandbox
 from yoda import Workspace
 
 
@@ -98,3 +99,33 @@ class TestWorkspace(unittest.TestCase):
     def test_not_instance_of_config(self):
         """ Test if parameter is an instance of Config"""
         self.assertRaises(TypeError, lambda: Workspace(()))
+
+    def test_repositories(self):
+        sandbox = Sandbox()
+
+        sandbox.mkdir("workspace1")
+        sandbox.mkdir("workspace1/repo1")
+        sandbox.mkdir("workspace2")
+        sandbox.mkdir("workspace2/repo2")
+
+        config = mock_config({"workspaces": {
+            "workspace1": {"path": "%s/workspace1" % sandbox.path,
+                           "repositories": {}},
+            "workspace2": {"path": "%s/workspace2" % sandbox.path,
+                           "repositories": {}}}})
+
+        ws = Workspace(config)
+        self.assertEqual({"repo1": "%s/workspace1/repo1" % sandbox.path},
+                         ws.repositories("workspace1"))
+        self.assertEqual({"repo2": "%s/workspace2/repo2" % sandbox.path},
+                         ws.repositories("workspace2"))
+
+        sandbox.destroy()
+
+    def test_repositories_with_invalid_ws(self):
+        """ Test get repositories list from invalid ws """
+        config = mock_config({
+            "workspaces": {"foo": {"path": "/foo", "repositories": {}}}})
+        ws = Workspace(config)
+        self.assertRaises(
+            ValueError, ws.repositories, "bar")

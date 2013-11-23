@@ -68,19 +68,20 @@ class Workspace(Subcommand):
                 messages.append(
                     color.colored("\t - path: ", "blue") + "%s" % ws["path"]
                 )
-                if ("repositories" in ws):
+
+                repositories = self.ws.repositories(name)
+
+                if "repositories" in ws:
+                    repositories = dict(ws["repositories"], **repositories)
+
+                if len(repositories) > 0:
                     messages.append(
-                        out.color.colored("\t - repositories:", "cyan")
-                    )
-                    for repo_name, repo_path in ws["repositories"].items():
+                        out.color.colored("\t - repositories:", "blue"))
+                    for repo_name, repo_path in repositories.items():
                         messages.append(
-                            out.color.colored("\t\t - name: ", "blue")
-                            + "%s" % repo_name
-                        )
-                        messages.append(
-                            out.color.colored("\t\t - path: ", "blue")
-                            + "%s" % repo_path
-                        )
+                            out.color.colored(
+                                "\t\t - %s:\t" % repo_name, "cyan")
+                            + "%s" % repo_path)
             out.info("\n".join(messages))
 
     def load_workspaces_subcommands(self, subcmd):

@@ -13,7 +13,8 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
-import os.path
+from os import listdir
+from os.path import isdir, join, exists
 from yoda import Config
 
 
@@ -29,7 +30,7 @@ class Workspace:
 
     def add(self, name, path):
         """ Add a workspace entry in user config file """
-        if not (os.path.exists(path)):
+        if not (exists(path)):
             raise ValueError("Workspace path `%s` dosn't exists." % path)
 
         if (self.exists(name)):
@@ -60,6 +61,24 @@ class Workspace:
             ws_list[key] = dict({"name": key}, **value)
 
         return ws_list
+
+    def repositories(self, ws_name):
+        """ Return workspace's repositories list """
+        if not self.exists(ws_name):
+            raise ValueError("Unknown workspace `%s`" % ws_name)
+
+        config = self.config.get()
+        ws_path = config["workspaces"][ws_name]["path"]
+
+        repo_list = {}
+
+        for r in listdir(ws_path):
+            repo_path = join(ws_path, r)
+            #TODO: Check if is a valid repository
+            if isdir(repo_path):
+                repo_list[r] = repo_path
+
+        return repo_list
 
     def exists(self, name):
         """ Check if given workspace name exists """

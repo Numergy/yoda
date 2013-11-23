@@ -119,6 +119,7 @@ class TestSubcommandWorkspace(unittest.TestCase):
 
         ws = Mock()
         ws.list = Mock(return_value=ws_list)
+        ws.repositories = Mock(return_value={})
 
         args = Mock()
         args.workspace_subcommand = "list"
