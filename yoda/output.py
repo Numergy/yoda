@@ -1,23 +1,25 @@
 import sys
+from pycolorizer import Color
 
 
 class Output:
-    GREEN = "\033[92m%s\033[0m"
-    YELLOW = "\033[93m%s\033[0m"
-    RED = "\033[91m%s\033[0m"
+    color = None
+    stderr = None
+    stdout = None
 
     def __init__(self, stdout=sys.stdout, stderr=sys.stderr):
         self.stdout = stdout
         self.stderr = stderr
+        self.color = Color()
 
     def info(self, message):
         self.stdout.write(message + "\n")
 
     def success(self, message):
-        self.stdout.write(self.GREEN % message + "\n")
+        self.stdout.write(self.color.colored(message, "green") + "\n")
 
     def warn(self, message):
-        self.stderr.write(self.YELLOW % message + "\n")
+        self.stderr.write(self.color.colored(message, "yellow") + "\n")
 
     def error(self, message):
-        self.stderr.write(self.RED % message + "\n")
+        self.stderr.write(self.color.colored(message, "red") + "\n")

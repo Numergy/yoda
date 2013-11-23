@@ -10,7 +10,8 @@ setup(
     scripts=["scripts/yoda"],
     packages=["yoda", "yoda.subcommand"],
     install_requires=[
-        u"PyYaml"
+        u"PyYaml",
+        u"pycolorizer"
     ],
     tests_require=[
         u"mock",

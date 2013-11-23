@@ -26,14 +26,14 @@ class TestOutput(unittest.TestCase):
     def test_success(self):
         """ Test printing a success message """
         self.out.success("bar")
-        self.stdout.write.assert_called_once_with("\033[92mbar\033[0m\n")
+        self.stdout.write.assert_called_once_with("\x1b[32mbar\x1b[0m\n")
 
     def test_warn(self):
         """ Test printing a warning message """
         self.out.warn("baz")
-        self.stderr.write.assert_called_once_with("\033[93mbaz\033[0m\n")
+        self.stderr.write.assert_called_once_with("\x1b[33mbaz\x1b[0m\n")
 
     def test_error(self):
         """ Test printing an error message """
         self.out.error("foobar")
-        self.stderr.write.assert_called_once_with("\033[91mfoobar\033[0m\n")
+        self.stderr.write.assert_called_once_with("\x1b[31mfoobar\x1b[0m\n")

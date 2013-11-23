@@ -39,4 +39,5 @@ class Workspace(Subcommand):
             out.success("Workspace `%s` successfuly removed" % args.name)
         elif (args.workspace_subcommand == "list"):
             for name, ws in self.ws.list().items():
-                out.info("name: %s\npath: %s\n\n" % (name, ws["path"]))
+                out.success("%s" % name)
+                out.info("\tpath: %s\n\n" % (ws["path"]))
