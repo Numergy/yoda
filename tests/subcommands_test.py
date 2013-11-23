@@ -2,8 +2,7 @@ import unittest
 
 from mock import Mock
 
-from yoda.subcommands import Subcommand
-from yoda.subcommands import Subcommands
+from yoda import Subcommand, Subcommands
 
 
 class TestSubcommand(unittest.TestCase):

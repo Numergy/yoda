@@ -1,7 +1,7 @@
 import unittest
 
 from mock import Mock
-from yoda.output import Output
+from yoda import Output
 
 
 class TestOutput(unittest.TestCase):

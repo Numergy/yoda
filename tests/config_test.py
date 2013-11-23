@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from yoda.config import Config
+from yoda import Config
 
 
 class TestConfig(unittest.TestCase):

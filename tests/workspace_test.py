@@ -2,7 +2,7 @@ import unittest
 import os.path
 
 from .utils import mock_config
-from yoda.workspace import Workspace
+from yoda import Workspace
 
 
 class TestWorkspace(unittest.TestCase):
