@@ -4,18 +4,19 @@ import sys
 
 from mock import Mock
 from ..utils import mock_config
-from yoda.subcommand.workspace import Workspace
+from yoda.subcommand import Workspace, WorkspaceSubcommands
 
 
 class TestSubcommandWorkspace(unittest.TestCase):
     """ Workspace subcommand test suite """
     parser = None
+    subparser = None
     workspace = None
 
     def setUp(self):
         """ Setup test suite """
         self.parser = argparse.ArgumentParser(prog="yoda_test")
-        subparser = self.parser.add_subparsers(dest="subcommand_test")
+        self.subparser = self.parser.add_subparsers(dest="subcommand_test")
 
         config_data = {
             "workspaces": {
@@ -28,7 +29,8 @@ class TestSubcommandWorkspace(unittest.TestCase):
             }
         }
         self.workspace = Workspace()
-        self.workspace.setup("workspace", mock_config(config_data), subparser)
+        self.workspace.setup(
+            "workspace", mock_config(config_data), self.subparser)
 
     def tearDown(self):
         """ Tear down test suite """
@@ -129,3 +131,43 @@ class TestSubcommandWorkspace(unittest.TestCase):
 
         self.workspace.ws = ws
         self.assertIsNone(self.workspace.execute(args))
+
+    def test_load_workspaces_subcommands(self):
+        """ Test workspaces subcommands """
+        ws = Mock()
+        ws.list = Mock(return_value={"foo":
+                                     {"path": "/foo",
+                                      "repositories": {}}})
+
+        subcmd = Mock()
+        subcmd.commands = {}
+
+        self.workspace.ws = ws
+        self.workspace.load_workspaces_subcommands(subcmd)
+
+        self.assertTrue("foo" in subcmd.commands)
+        self.assertIsInstance(subcmd.commands["foo"], WorkspaceSubcommands)
+
+
+class TestWorkspacesSubcommands(unittest.TestCase):
+    """ Test suite for workspaces subcommands setup """
+    parser = None
+
+    def setUp(self):
+        """ Setup test suite """
+        self.parser = argparse.ArgumentParser(prog="yoda_test")
+
+    def tearDown(self):
+        """ Tear down test suite """
+        self.parser = None
+
+    def test_parse_add(self):
+        """ Test parse add subcommands """
+        subparser = self.parser.add_subparsers(dest="subcommand_test")
+        ws_subcmds = WorkspaceSubcommands("foo", subparser)
+        ws_subcmds.parse()
+
+        args = self.parser.parse_args(["foo", "add", "repo-name"])
+
+        self.assertEqual("add", args.foo_subcommand)
+        self.assertEqual("repo-name", args.repo_name)

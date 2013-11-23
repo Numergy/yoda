@@ -11,7 +11,9 @@ yoda_config = Config("%s/.yodarc" % os.environ.get("HOME"))
 out = Output()
 
 subcmd = Subcommands(yoda_config)
-subcmd.add_command(Workspace())
+ws_cmd = Workspace()
+subcmd.add_command(ws_cmd)
+ws_cmd.load_workspaces_subcommands(subcmd)
 subcmd.parse()
 
 args = subcmd.parser.parse_args()

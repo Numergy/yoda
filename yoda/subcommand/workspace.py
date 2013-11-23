@@ -5,9 +5,11 @@ from yoda.output import Output
 
 class Workspace(Subcommand):
     ws = None
+    subparser = None
 
     def setup(self, name, config, subparser):
         self.ws = Ws(config)
+        self.subparser = subparser
         Subcommand.setup(self, name, config, subparser)
 
     def parse(self):
@@ -65,3 +67,30 @@ class Workspace(Subcommand):
                             + "%s" % repo_path
                         )
             out.info("\n".join(messages))
+
+    def load_workspaces_subcommands(self, subcmd):
+        for key, value in self.ws.list().items():
+            ws_subcmds = WorkspaceSubcommands(key, self.subparser)
+            subcmd.commands[key] = ws_subcmds
+
+
+class WorkspaceSubcommands():
+    name = None
+    parser = None
+
+    def __init__(self, name, subparser):
+        """ Initialize workspace name """
+        self.name = name
+        self.parser = subparser.add_parser(name)
+
+    def parse(self):
+        subparser = self.parser.add_subparsers(
+            dest="%s_subcommand" % self.name)
+
+        add_parser = subparser.add_parser(
+            "add", help="Add repositories to %s workspace" % self.name)
+
+        add_parser.add_argument("repo_name", type=str, help="Repository name")
+
+    def execute(self, args):
+        print("TODO: Implement me!")
