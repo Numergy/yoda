@@ -21,7 +21,7 @@ class Workspace:
             raise ValueError("Workspace `%s` already exists." % name)
 
         config = self.config.get()
-        config["workspaces"][name] = path
+        config["workspaces"][name] = {"path": path, "repositories": {}}
 
         self.config.write(config)
 
@@ -39,7 +39,12 @@ class Workspace:
     def list(self):
         """ List all available workspaces """
         config = self.config.get()
-        return config["workspaces"]
+        ws_list = {}
+
+        for key, value in config["workspaces"].items():
+            ws_list[key] = dict({"name": key}, **value)
+
+        return ws_list
 
     def exists(self, name):
         """ Check if given workspace name exists """
