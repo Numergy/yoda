@@ -13,6 +13,9 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
+import os
+import shutil
+
 from yoda.workspace import Workspace as Ws
 from yoda.subcommands import Subcommand
 from yoda.output import Output
@@ -21,11 +24,13 @@ from yoda.output import Output
 class Workspace(Subcommand):
     ws = None
     subparser = None
+    config = None
 
     def setup(self, name, config, subparser):
         self.ws = Ws(config)
         self.subparser = subparser
-        Subcommand.setup(self, name, config, subparser)
+        self.config = config
+        Subcommand.setup(self, name, self.config, subparser)
 
     def parse(self):
         subparser = self.parser.add_subparsers(
@@ -86,27 +91,84 @@ class Workspace(Subcommand):
 
     def load_workspaces_subcommands(self, subcmd):
         for key, value in self.ws.list().items():
-            ws_subcmds = WorkspaceSubcommands(key, self.subparser)
+            ws_subcmds = WorkspaceSubcommands(key, self.subparser, self.config)
             subcmd.commands[key] = ws_subcmds
 
 
 class WorkspaceSubcommands():
     name = None
     parser = None
+    config = None
 
-    def __init__(self, name, subparser):
+    def __init__(self, name, subparser, config):
         """ Initialize workspace name """
         self.name = name
         self.parser = subparser.add_parser(name)
+        self.config = config
 
     def parse(self):
         subparser = self.parser.add_subparsers(
-            dest="%s_subcommand" % self.name)
+            dest="action")
 
         add_parser = subparser.add_parser(
-            "add", help="Add repositories to %s workspace" % self.name)
+            "add", help=("Add repository to %s workspace" % self.name))
 
         add_parser.add_argument("repo_name", type=str, help="Repository name")
+        add_parser.add_argument(
+            "-u", "--url",
+            type=str, help="Repository url",
+            default=None, nargs='?'
+        )
+        add_parser.add_argument(
+            "-p", "--path",
+            type=str, help="Repository path",
+            default=None, nargs='?'
+        )
+
+        remove_parser = subparser.add_parser(
+            "remove", help=("Remove repository to %s workspace" % self.name))
+
+        remove_parser.add_argument(
+            "repo_name", type=str, help="Repository name"
+        )
 
     def execute(self, args):
-        print("TODO: Implement me!")
+        if (args.action == "add"):
+            self.add(args.subcommand, args.repo_name, args.url, args.path)
+        elif (args.action == "remove"):
+            self.remove(args.subcommand, args.repo_name)
+
+    def add(self, ws_name, repo_name, url, path):
+        config = self.config.get()
+        ws = config["workspaces"][ws_name]
+        repo_path = ws["path"] + "/" + repo_name if path is None else path
+
+        if ("repositories" not in ws):
+            ws["repositories"] = {}
+
+        if (repo_name in ws["repositories"]):
+            raise ValueError("Repository %s already exists" % repo_name)
+        else:
+            if (os.path.exists(repo_path) is False):
+                os.mkdir(repo_path)
+            #TODO: Implement clone from url
+
+            ws["repositories"][repo_name] = repo_path
+            self.config.write(config)
+            out = Output()
+            out.success("Repository %s added" % repo_name)
+
+    def remove(self, ws_name, repo_name):
+        config = self.config.get()
+        ws = config["workspaces"][ws_name]
+        if (repo_name not in config["workspaces"][ws_name]["repositories"]):
+            raise ValueError(
+                "%s not found in %s workspace" % (repo_name, ws_name)
+            )
+
+        repo_path = config["workspaces"][ws_name]["repositories"][repo_name]
+        del config["workspaces"][ws_name]["repositories"][repo_name]
+        self.config.write(config)
+        out = Output()
+        if (out.yn_choice("Do you want to delete this repository?")):
+            shutil.rmtree(repo_path)

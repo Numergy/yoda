@@ -13,6 +13,7 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
+
 import mock
 import os
 import shutil

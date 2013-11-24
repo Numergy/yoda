@@ -17,15 +17,18 @@ import os
 import unittest
 
 from yoda import Config
+from .utils import Sandbox
 
 
 class TestConfig(unittest.TestCase):
     """ Yoda configuration test suite """
 
-    file = "/tmp/yoda_config_test.txt"
+    file = None
 
     def setUp(self):
         """ Setup test file """
+        self.sandbox = Sandbox()
+        self.file = self.sandbox.path + "/yoda_config_test.txt"
         file = open(self.file, "w")
         file.write("foo: \n  bar: baz\n  bur: buz\n")
         file.close()

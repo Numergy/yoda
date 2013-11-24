@@ -16,6 +16,7 @@
 import unittest
 
 from mock import Mock
+from mock import patch
 from yoda import Output
 
 
@@ -52,3 +53,11 @@ class TestOutput(unittest.TestCase):
         """ Test printing an error message """
         self.out.error("foobar")
         self.stderr.write.assert_called_once_with("\x1b[31mfoobar\x1b[0m\n")
+
+    @patch("builtins.input",
+           Mock(side_effect=["n", "y", "1337"]))
+    def test_yn_choice(self):
+        """ Test printing input question """
+        self.assertFalse(self.out.yn_choice("Test?"))
+        self.assertTrue(self.out.yn_choice("Test?"))
+        self.assertFalse(self.out.yn_choice("Test?"))
