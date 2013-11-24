@@ -51,6 +51,12 @@ class Sandbox:
         """ Create directory in sandbox. """
         os.mkdir(os.path.join(self.path, directory))
 
+    def touch(self, file):
+        """ Create file  into sandbox """
+        full_path = os.path.join(self.path, file)
+        with open(full_path, 'w'):
+            os.utime(full_path, None)
+
     def destroy(self):
         """ Destroy sandbox environment """
         if os.path.exists(self.path):

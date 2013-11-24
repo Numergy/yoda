@@ -14,8 +14,9 @@
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 from os import listdir
-from os.path import isdir, join, exists
+from os.path import join, exists
 from yoda import Config
+from yoda.repository import Repository
 
 
 class Workspace:
@@ -73,10 +74,10 @@ class Workspace:
         repo_list = {}
 
         for r in listdir(ws_path):
-            repo_path = join(ws_path, r)
-            #TODO: Check if is a valid repository
-            if isdir(repo_path):
-                repo_list[r] = repo_path
+            repo = Repository(join(ws_path, r))
+
+            if repo.is_valid():
+                repo_list[r] = repo.path
 
         return repo_list
 

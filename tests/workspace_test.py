@@ -105,8 +105,10 @@ class TestWorkspace(unittest.TestCase):
 
         sandbox.mkdir("workspace1")
         sandbox.mkdir("workspace1/repo1")
+        sandbox.mkdir("workspace1/repo1/.git")
         sandbox.mkdir("workspace2")
         sandbox.mkdir("workspace2/repo2")
+        sandbox.mkdir("workspace2/repo2/.git")
 
         config = mock_config({"workspaces": {
             "workspace1": {"path": "%s/workspace1" % sandbox.path,

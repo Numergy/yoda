@@ -13,9 +13,24 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
-from .config import Config
-from .output import Output
-from .workspace import Workspace
-from .repository import Repository
-from .subcommands import Subcommand
-from .subcommands import Subcommands
+import os
+
+
+class Repository:
+    path = None
+
+    scm_dirs = [".git"]
+
+    def __init__(self, path):
+        if not os.path.exists(path):
+            raise ValueError(
+                "Repository path doesn't exists (%s)" % path)
+
+        self.path = path
+
+    def is_valid(self):
+        if not os.path.isdir(self.path):
+            return False
+
+        return set(self.scm_dirs).intersection(
+            set(os.listdir(self.path))) != set()
