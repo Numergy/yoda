@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # This source file is part of Yoda.
 #
 # Yoda is free software: you can redistribute it and/or modify
@@ -14,23 +13,5 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
-from setuptools import setup
-
-setup(
-    name="yoda",
-    version="0.1",
-    description="",
-    license="",
-    scripts=["scripts/yoda"],
-    packages=["yoda", "yoda.subcommand", "yoda.adapter"],
-    install_requires=[
-        u"PyYaml",
-        u"pycolorizer"
-    ],
-    tests_require=[
-        u"mock",
-        u"nose",
-        u"pep8",
-        u"coverage"
-    ]
-)
+from .abstract import Abstract
+from .git import Git
