@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
-import os
+import subprocess
 
 from distutils.spawn import find_executable
 from abc import ABCMeta, abstractmethod
@@ -32,11 +32,11 @@ class Abstract:
     def exec(self, command):
         """ Execute command with os.popen and return output"""
         self.check_executable()
-        return os.popen(command).read()
+        subprocess.Popen(command, shell=True).communicate()
 
     def exec_on_path(self, command):
         """ Execute command in repository path """
-        return self.exec("cd %s; %s" % (self.path, command))
+        self.exec("cd %s; %s" % (self.path, command))
 
     def check_executable(self):
         """ Check adapter executable exists """

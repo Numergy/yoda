@@ -14,4 +14,5 @@
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 from .workspace import Workspace
+from .status import Status
 from .workspace import WorkspaceSubcommands

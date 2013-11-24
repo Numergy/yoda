@@ -15,9 +15,12 @@
 
 import os
 
+from yoda.adapter import Git
+
 
 class Repository:
     path = None
+    adapter = None
 
     scm_dirs = [".git"]
 
@@ -27,6 +30,8 @@ class Repository:
                 "Repository path doesn't exists (%s)" % path)
 
         self.path = path
+        #TODO: Init adapter from repository type
+        self.adapter = Git(path)
 
     def is_valid(self):
         if not os.path.isdir(self.path):
@@ -34,3 +39,6 @@ class Repository:
 
         return set(self.scm_dirs).intersection(
             set(os.listdir(self.path))) != set()
+
+    def status(self):
+        return self.adapter.status()

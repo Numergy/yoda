@@ -20,11 +20,13 @@ import os
 sys.path.append(os.path.abspath('../yoda'))
 from yoda import Config, Output, Subcommands
 from yoda.subcommand import Workspace
+from yoda.subcommand import Status
 
 yoda_config = Config("%s/.yodarc" % os.environ.get("HOME"))
 out = Output()
 
 subcmd = Subcommands(yoda_config)
+subcmd.add_command(Status())
 ws_cmd = Workspace()
 subcmd.add_command(ws_cmd)
 ws_cmd.load_workspaces_subcommands(subcmd)
