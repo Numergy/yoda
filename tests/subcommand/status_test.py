@@ -15,9 +15,10 @@
 
 import unittest
 import argparse
+import os
 
 from mock import Mock
-from ..utils import mock_config
+from ..utils import mock_config, Sandbox
 from yoda.subcommand import Status
 
 
@@ -32,14 +33,19 @@ class TestSubcommandStatus(unittest.TestCase):
         self.parser = argparse.ArgumentParser(prog="yoda_test")
         self.subparser = self.parser.add_subparsers(dest="subcommand_test")
 
+        self.sandbox = Sandbox()
+        self.sandbox.mkdir("yoda")
+        self.sandbox.mkdir("yoda/yoda")
+        self.sandbox.mkdir("yoda/other")
+
         config_data = {
             "workspaces": {
                 "yoda": {
-                    "path": "/yoda",
+                    "path": os.path.join(self.sandbox.path, "yoda"),
                     "repositories": {
-                        "yoda": "/yoda/yoda",
-                        "other": "/yoda/other",
-                        "1337": "/yoda/1337"
+                        "yoda": os.path.join(self.sandbox.path, "yoda/yoda"),
+                        "other": os.path.join(self.sandbox.path, "yoda/other"),
+                        "1337": os.path.join(self.sandbox.path, "yoda/1337")
                     }
                 }
             }
@@ -54,6 +60,7 @@ class TestSubcommandStatus(unittest.TestCase):
         """ Tear down test suite """
         self.parser = None
         self.status = None
+        self.sandbox.destroy()
 
     def test_parse_status(self):
         """ Test parse status subcommand """
@@ -73,26 +80,30 @@ class TestSubcommandStatus(unittest.TestCase):
         self.assertEqual(3, len(self.status.print_status.mock_calls))
 
     def test_exec_status_repo_only(self):
-        """ Test exec status workspace only. """
+        """ Test exec status repository only. """
         args = Mock()
         args.name = "other"
 
         self.status.execute(args)
         self.status.print_status.assert_called_once_with(
-            "other", "/yoda/other")
+            "other", os.path.join(self.sandbox.path, "yoda/other"))
 
     def test_exec_status_workspace_and_repo(self):
-        """ Test exec status workspace only. """
+        """ Test exec status workspace and repo. """
         args = Mock()
         args.name = "yoda/1337"
 
         self.status.execute(args)
         self.status.print_status.assert_called_once_with(
-            "1337", "/yoda/1337")
+            "1337", os.path.join(self.sandbox.path, "yoda/1337"))
 
     def test_exec_status_no_matches(self):
-        """ Test exec status workspace only. """
+        """ Test exec status no matches. """
         args = Mock()
         args.name = "foobar"
 
+        self.status.out = Mock()
+
         self.assertFalse(self.status.execute(args))
+        self.status.out.error.assert_called_once_with(
+            "No matches for `foobar`")

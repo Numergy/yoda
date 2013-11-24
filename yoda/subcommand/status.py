@@ -44,6 +44,7 @@ class Status(Subcommand):
             result = args.name.split('/')
             if (workspace.exists(result[0])):
                 if (result[1] in config[result[0]]["repositories"]):
+                    self.matched = True
                     path = config[result[0]]["repositories"][result[1]]
                     return self.print_status(result[1], path)
 
@@ -51,11 +52,13 @@ class Status(Subcommand):
             if (args.name == ws_name):
                 repositories = sorted(config[ws_name]["repositories"].items())
                 for name, path in repositories:
+                    self.matched = True
                     self.print_status(name, path)
                 return None
 
             for name, path in sorted(ws["repositories"].items()):
                 if (args.name == name):
+                    self.matched = True
                     self.print_status(name, path)
 
         if not self.matched:
@@ -70,7 +73,6 @@ class Status(Subcommand):
                 "=> [%s] %s" % (repo_name, repo_path))
             repo.status()
             self.out.info("\n")
-            self.matched = True
         except ValueError as e:
             self.out.error(e)
             pass
