@@ -96,13 +96,14 @@ class TestSubcommandJump(unittest.TestCase):
             sys.stdout.getvalue().strip()
         )
 
-    def test_exec_jump_to_repository_from_worksapce(self):
+    def test_exec_jump_to_repository_from_workspace(self):
         """ test jump to repository from workspace """
         args = Mock()
         args.jump_subcommand = "jump"
         args.to = "yoda/repo"
 
         self.jump.execute(args)
+
     def test_exec_to_invalid_repository(self):
         """ test Jump to repository from workspace """
         args = Mock()
