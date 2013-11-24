@@ -15,8 +15,7 @@
 
 from os import listdir
 from os.path import join, exists
-from yoda import Config
-from yoda.repository import Repository
+from yoda import Config, Repository
 
 
 class Workspace:
