@@ -87,3 +87,11 @@ class Workspace:
         """ Check if given workspace name exists """
         list = self.list()
         return name in list.keys()
+
+    def has_repo(self, workspace, repo):
+        """ Return True if workspace contains repository name. """
+        if not self.exists(workspace):
+            return False
+
+        workspaces = self.list()
+        return repo in workspaces[workspace]["repositories"]
