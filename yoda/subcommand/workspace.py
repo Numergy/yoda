@@ -68,10 +68,10 @@ class Workspace(Subcommand):
             repo_list = self.ws.sync(args.name)
             out.success("Workspace `%s` synchronized" % args.name)
             out.success("Added %d repositories:" % len(repo_list))
-            for repo_name,path in repo_list.items():
+            for repo_name, path in repo_list.items():
                 out.success(
                     out.color.colored(
-                        " - %s" % repo_name , "blue"
+                        " - %s" % repo_name, "blue"
                     )
                 )
         elif (args.workspace_subcommand == "list"):
@@ -89,7 +89,8 @@ class Workspace(Subcommand):
                     color.colored("\t - path: ", "blue") + "%s" % ws["path"]
                 )
 
-                repositories = ws["repositories"] if "repositories" in ws else {}
+                repositories = ws["repositories"] \
+                    if "repositories" in ws else {}
                 if len(repositories) > 0:
                     messages.append(
                         out.color.colored("\t - repositories:", "blue"))
