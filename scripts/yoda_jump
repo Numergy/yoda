@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/bin/bash
 # This source file is part of Yoda.
 #
 # Yoda is free software: you can redistribute it and/or modify
@@ -14,32 +14,19 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
-import sys
-import os
+function yoda_jump() {
+    cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    if [[ $# -lt 1 ]]
+    then
+        echo >&2 "You must specify repository or workspace"
+    fi
 
-sys.path.append(
-    os.path.abspath(
-        os.path.dirname(
-            os.path.realpath(__file__)
-        ) + "/../../yoda"
-    )
-)
+    path=$(python yoda jump $1)
+    if [[ ! -d $path ]]
+    then
+        echo "$1 does not exists" 2>&1
+    fi
 
-from yoda import Config, Output, Subcommands
-from yoda.subcommand import Workspace, Status
+    cd $path
+}
 
-yoda_config = Config("%s/.yodarc" % os.environ.get("HOME"))
-out = Output()
-
-subcmd = Subcommands(yoda_config)
-subcmd.add_command(Status())
-ws_cmd = Workspace()
-subcmd.add_command(ws_cmd)
-ws_cmd.load_workspaces_subcommands(subcmd)
-subcmd.parse()
-
-args = subcmd.parser.parse_args()
-try:
-    subcmd.execute(args)
-except Exception as e:
-    out.error(e)

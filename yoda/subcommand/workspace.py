@@ -49,7 +49,7 @@ class Workspace(Subcommand):
         add_parser.add_argument("path", type=str, help="Workspace path")
         rm_parser.add_argument("name", type=str, help="Workspace name")
         sync_parser.add_argument(
-            "name", type=str, help="Workspace name",  nargs='?'
+            "name", type=str, help="Workspace name", nargs='?'
         )
 
     def execute(self, args):
