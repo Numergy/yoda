@@ -14,16 +14,19 @@
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 from yoda.subcommands import Subcommand
-from yoda import Repository, Output
+from yoda import Repository, Output, Workspace
 
 
 class Status(Subcommand):
     subparser = None
     config = None
+    out = None
+    matched = False
 
     def setup(self, name, config, subparser):
         self.subparser = subparser
         self.config = config
+        self.out = Output()
         Subcommand.setup(self, name, self.config, subparser)
 
     def parse(self):
@@ -33,11 +36,36 @@ class Status(Subcommand):
 
     def execute(self, args):
         """ Execute status subcommand """
-        out = Output()
+        workspace = Workspace(self.config)
+        config = self.config.get()["workspaces"]
 
-        config = self.config.get()
-        for name, path in config["workspaces"][args.name]["repositories"].items():
-            repo = Repository(path)
-            out.success("=> %s" % path)
-            repo.status()
-            out.info("\n")
+        #FIXME: Duplicate from Jump
+        if args.name.find('/') != -1:
+            result = args.name.split('/')
+            if (workspace.exists(result[0])):
+                if (result[1] in config[result[0]]["repositories"]):
+                    path = config[result[0]]["repositories"][result[1]]
+                    return self.print_status(result[1], path)
+
+        for ws_name, ws in config.items():
+            if (args.name == ws_name):
+                for name, path in config[ws_name]["repositories"].items():
+                    self.print_status(name, path)
+                return None
+
+            for name, path in ws["repositories"].items():
+                if (args.name == name):
+                    self.print_status(name, path)
+
+        if not self.matched:
+            self.out.error("No matches for `%s`" % args.name)
+            return False
+
+    def print_status(self, repo_name, repo_path):
+        """ Print repository status """
+        repo = Repository(repo_path)
+        self.out.success(
+            "=> [%s] %s" % (repo_name, repo_path))
+        repo.status()
+        self.out.info("\n")
+        self.matched = True

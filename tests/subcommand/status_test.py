@@ -48,6 +48,7 @@ class TestSubcommandStatus(unittest.TestCase):
         self.status = Status()
         self.status.setup(
             "status", mock_config(config_data), self.subparser)
+        self.status.print_status = Mock()
 
     def tearDown(self):
         """ Tear down test suite """
@@ -62,3 +63,36 @@ class TestSubcommandStatus(unittest.TestCase):
 
         self.assertEqual("status", args.subcommand_test)
         self.assertEqual("ws1/repo1", args.name)
+
+    def test_exec_status_workspace_only(self):
+        """ Test exec status workspace only. """
+        args = Mock()
+        args.name = "yoda"
+
+        self.status.execute(args)
+        self.assertEqual(3, len(self.status.print_status.mock_calls))
+
+    def test_exec_status_repo_only(self):
+        """ Test exec status workspace only. """
+        args = Mock()
+        args.name = "other"
+
+        self.status.execute(args)
+        self.status.print_status.assert_called_once_with(
+            "other", "/yoda/other")
+
+    def test_exec_status_workspace_and_repo(self):
+        """ Test exec status workspace only. """
+        args = Mock()
+        args.name = "yoda/1337"
+
+        self.status.execute(args)
+        self.status.print_status.assert_called_once_with(
+            "1337", "/yoda/1337")
+
+    def test_exec_status_no_matches(self):
+        """ Test exec status workspace only. """
+        args = Mock()
+        args.name = "foobar"
+
+        self.assertFalse(self.status.execute(args))
