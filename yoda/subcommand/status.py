@@ -47,13 +47,14 @@ class Status(Subcommand):
                     path = config[result[0]]["repositories"][result[1]]
                     return self.print_status(result[1], path)
 
-        for ws_name, ws in config.items():
+        for ws_name, ws in sorted(config.items()):
             if (args.name == ws_name):
-                for name, path in config[ws_name]["repositories"].items():
+                repositories = sorted(config[ws_name]["repositories"].items())
+                for name, path in repositories:
                     self.print_status(name, path)
                 return None
 
-            for name, path in ws["repositories"].items():
+            for name, path in sorted(ws["repositories"].items()):
                 if (args.name == name):
                     self.print_status(name, path)
 
@@ -63,9 +64,13 @@ class Status(Subcommand):
 
     def print_status(self, repo_name, repo_path):
         """ Print repository status """
-        repo = Repository(repo_path)
-        self.out.success(
-            "=> [%s] %s" % (repo_name, repo_path))
-        repo.status()
-        self.out.info("\n")
-        self.matched = True
+        try:
+            repo = Repository(repo_path)
+            self.out.success(
+                "=> [%s] %s" % (repo_name, repo_path))
+            repo.status()
+            self.out.info("\n")
+            self.matched = True
+        except ValueError as e:
+            self.out.error(e)
+            pass

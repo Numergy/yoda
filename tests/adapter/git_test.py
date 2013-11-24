@@ -34,7 +34,7 @@ class TestGit(unittest.TestCase):
         self.sandbox.mkdir("repo")
 
         self.git = Git(os.path.join(self.sandbox.path, "repo"))
-        self.git.exec = Mock(return_value=None)
+        self.git.execute = Mock(return_value=None)
 
     def tearDown(self):
         """ Unset test object """
@@ -44,5 +44,7 @@ class TestGit(unittest.TestCase):
     def test_status(self):
         """ Test git status """
         self.git.status()
-        self.git.exec.assert_called_once_with(
-            "cd %s/repo; git status" % self.sandbox.path)
+        self.git.execute.assert_called_once_with(
+            "git status",
+            os.path.join(self.sandbox.path, "repo")
+        )

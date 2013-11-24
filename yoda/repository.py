@@ -27,7 +27,7 @@ class Repository:
     def __init__(self, path):
         if not os.path.exists(path):
             raise ValueError(
-                "Repository path doesn't exists (%s)" % path)
+                "Repository path doesn't exists (%s)\n" % path)
 
         self.path = path
         #TODO: Init adapter from repository type

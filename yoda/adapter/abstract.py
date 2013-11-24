@@ -14,6 +14,7 @@
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 import subprocess
+import os
 
 from distutils.spawn import find_executable
 from abc import ABCMeta, abstractmethod
@@ -29,14 +30,14 @@ class Abstract:
     def __init__(self, path):
         self.path = path
 
-    def exec(self, command):
+    def execute(self, command, path):
         """ Execute command with os.popen and return output"""
         self.check_executable()
-        subprocess.Popen(command, shell=True).communicate()
+        subprocess.Popen(command, shell=True, cwd=path).communicate()
 
     def exec_on_path(self, command):
         """ Execute command in repository path """
-        self.exec("cd %s; %s" % (self.path, command))
+        self.execute("%s" % (command), self.path)
 
     def check_executable(self):
         """ Check adapter executable exists """
