@@ -70,6 +70,14 @@ class TestSubcommandWorkspace(unittest.TestCase):
         self.assertEqual("remove", args.workspace_subcommand)
         self.assertEqual("foo", args.name)
 
+    def test_parse_sync(self):
+        """ Test workspace remove parsing """
+        self.workspace.parse()
+        args = self.parser.parse_args(["workspace", "sync", "foo"])
+
+        self.assertEqual("sync", args.workspace_subcommand)
+        self.assertEqual("foo", args.name)
+
     def test_parse_list(self):
         """ Test workspace list parsing """
         self.workspace.parse()
@@ -105,6 +113,24 @@ class TestSubcommandWorkspace(unittest.TestCase):
 
         ws.remove.assert_called_with("foo")
 
+    def test_exec_sync(self):
+        """ Test workspace sync execution """
+        ws_list = {
+            "yoda": "/project/yoda/src"
+        }
+
+        ws = Mock()
+        ws.sync = Mock(return_value=ws_list)
+
+        args = Mock()
+        args.workspace_subcommand = "sync"
+        args.name = "foo"
+
+        self.workspace.ws = ws
+        self.workspace.execute(args)
+
+        ws.sync.assert_called_with("foo")
+
     def test_exec_list(self):
         """ Test workspace list execution """
         ws_list = {
@@ -121,7 +147,6 @@ class TestSubcommandWorkspace(unittest.TestCase):
 
         ws = Mock()
         ws.list = Mock(return_value=ws_list)
-        ws.repositories = Mock(return_value={})
 
         args = Mock()
         args.workspace_subcommand = "list"

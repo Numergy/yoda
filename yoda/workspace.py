@@ -63,13 +63,14 @@ class Workspace:
 
         return ws_list
 
-    def repositories(self, ws_name):
+    def sync(self, ws_name):
         """ Return workspace's repositories list """
         if not self.exists(ws_name):
             raise ValueError("Unknown workspace `%s`" % ws_name)
 
         config = self.config.get()
         ws_path = config["workspaces"][ws_name]["path"]
+        repositories = config["workspaces"][ws_name]["repositories"]
 
         repo_list = {}
 
@@ -77,8 +78,10 @@ class Workspace:
             repo = Repository(join(ws_path, r))
 
             if repo.is_valid():
+                repositories[r] = repo.path
                 repo_list[r] = repo.path
 
+        self.config.write(config)
         return repo_list
 
     def exists(self, name):

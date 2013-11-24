@@ -42,10 +42,15 @@ class Workspace(Subcommand):
             "remove", help="Remove existing workspace")
         subparser.add_parser(
             "list", help="Show registered workspace")
+        sync_parser = subparser.add_parser(
+            "sync", help="Synchronize all directories store in workspace")
 
         add_parser.add_argument("name", type=str, help="Workspace name")
         add_parser.add_argument("path", type=str, help="Workspace path")
         rm_parser.add_argument("name", type=str, help="Workspace name")
+        sync_parser.add_argument(
+            "name", type=str, help="Workspace name",  nargs='?'
+        )
 
     def execute(self, args):
         if args.workspace_subcommand is None:
@@ -59,6 +64,16 @@ class Workspace(Subcommand):
         elif (args.workspace_subcommand == "remove"):
             self.ws.remove(args.name)
             out.success("Workspace `%s` successfuly removed" % args.name)
+        elif (args.workspace_subcommand == "sync"):
+            repo_list = self.ws.sync(args.name)
+            out.success("Workspace `%s` synchronized" % args.name)
+            out.success("Added %d repositories:" % len(repo_list))
+            for repo_name,path in repo_list.items():
+                out.success(
+                    out.color.colored(
+                        " - %s" % repo_name , "blue"
+                    )
+                )
         elif (args.workspace_subcommand == "list"):
             color = out.color
             messages = []
@@ -74,11 +89,7 @@ class Workspace(Subcommand):
                     color.colored("\t - path: ", "blue") + "%s" % ws["path"]
                 )
 
-                repositories = self.ws.repositories(name)
-
-                if "repositories" in ws:
-                    repositories = dict(ws["repositories"], **repositories)
-
+                repositories = ws["repositories"] if "repositories" in ws else {}
                 if len(repositories) > 0:
                     messages.append(
                         out.color.colored("\t - repositories:", "blue"))
