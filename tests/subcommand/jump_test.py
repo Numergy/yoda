@@ -70,11 +70,11 @@ class TestSubcommandJump(unittest.TestCase):
         args.jump_subcommand = "jump"
         args.to = "yoda"
 
+        self.jump.jump = Mock()
         self.jump.execute(args)
-        self.assertEqual(
-            self.sandbox.path + "/workspace",
-            sys.stdout.getvalue().strip()
-        )
+
+        self.jump.jump.assert_called_once_with(
+            self.sandbox.path + "/workspace")
 
     def test_parse_jump(self):
         """ Test jump to workspace """
@@ -89,12 +89,12 @@ class TestSubcommandJump(unittest.TestCase):
         args = Mock()
         args.jump_subcommand = "jump"
         args.to = "repo"
+
+        self.jump.jump = Mock()
         self.jump.execute(args)
 
-        self.assertEqual(
-            self.sandbox.path + "/workspace/repository",
-            sys.stdout.getvalue().strip()
-        )
+        self.jump.jump.assert_called_once_with(
+            self.sandbox.path + "/workspace/repository")
 
     def test_exec_jump_to_repository_from_workspace(self):
         """ test jump to repository from workspace """
@@ -102,7 +102,11 @@ class TestSubcommandJump(unittest.TestCase):
         args.jump_subcommand = "jump"
         args.to = "yoda/repo"
 
+        self.jump.jump = Mock()
         self.jump.execute(args)
+
+        self.jump.jump.assert_called_once_with(
+            self.sandbox.path + "/workspace/repository")
 
     def test_exec_to_invalid_repository(self):
         """ test Jump to repository from workspace """

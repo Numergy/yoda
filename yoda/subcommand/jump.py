@@ -13,6 +13,9 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
+import os
+
+from yoda import Output
 from yoda.subcommands import Subcommand
 
 
@@ -40,15 +43,18 @@ class Jump(Subcommand):
             if (result[0] in config):
                 if (result[1] in config[result[0]]["repositories"]):
                     path = config[result[0]]["repositories"][result[1]]
-                    return self.__jump__(path)
+                    return self.jump(path)
 
         for ws_name, ws in config.items():
             if (args.to == ws_name):
-                return self.__jump__(ws["path"])
+                return self.jump(ws["path"])
 
             for repo_name, repo_path in ws["repositories"].items():
                 if (args.to == repo_name):
-                    return self.__jump__(repo_path)
+                    return self.jump(repo_path)
 
-    def __jump__(self, path):
-        print(path)
+    def jump(self, path):
+        out = Output()
+        out.info("Spawn new shell on `%s`" % path)
+        os.system("cd %s; %s" % (path, os.getenv("SHELL")))
+        out.info("Shell on `%s` closed." % path)
