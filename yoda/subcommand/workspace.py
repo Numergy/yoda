@@ -28,7 +28,7 @@ class Workspace(Subcommand):
     def setup(self, name, config, subparser):
         self.ws = Ws(config)
         self.subparser = subparser
-        Subcommand.setup(self, name, config, subparser)
+        super(Workspace, self).setup(name, config, subparser)
 
     def parse(self):
         subparser = self.parser.add_subparsers(
