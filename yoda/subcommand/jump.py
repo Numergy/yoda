@@ -37,18 +37,19 @@ class Jump(Subcommand):
             if (result[0] in config):
                 if (result[1] in config[result[0]]["repositories"]):
                     path = config[result[0]]["repositories"][result[1]]
-                    return self.jump(path)
+                    return self.__jump(path)
 
         for ws_name, ws in config.items():
             if (args.to == ws_name):
-                return self.jump(ws["path"])
+                return self.__jump(ws["path"])
 
             for repo_name, repo_path in ws["repositories"].items():
                 if (args.to == repo_name):
-                    return self.jump(repo_path)
+                    return self.__jump(repo_path)
 
-    def jump(self, path):
+    def __jump(self, path):
         out = Output()
         out.info("Spawn new shell on `%s`" % path)
+        out.info("Use Ctrl-D (i.e. EOF) to exit and go back to the previous directory")
         os.system("cd %s; %s" % (path, os.getenv("SHELL")))
         out.info("Shell on `%s` closed." % path)
