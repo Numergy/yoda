@@ -55,3 +55,7 @@ class Abstract:
     @abstractmethod
     def show(self):
         pass
+
+    @abstractmethod
+    def clone(self):
+        pass

@@ -134,23 +134,23 @@ class TestWorkspace(unittest.TestCase):
         self.assertRaises(
             ValueError, ws.sync, "bar")
 
-    def test_has_repo(self):
+    def test_repository_exists(self):
         """ Test workspace has repository """
         config_mock_data = {"workspaces": {
             "foo": {"path": "/foo", "repositories": {"repo1": "/foo/repo1"}}}}
         ws = Workspace(mock_config(config_mock_data))
-        self.assertTrue(ws.has_repo("foo", "repo1"))
+        self.assertTrue(ws.repository_exists("foo", "repo1"))
 
     def test_has_not_repo(self):
         """ Test workspace has not repository """
         config_mock_data = {"workspaces": {
             "foo": {"path": "/foo", "repositories": {"repo1": "/foo/repo1"}}}}
         ws = Workspace(mock_config(config_mock_data))
-        self.assertFalse(ws.has_repo("foo", "repo2"))
+        self.assertFalse(ws.repository_exists("foo", "repo2"))
 
-    def test_has_repo_invalid_workspace(self):
+    def test_repository_exists_invalid_workspace(self):
         """ Test workspace has not repository """
         config_mock_data = {"workspaces": {
             "foo": {"path": "/foo", "repositories": {"repo1": "/foo/repo1"}}}}
         ws = Workspace(mock_config(config_mock_data))
-        self.assertFalse(ws.has_repo("bar", "repo1"))
+        self.assertFalse(ws.repository_exists("bar", "repo1"))

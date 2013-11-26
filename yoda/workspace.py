@@ -31,7 +31,7 @@ class Workspace:
     def add(self, name, path):
         """ Add a workspace entry in user config file """
         if not (exists(path)):
-            raise ValueError("Workspace path `%s` dosn't exists." % path)
+            raise ValueError("Workspace path `%s` doesn't exists." % path)
 
         if (self.exists(name)):
             raise ValueError("Workspace `%s` already exists." % name)
@@ -62,19 +62,19 @@ class Workspace:
 
         return ws_list
 
-    def sync(self, ws_name):
+    def sync(self, name):
         """ Return workspace's repositories list """
-        if not self.exists(ws_name):
-            raise ValueError("Unknown workspace `%s`" % ws_name)
+        if not self.exists(name):
+            raise ValueError("Unknown workspace `%s`" % name)
 
         config = self.config.get()
-        ws_path = config["workspaces"][ws_name]["path"]
-        repositories = config["workspaces"][ws_name]["repositories"]
+        path = config["workspaces"][name]["path"]
+        repositories = config["workspaces"][name]["repositories"]
 
         repo_list = {}
 
-        for r in listdir(ws_path):
-            repo = Repository(join(ws_path, r))
+        for r in listdir(path):
+            repo = Repository(join(path, r))
 
             if repo.is_valid():
                 repositories[r] = repo.path
@@ -85,10 +85,9 @@ class Workspace:
 
     def exists(self, name):
         """ Check if given workspace name exists """
-        list = self.list()
-        return name in list.keys()
+        return name in self.list().keys()
 
-    def has_repo(self, workspace, repo):
+    def repository_exists(self, workspace, repo):
         """ Return True if workspace contains repository name. """
         if not self.exists(workspace):
             return False

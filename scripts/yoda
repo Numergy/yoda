@@ -17,11 +17,12 @@
 import sys
 import os
 
+#TODO: Find best way
 sys.path.append(
     os.path.abspath(
         os.path.dirname(
             os.path.realpath(__file__)
-        ) + "/../../yoda"
+        ) + "/.."
     )
 )
 

@@ -24,13 +24,11 @@ from yoda.output import Output
 class Workspace(Subcommand):
     ws = None
     subparser = None
-    config = None
 
     def setup(self, name, config, subparser):
         self.ws = Ws(config)
         self.subparser = subparser
-        self.config = config
-        Subcommand.setup(self, name, self.config, subparser)
+        Subcommand.setup(self, name, config, subparser)
 
     def parse(self):
         subparser = self.parser.add_subparsers(

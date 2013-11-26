@@ -24,7 +24,7 @@ class Config:
     def __init__(self, config_file):
         """ Workspace object initialization """
         self.config_file = config_file
-        if not (os.path.exists(config_file)):
+        if not os.path.exists(config_file):
             config = {"workspaces": {}}
             self.write(config)
 

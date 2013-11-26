@@ -18,16 +18,12 @@ from yoda import Repository, Output, Workspace
 
 
 class Status(Subcommand):
-    subparser = None
-    config = None
     out = None
     matched = False
 
     def setup(self, name, config, subparser):
-        self.subparser = subparser
-        self.config = config
         self.out = Output()
-        Subcommand.setup(self, name, self.config, subparser)
+        super(Status, self).setup(name, config, subparser)
 
     def parse(self):
         """ Parse status subcommand """

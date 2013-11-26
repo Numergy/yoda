@@ -17,5 +17,4 @@ from .config import Config
 from .output import Output
 from .repository import Repository
 from .workspace import Workspace
-from .subcommands import Subcommand
-from .subcommands import Subcommands
+from .subcommands import Subcommand, Subcommands

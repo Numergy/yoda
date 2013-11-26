@@ -20,20 +20,14 @@ from yoda.subcommands import Subcommand
 
 
 class Jump(Subcommand):
-    config = None
 
     def setup(self, name, config, subparser):
         self.subparser = subparser
-        self.config = config
-        Subcommand.setup(self, name, self.config, subparser)
+        super(Jump, self).setup(name, config, subparser)
 
     def parse(self):
         to_parser = self.subparser.add_parser('jump', help='Jump to directory')
-        to_parser.add_argument(
-            'to',
-            type=str,
-            help='Where to jump'
-        )
+        to_parser.add_argument('to', type=str, help='Where to jump')
 
     def execute(self, args):
         config = self.config.get()["workspaces"]

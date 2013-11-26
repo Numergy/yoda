@@ -24,3 +24,15 @@ class Git(Abstract):
     def status(self):
         """ Show git status """
         return self.exec_on_path("git status")
+
+    def update(self):
+        """ Update repository """
+        raise NotImplemented("TODO: Not implemented")
+
+    def show(self):
+        """ Show repository details """
+        raise NotImplemented("TODO: Not implemented")
+
+    def clone(self):
+        """ Clone repository from url """
+        raise NotImplemented("TODO: Not implemented")

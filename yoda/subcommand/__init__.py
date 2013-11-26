@@ -13,7 +13,6 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
-from .workspace import Workspace
+from .workspace import Workspace, WorkspaceSubcommands
 from .status import Status
-from .workspace import WorkspaceSubcommands
 from .jump import Jump
