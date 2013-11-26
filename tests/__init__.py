@@ -12,3 +12,69 @@
 #
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
+
+import os
+import unittest
+
+from .utils import mock_config, Sandbox
+
+from yoda import find_path
+
+
+class TestFindPathFunction(unittest.TestCase):
+    """ Test suite for find_path function """
+
+    def setUp(self):
+        """ Setup test suite """
+        self.sandbox = Sandbox()
+        self.sandbox.mkdir("yoda")
+        self.sandbox.mkdir("yoda/yoda")
+        self.sandbox.mkdir("yoda/other")
+
+        config_data = {
+            "workspaces": {
+                "yoda": {
+                    "path": os.path.join(self.sandbox.path, "yoda"),
+                    "repositories": {
+                        "yoda": os.path.join(self.sandbox.path, "yoda/yoda"),
+                        "other": os.path.join(self.sandbox.path, "yoda/other"),
+                        "1337": os.path.join(self.sandbox.path, "yoda/1337")
+                    }
+                }
+            }
+        }
+
+        self.config = mock_config(config_data)
+
+    def tearDown(self):
+        """ Destroy sandbox """
+        self.sandbox.destroy()
+
+    def test_find_path_workspace(self):
+        """ Test find_path for workspace """
+        res = find_path("yoda", self.config)
+        self.assertEqual(3, len(res))
+        self.assertIn("yoda", res)
+        self.assertIn("other", res)
+        self.assertIn("1337", res)
+
+    def test_find_path_repository(self):
+        """ Test find_path for repository """
+        res = find_path("other", self.config)
+        self.assertEqual(1, len(res))
+        self.assertIn("other", res)
+
+    def test_find_path_workspace_and_repository(self):
+        """ Test find_path for workspace/repository"""
+        res = find_path("yoda/1337", self.config)
+        self.assertEqual(1, len(res))
+        self.assertIn("1337", res)
+
+    def test_find_path_no_matches(self):
+        """ Test find_path when no matches found """
+        self.assertEqual({}, find_path("foo/bar", self.config))
+
+    def test_find_path_no_workspace(self):
+        """ Test find_path when no workspace registered """
+        self.assertEqual({}, find_path(
+            "yoda/yoda", mock_config({"workspaces": {}})))

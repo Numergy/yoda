@@ -14,52 +14,33 @@
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 from yoda.subcommands import Subcommand
-from yoda import Repository, Output, Workspace
+from yoda import find_path, Repository, Output
 
 
 class Status(Subcommand):
-    out = None
-    matched = False
 
     def setup(self, name, config, subparser):
+        self.subparser = subparser
         self.out = Output()
         super(Status, self).setup(name, config, subparser)
 
     def parse(self):
         """ Parse status subcommand """
-        self.parser.add_argument(
+        parser = self.subparser.add_parser("status",
+                                           help="Show repositories status")
+        parser.add_argument(
             "name", type=str, help="Repo name")
 
     def execute(self, args):
         """ Execute status subcommand """
-        workspace = Workspace(self.config)
-        config = self.config.get()["workspaces"]
+        path_list = find_path(args.name, self.config)
 
-        #FIXME: Duplicate from Jump
-        if args.name.find('/') != -1:
-            result = args.name.split('/')
-            if (workspace.exists(result[0])):
-                if (result[1] in config[result[0]]["repositories"]):
-                    self.matched = True
-                    path = config[result[0]]["repositories"][result[1]]
-                    return self.print_status(result[1], path)
-
-        for ws_name, ws in sorted(config.items()):
-            if (args.name == ws_name):
-                repositories = sorted(config[ws_name]["repositories"].items())
-                for name, path in repositories:
-                    self.matched = True
-                    self.print_status(name, path)
-                return None
-
-            for name, path in sorted(ws["repositories"].items()):
-                if (args.name == name):
-                    self.matched = True
-                    self.print_status(name, path)
-
-        if not self.matched:
+        if len(path_list) == 0:
             self.out.error("No matches for `%s`" % args.name)
             return False
+
+        for name, path in path_list.items():
+            self.print_status(name, path)
 
     def print_status(self, repo_name, repo_path):
         """ Print repository status """

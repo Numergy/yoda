@@ -15,7 +15,7 @@
 
 import os
 
-from yoda import Output
+from yoda import Output, find_path
 from yoda.subcommands import Subcommand
 
 
@@ -23,6 +23,7 @@ class Jump(Subcommand):
 
     def setup(self, name, config, subparser):
         self.subparser = subparser
+        self.out = Output()
         super(Jump, self).setup(name, config, subparser)
 
     def parse(self):
@@ -30,26 +31,18 @@ class Jump(Subcommand):
         to_parser.add_argument('to', type=str, help='Where to jump')
 
     def execute(self, args):
-        config = self.config.get()["workspaces"]
+        path_list = find_path(args.to, self.config)
 
-        if args.to.find('/') != -1:
-            result = args.to.split('/')
-            if (result[0] in config):
-                if (result[1] in config[result[0]]["repositories"]):
-                    path = config[result[0]]["repositories"][result[1]]
-                    return self.__jump(path)
+        if len(path_list) == 0:
+            self.out.error("No matches for `%s`" % args.to)
+            return False
 
-        for ws_name, ws in config.items():
-            if (args.to == ws_name):
-                return self.__jump(ws["path"])
+        for name, path in path_list.items():
+            return self.jump(path)
 
-            for repo_name, repo_path in ws["repositories"].items():
-                if (args.to == repo_name):
-                    return self.__jump(repo_path)
-
-    def __jump(self, path):
-        out = Output()
-        out.info("Spawn new shell on `%s`" % path)
-        out.info("Use Ctrl-D (i.e. EOF) to exit and go back to the previous directory")
+    def jump(self, path):
+        self.out.info("Spawn new shell on `%s`" % path)
+        self.out.info(
+            "Use Ctrl-D to exit and go back to the previous directory")
         os.system("cd %s; %s" % (path, os.getenv("SHELL")))
-        out.info("Shell on `%s` closed." % path)
+        self.out.info("Shell on `%s` closed." % path)

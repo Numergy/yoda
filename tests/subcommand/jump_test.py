@@ -15,66 +15,30 @@
 
 import unittest
 import argparse
-import sys
 
-from mock import Mock
-from mock import patch
-from ..utils import mock_config, Sandbox
+from mock import Mock, patch
+from ..utils import mock_config
 from yoda.subcommand import Jump
 
 
 class TestSubcommandJump(unittest.TestCase):
-    """ Workspace subcommand test suite """
+    """ Jump subcommand test suite """
     parser = None
     subparser = None
     jump = None
-    sandbox = None
 
     def setUp(self):
         """ Setup test suite """
         self.parser = argparse.ArgumentParser(prog="yoda_test")
         self.subparser = self.parser.add_subparsers(dest="jump_subcommand")
-        self.sandbox = Sandbox()
-        self.sandbox.mkdir("workspace")
-        self.sandbox.mkdir("workspace/repository")
 
-        config_data = {
-            "workspaces": {
-                "test": {
-                    "path": self.sandbox.path + "/test",
-                    "repositories": {
-                        "repo-test": self.sandbox.path + "/test/1337"
-                    }
-                },
-                "yoda": {
-                    "path": self.sandbox.path + "/workspace",
-                    "repositories": {
-                        "repo": self.sandbox.path + "/workspace/repository"
-                    }
-                }
-            }
-        }
         self.jump = Jump()
-        self.jump.setup(
-            "jump", mock_config(config_data), self.subparser)
+        self.jump.setup("jump", mock_config({}), self.subparser)
 
     def tearDown(self):
         """ Tear down test suite """
-        self.sandbox.destroy()
         self.parser = None
         self.jump = None
-
-    def test_exec_jump(self):
-        """ Test jump to workspace """
-        args = Mock()
-        args.jump_subcommand = "jump"
-        args.to = "yoda"
-
-        self.jump.jump = Mock()
-        self.jump.execute(args)
-
-        self.jump.jump.assert_called_once_with(
-            self.sandbox.path + "/workspace")
 
     def test_parse_jump(self):
         """ Test jump to workspace """
@@ -84,58 +48,29 @@ class TestSubcommandJump(unittest.TestCase):
         self.assertEqual("jump", args.jump_subcommand)
         self.assertEqual("yoda", args.to)
 
-    def test_exec_jump_to_repository(self):
-        """ Test jump to repository """
+    def test_exec_jump(self):
+        """ Test exec jump subcommand """
         args = Mock()
-        args.jump_subcommand = "jump"
-        args.to = "repo"
+        args.to = "yoda/baz"
 
         self.jump.jump = Mock()
-        self.jump.execute(args)
 
-        self.jump.jump.assert_called_once_with(
-            self.sandbox.path + "/workspace/repository")
+        mock_path = {"yoda/baz": "/tmp/yoda/baz"}
 
-    def test_exec_jump_to_repository_from_workspace(self):
-        """ test jump to repository from workspace """
+        with patch("yoda.subcommand.jump.find_path",
+                   return_value=mock_path) as patch_fp:
+            self.jump.execute(args)
+            patch_fp.assert_called_once_with("yoda/baz", self.jump.config)
+            self.jump.jump.assert_called_once_with("/tmp/yoda/baz")
+
+    def test_exec_jump_no_matches(self):
+        """ Test exec jump subcommand when no matches """
         args = Mock()
-        args.jump_subcommand = "jump"
-        args.to = "yoda/repo"
+        args.to = "foo/bar"
 
-        self.jump.jump = Mock()
-        self.jump.execute(args)
+        self.jump.out = Mock()
 
-        self.jump.jump.assert_called_once_with(
-            self.sandbox.path + "/workspace/repository")
-
-    def test_exec_to_invalid_repository(self):
-        """ test Jump to repository from workspace """
-        args = Mock()
-        args.jump_subcommand = "jump"
-        args.to = "yoda/1337"
-
-        self.assertFalse(self.jump.execute(args))
-
-    def test_exec_to_invalid_workspace(self):
-        """ test Jump to repository from workspace """
-        args = Mock()
-        args.jump_subcommand = "jump"
-        args.to = "fake/1337"
-
-        self.assertFalse(self.jump.execute(args))
-
-    def test_exec_jump_with_no_workspace(self):
-        """ Test jump with no workspace """
-
-        config_data = {
-            "workspaces": {
-            }
-        }
-        self.jump = Jump()
-        self.jump.setup(
-            "jump", mock_config(config_data), self.subparser)
-        args = Mock()
-        args.jump_subcommand = "jump"
-        args.to = "test"
-
-        self.assertIsNone(self.jump.execute(args))
+        with patch("yoda.subcommand.jump.find_path", return_value={}):
+            self.assertFalse(self.jump.execute(args))
+            self.jump.out.error.assert_called_once_with(
+                "No matches for `foo/bar`")
