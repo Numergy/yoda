@@ -44,12 +44,14 @@ class Repository:
             raise RepositoryPathInvalid(
                 "Path doesn't exists or isn't a directory (%s)\n" % path)
 
-        if len(set(self.scm_dirs) & set(os.listdir(path))) == 0:
+        try:
+            scm = (set(self.scm_dirs) & set(os.listdir(path))).pop()
+        except KeyError:
             raise RepositoryAdapterNotFound("Can't define repository type")
-
-        self.path = path
-        #TODO: Init adapter from repository type
-        self.adapter = Git(path)
+        else:
+            self.path = path
+            if scm == ".git":
+                self.adapter = Git(path)
 
     def status(self):
         return self.adapter.status()
