@@ -14,7 +14,6 @@
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 import subprocess
-import os
 
 from distutils.spawn import find_executable
 from abc import ABCMeta, abstractmethod

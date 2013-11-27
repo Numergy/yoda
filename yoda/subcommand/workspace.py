@@ -170,7 +170,6 @@ class WorkspaceSubcommands():
 
     def remove(self, ws_name, repo_name):
         config = self.config.get()
-        ws = config["workspaces"][ws_name]
         if (repo_name not in config["workspaces"][ws_name]["repositories"]):
             raise ValueError(
                 "%s not found in %s workspace" % (repo_name, ws_name)
