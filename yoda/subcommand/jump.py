@@ -38,9 +38,9 @@ class Jump(Subcommand):
             return False
 
         for name, path in path_list.items():
-            return self.jump(path)
+            return self.__jump(path)
 
-    def jump(self, path):
+    def __jump(self, path):
         self.out.info("Spawn new shell on `%s`" % path)
         self.out.info(
             "Use Ctrl-D to exit and go back to the previous directory")

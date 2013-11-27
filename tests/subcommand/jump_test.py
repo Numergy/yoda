@@ -16,7 +16,7 @@
 import unittest
 import argparse
 
-from mock import Mock, patch
+from mock import Mock, patch, call
 from ..utils import mock_config
 from yoda.subcommand import Jump
 
@@ -53,7 +53,7 @@ class TestSubcommandJump(unittest.TestCase):
         args = Mock()
         args.to = "yoda/baz"
 
-        self.jump.jump = Mock()
+        self.jump._Jump__jump = Mock()
 
         mock_path = {"yoda/baz": "/tmp/yoda/baz"}
 
@@ -61,7 +61,7 @@ class TestSubcommandJump(unittest.TestCase):
                    return_value=mock_path) as patch_fp:
             self.jump.execute(args)
             patch_fp.assert_called_once_with("yoda/baz", self.jump.config)
-            self.jump.jump.assert_called_once_with("/tmp/yoda/baz")
+            self.jump._Jump__jump.assert_called_once_with("/tmp/yoda/baz")
 
     def test_exec_jump_no_matches(self):
         """ Test exec jump subcommand when no matches """
@@ -74,3 +74,25 @@ class TestSubcommandJump(unittest.TestCase):
             self.assertFalse(self.jump.execute(args))
             self.jump.out.error.assert_called_once_with(
                 "No matches for `foo/bar`")
+
+    def test_exec_jump_method(self):
+        """ Test exec jump subcommand when no matches """
+        args = Mock()
+        args.to = "foo/bar"
+
+        self.jump.out = Mock()
+        os_system = Mock()
+
+        with patch("os.system", return_value=os_system):
+            mock_path = {"yoda/baz": "/tmp/yoda/baz"}
+            with patch("yoda.subcommand.jump.find_path",
+                       return_value=mock_path) as patch_fp:
+                self.jump.execute(args)
+                print(self.jump.out.info.mock_calls)
+                os_system.assert_called_once
+                calls = [
+                    call("Spawn new shell on `/tmp/yoda/baz`"),
+                    call("Use Ctrl-D to exit and go "
+                         "back to the previous directory"),
+                    call("Shell on `/tmp/yoda/baz` closed.")]
+                assert self.jump.out.info.mock_calls == calls
