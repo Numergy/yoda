@@ -18,6 +18,21 @@ import os
 from yoda.adapter import Git
 
 
+class RepositoryError(Exception):
+    """ Genereic repository error """
+    pass
+
+
+class RepositoryPathInvalid(RepositoryError):
+    """ Repository path is invalid, doesn't exists or is not a directory. """
+    pass
+
+
+class RepositoryAdapterNotFound(RepositoryError):
+    """ Repository invalid because adapter not found """
+    pass
+
+
 class Repository:
     path = None
     adapter = None
@@ -25,20 +40,16 @@ class Repository:
     scm_dirs = [".git"]
 
     def __init__(self, path):
-        if not os.path.exists(path):
-            raise ValueError(
-                "Repository path doesn't exists (%s)\n" % path)
+        if not os.path.exists(path) or not os.path.isdir(path):
+            raise RepositoryPathInvalid(
+                "Path doesn't exists or isn't a directory (%s)\n" % path)
+
+        if len(set(self.scm_dirs) & set(os.listdir(path))) == 0:
+            raise RepositoryAdapterNotFound("Can't define repository type")
 
         self.path = path
         #TODO: Init adapter from repository type
         self.adapter = Git(path)
-
-    def is_valid(self):
-        if not os.path.isdir(self.path):
-            return False
-
-        return set(self.scm_dirs).intersection(
-            set(os.listdir(self.path))) != set()
 
     def status(self):
         return self.adapter.status()

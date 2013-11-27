@@ -15,7 +15,7 @@
 
 from .config import Config
 from .output import Output
-from .repository import Repository
+from .repository import Repository, RepositoryError, RepositoryPathInvalid, RepositoryAdapterNotFound
 from .workspace import Workspace
 from .subcommands import Subcommand, Subcommands
 

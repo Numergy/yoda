@@ -13,41 +13,50 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
+import os
 import unittest
 
-from yoda import Repository
+from yoda import Repository, RepositoryAdapterNotFound, RepositoryPathInvalid
+from yoda.adapter import Git as GitAdapter
 from .utils import Sandbox
 
 
 class TestRepository(unittest.TestCase):
     """ Repository object test suite """
 
+    def setUp(self):
+        """ Setup sandbox """
+        self.sandbox = Sandbox()
+
+    def tearDown(self):
+        """ Destroy sandbox """
+        self.sandbox.destroy()
+
     def test_path_not_exists(self):
         """ Test repository path when doesn't exists """
         self.assertRaises(
-            ValueError, Repository, "/dir/doesnt/exists")
+            RepositoryPathInvalid, Repository, "/dir/doesnt/exists")
 
-    def test_repository_is_not_valid_path_isdir(self):
-        """ Test repository is not valid because not scp directory """
-        sandbox = Sandbox()
-        sandbox.mkdir("invalid_repo")
-
-        repo = Repository("%s/invalid_repo" % sandbox.path)
-        self.assertFalse(repo.is_valid())
-
-    def test_repository_is_not_valid_path_isfile(self):
+    def test_repository_not_valid_path_isfile(self):
         """ Test repository is not valid because path is file """
-        sandbox = Sandbox()
-        sandbox.touch("invalid_repo")
+        self.sandbox.touch("invalid_repo")
 
-        repo = Repository("%s/invalid_repo" % sandbox.path)
-        self.assertFalse(repo.is_valid())
+        self.assertRaises(
+            RepositoryPathInvalid, Repository,
+            os.path.join(self.sandbox.path, "invalid_repo"))
 
-    def test_repository_is_valid_scm_git(self):
+    def test_repository_not_valid_path_isdir(self):
+        """ Test repository is not valid when path is directory,
+        but adapter not found """
+        self.sandbox.mkdir("invalid_repo")
+        self.assertRaises(
+            RepositoryAdapterNotFound, Repository,
+            os.path.join(self.sandbox.path, "invalid_repo"))
+
+    def test_repository_valid_scm_git(self):
         """ Test repository is valid and is a git repository """
-        sandbox = Sandbox()
-        sandbox.mkdir("git_repo")
-        sandbox.mkdir("git_repo/.git")
+        self.sandbox.mkdir("git_repo")
+        self.sandbox.mkdir("git_repo/.git")
 
-        repo = Repository("%s/git_repo" % sandbox.path)
-        self.assertTrue(repo.is_valid())
+        repo = Repository("%s/git_repo" % self.sandbox.path)
+        self.assertIsInstance(repo.adapter, GitAdapter)

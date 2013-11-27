@@ -15,7 +15,7 @@
 
 from os import listdir
 from os.path import join, exists
-from yoda import Config, Repository
+from yoda import Config, Repository, RepositoryError
 
 
 class Workspace:
@@ -74,9 +74,11 @@ class Workspace:
         repo_list = {}
 
         for r in listdir(path):
-            repo = Repository(join(path, r))
-
-            if repo.is_valid():
+            try:
+                repo = Repository(join(path, r))
+            except RepositoryError:
+                continue
+            else:
                 repositories[r] = repo.path
                 repo_list[r] = repo.path
 
