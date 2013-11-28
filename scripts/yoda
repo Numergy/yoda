@@ -14,17 +14,7 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
-import sys
 import os
-
-#TODO: Find best way
-sys.path.append(
-    os.path.abspath(
-        os.path.dirname(
-            os.path.realpath(__file__)
-        ) + "/.."
-    )
-)
 
 from yoda import Config, Output, Subcommands
 from yoda.subcommand import Workspace, Status, Jump
