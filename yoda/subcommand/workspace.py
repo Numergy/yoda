@@ -75,20 +75,23 @@ class Workspace(Subcommand):
         elif (args.workspace_subcommand == "list"):
             color = out.color
             messages = []
-            for name, ws in self.ws.list().items():
+            ws_list = self.ws.list()
+            keylist = sorted(ws_list.keys())
+
+            for key in keylist:
                 messages.append(
                     color.colored(
-                        (" - %s" % name),
+                        (" - %s" % key),
                         fgcolor="green",
                         attrs=["dark"]
                     )
                 )
                 messages.append(
-                    color.colored("\t - path: ", "blue") + "%s" % ws["path"]
-                )
+                    "%s %s" % (color.colored("\t - path: ", "blue"),
+                               ws_list[key]["path"]))
 
-                repositories = ws["repositories"] \
-                    if "repositories" in ws else {}
+                repositories = ws_list[key]["repositories"] \
+                    if "repositories" in ws_list[key] else {}
                 if len(repositories) > 0:
                     messages.append(
                         out.color.colored("\t - repositories:", "blue"))
