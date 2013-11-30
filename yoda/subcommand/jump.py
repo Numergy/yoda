@@ -27,14 +27,18 @@ class Jump(Subcommand):
         super(Jump, self).setup(name, config, subparser)
 
     def parse(self):
-        to_parser = self.subparser.add_parser('jump', help='Jump to directory')
-        to_parser.add_argument('to', type=str, help='Where to jump')
+        to_parser = self.subparser.add_parser(
+            'jump',
+            help='Jump to directory',
+            description="Jump to a workspace or repository root directory.")
+        to_parser.add_argument('name', type=str,
+                               help='Workspace or repository name')
 
     def execute(self, args):
-        path_list = find_path(args.to, self.config)
+        path_list = find_path(args.name, self.config)
 
         if len(path_list) == 0:
-            self.out.error("No matches for `%s`" % args.to)
+            self.out.error("No matches for `%s`" % args.name)
             return False
 
         for name, path in path_list.items():

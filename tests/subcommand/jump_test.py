@@ -46,12 +46,12 @@ class TestSubcommandJump(unittest.TestCase):
         args = self.parser.parse_args(["jump", "yoda"])
 
         self.assertEqual("jump", args.jump_subcommand)
-        self.assertEqual("yoda", args.to)
+        self.assertEqual("yoda", args.name)
 
     def test_exec_jump(self):
         """ Test exec jump subcommand """
         args = Mock()
-        args.to = "yoda/baz"
+        args.name = "yoda/baz"
 
         self.jump._Jump__jump = Mock()
 
@@ -66,7 +66,7 @@ class TestSubcommandJump(unittest.TestCase):
     def test_exec_jump_no_matches(self):
         """ Test exec jump subcommand when no matches """
         args = Mock()
-        args.to = "foo/bar"
+        args.name = "foo/bar"
 
         self.jump.out = Mock()
 
@@ -78,7 +78,7 @@ class TestSubcommandJump(unittest.TestCase):
     def test_exec_jump_method(self):
         """ Test exec jump subcommand when no matches """
         args = Mock()
-        args.to = "foo/bar"
+        args.name = "foo/bar"
 
         self.jump.out = Mock()
         os_system = Mock()

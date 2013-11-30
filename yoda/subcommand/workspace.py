@@ -31,7 +31,11 @@ class Workspace(Subcommand):
         super(Workspace, self).setup(name, config, subparser)
 
     def parse(self):
-        subparser = self.parser.add_subparsers(
+        parser = self.subparser.add_parser(
+            "workspace",
+            help="Workspace managment",
+            description="Manage repository's workspace")
+        subparser = parser.add_subparsers(
             dest="workspace_subcommand")
 
         add_parser = subparser.add_parser(
@@ -116,12 +120,13 @@ class WorkspaceSubcommands():
     def __init__(self, name, subparser, config):
         """ Initialize workspace name """
         self.name = name
-        self.parser = subparser.add_parser(name)
+        self.parser = subparser.add_parser(
+            name,
+            description="Manage repositories in %s workspace" % name)
         self.config = config
 
     def parse(self):
-        subparser = self.parser.add_subparsers(
-            dest="action")
+        subparser = self.parser.add_subparsers(dest="action")
 
         add_parser = subparser.add_parser(
             "add", help=("Add repository to %s workspace" % self.name))
@@ -139,7 +144,7 @@ class WorkspaceSubcommands():
         )
 
         remove_parser = subparser.add_parser(
-            "remove", help=("Remove repository to %s workspace" % self.name))
+            "remove", help=("Remove repository from %s workspace" % self.name))
 
         remove_parser.add_argument(
             "repo_name", type=str, help="Repository name"

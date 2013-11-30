@@ -26,8 +26,10 @@ class Status(Subcommand):
 
     def parse(self):
         """ Parse status subcommand """
-        parser = self.subparser.add_parser("status",
-                                           help="Show repositories status")
+        parser = self.subparser.add_parser(
+            "status",
+            help="Show repositories status",
+            description="Show repositories status from name.")
         parser.add_argument(
             "name", type=str, help="Repo name")
 

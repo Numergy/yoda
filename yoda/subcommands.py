@@ -33,9 +33,14 @@ class Subcommands:
 
     def __init__(self, config):
         self.config = config
-
-        self.parser = argparse.ArgumentParser(prog="yoda")
-        self.subparser = self.parser.add_subparsers(dest="subcommand")
+        self.parser = argparse.ArgumentParser(
+            prog="yoda",
+            description="""Manage your repositories easier.
+            Each workspaces are subcommands,
+            type `yoda workspace_name -h` to show help.""")
+        self.subparser = self.parser.add_subparsers(
+            dest="subcommand",
+            metavar="[subcommand]")
 
     def add_command(self, command):
         command_name = command.__class__.__name__.lower()

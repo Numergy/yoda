@@ -58,6 +58,7 @@ class TestSubcommandWorkspace(unittest.TestCase):
         self.workspace.parse()
         args = self.parser.parse_args(["workspace", "add", "foo", "/tmp/foo"])
 
+        self.assertEqual("workspace", args.subcommand_test)
         self.assertEqual("add", args.workspace_subcommand)
         self.assertEqual("foo", args.name)
         self.assertEqual("/tmp/foo", args.path)
@@ -67,6 +68,7 @@ class TestSubcommandWorkspace(unittest.TestCase):
         self.workspace.parse()
         args = self.parser.parse_args(["workspace", "remove", "foo"])
 
+        self.assertEqual("workspace", args.subcommand_test)
         self.assertEqual("remove", args.workspace_subcommand)
         self.assertEqual("foo", args.name)
 
@@ -75,6 +77,7 @@ class TestSubcommandWorkspace(unittest.TestCase):
         self.workspace.parse()
         args = self.parser.parse_args(["workspace", "sync", "foo"])
 
+        self.assertEqual("workspace", args.subcommand_test)
         self.assertEqual("sync", args.workspace_subcommand)
         self.assertEqual("foo", args.name)
 
@@ -82,6 +85,7 @@ class TestSubcommandWorkspace(unittest.TestCase):
         """ Test workspace list parsing """
         self.workspace.parse()
         args = self.parser.parse_args(["workspace", "list"])
+        self.assertEqual("workspace", args.subcommand_test)
         self.assertEqual("list", args.workspace_subcommand)
 
     def test_exec_add(self):
