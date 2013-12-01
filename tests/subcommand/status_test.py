@@ -34,7 +34,6 @@ class TestSubcommandStatus(unittest.TestCase):
 
         self.status = Status()
         self.status.setup("status", mock_config({}), self.subparser)
-        self.status.print_status = Mock()
 
     def tearDown(self):
         """ Tear down test suite """
@@ -57,6 +56,8 @@ class TestSubcommandStatus(unittest.TestCase):
 
         mock_path = {"foo/bar": "/tmp/foo/bar"}
 
+        self.status.print_status = Mock()
+
         with patch("yoda.subcommand.status.find_path",
                    return_value=mock_path) as patch_fp:
             self.status.execute(args)
@@ -70,8 +71,17 @@ class TestSubcommandStatus(unittest.TestCase):
         args.name = "foobar"
 
         self.status.out = Mock()
+        self.status.print_status = Mock()
 
         with patch("yoda.subcommand.status.find_path", return_value={}):
             self.assertFalse(self.status.execute(args))
             self.status.out.error.assert_called_once_with(
                 "No matches for `foobar`")
+
+    def test_print_status(self):
+        """ Test print_status """
+        self.status.out = Mock()
+        with patch("yoda.subcommand.status.Repository"):
+            self.status.print_status("foo", "bar")
+            self.status.out.success.assert_called_once_with(
+                "=> [foo] bar")
