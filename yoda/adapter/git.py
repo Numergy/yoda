@@ -31,7 +31,7 @@ class Git(Abstract):
 
     def update(self):
         """ Update repository """
-        raise NotImplemented("TODO: Not implemented")
+        return self.exec_on_path("git pull --rebase")
 
     def show(self):
         """ Show repository details """

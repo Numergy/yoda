@@ -17,13 +17,14 @@
 import os
 
 from yoda import Config, Output, Subcommands
-from yoda.subcommand import Workspace, Status, Jump
+from yoda.subcommand import Workspace, Status, Jump, Update
 
 yoda_config = Config("%s/.yodarc" % os.environ.get("HOME"))
 out = Output()
 
 subcmd = Subcommands(yoda_config)
 subcmd.add_command(Status())
+subcmd.add_command(Update())
 subcmd.add_command(Jump())
 ws_cmd = Workspace()
 subcmd.add_command(ws_cmd)

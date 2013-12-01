@@ -56,6 +56,9 @@ class Repository:
     def status(self):
         return self.adapter.status()
 
+    def update(self):
+        return self.adapter.update()
+
     def clone(url, path):
         """ Clone a repository """
         adapter = None

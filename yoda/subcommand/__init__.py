@@ -16,3 +16,4 @@
 from .workspace import Workspace, WorkspaceSubcommands
 from .status import Status
 from .jump import Jump
+from .update import Update
