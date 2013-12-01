@@ -46,5 +46,12 @@ class TestGit(unittest.TestCase):
         self.git.status()
         self.git.execute.assert_called_once_with(
             "git status",
-            os.path.join(self.sandbox.path, "repo")
-        )
+            os.path.join(self.sandbox.path, "repo"))
+
+    def test_clone(self):
+        """ Test git status """
+        self.git.clone("git@project.org:foo/bar")
+        self.git.execute.assert_called_once_with(
+            "git clone %s %s" % (
+                "git@project.org:foo/bar",
+                os.path.join(self.sandbox.path, "repo")))

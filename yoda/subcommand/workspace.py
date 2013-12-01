@@ -16,9 +16,9 @@
 import os
 import shutil
 
-from yoda.workspace import Workspace as Ws
+from yoda import Workspace as Ws
+from yoda import Output, Repository
 from yoda.subcommands import Subcommand
-from yoda.output import Output
 
 
 class Workspace(Subcommand):
@@ -166,15 +166,17 @@ class WorkspaceSubcommands():
 
         if (repo_name in ws["repositories"]):
             raise ValueError("Repository %s already exists" % repo_name)
-        else:
-            if (os.path.exists(repo_path) is False):
-                os.mkdir(repo_path)
-            #TODO: Implement clone from url
 
-            ws["repositories"][repo_name] = repo_path
-            self.config.write(config)
-            out = Output()
-            out.success("Repository %s added" % repo_name)
+        if url is not None:
+            Repository.clone(url, repo_path)
+
+        if (os.path.exists(repo_path) is False):
+            os.mkdir(repo_path)
+
+        ws["repositories"][repo_name] = repo_path
+        self.config.write(config)
+        out = Output()
+        out.success("Repository %s added" % repo_name)
 
     def remove(self, ws_name, repo_name):
         config = self.config.get()

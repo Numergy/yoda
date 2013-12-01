@@ -29,7 +29,7 @@ class Abstract:
     def __init__(self, path):
         self.path = path
 
-    def execute(self, command, path):
+    def execute(self, command, path=None):
         """ Execute command with os.popen and return output"""
         self.check_executable()
         subprocess.Popen(command, shell=True, cwd=path).communicate()

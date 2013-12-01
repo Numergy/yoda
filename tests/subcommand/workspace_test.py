@@ -17,8 +17,7 @@ import unittest
 import argparse
 import os
 
-from mock import Mock
-from mock import patch
+from mock import Mock, patch
 from ..utils import mock_config, Sandbox
 from yoda.subcommand import Workspace, WorkspaceSubcommands
 
@@ -241,13 +240,16 @@ class TestWorkspacesSubcommands(unittest.TestCase):
         )
         ws_subcmds.parse()
 
-        args = self.parser.parse_args(["yoda", "add", "repo-name"])
+        args = self.parser.parse_args([
+            "yoda", "add", "repo-name", "-u", "repo-url", "-p", "repo-path"])
 
         self.assertEqual("add", args.action)
         self.assertEqual("repo-name", args.repo_name)
+        self.assertEqual("repo-url", args.url)
+        self.assertEqual("repo-path", args.path)
 
-    def test_execute_add_subcommad(self):
-        """ Test execute add subcommands """
+    def test_execute_add_subcommand_repo_already_exists(self):
+        """ Test execute add subcommands when repo name already exists """
         subparser = self.parser.add_subparsers(dest="subcommand")
         ws_subcmds = WorkspaceSubcommands(
             "yoda", subparser, mock_config(self.config_data)
@@ -258,10 +260,25 @@ class TestWorkspacesSubcommands(unittest.TestCase):
         ws_subcmds.execute(args)
         self.assertTrue(os.path.exists(self.directory + "/repo-name"))
         self.assertRaises(ValueError, lambda: ws_subcmds.execute(args))
-        args = self.parser.parse_args(
-            ["yoda", "add", "other-repo", "-p" + self.directory + "/repo-name"]
+
+    def test_execute_add_subcommand(self):
+        """ Test execute add subcommand """
+        subparser = self.parser.add_subparsers(dest="subcommand")
+        ws_subcmds = WorkspaceSubcommands(
+            "yoda", subparser, mock_config(self.config_data)
         )
-        ws_subcmds.execute(args)
+        ws_subcmds.parse()
+
+        args = self.parser.parse_args(
+            ["yoda", "add", "other-repo", "-p",
+             "%s/repo-name" % self.directory, "-u", "repo-url"])
+
+        with patch(
+                "yoda.subcommand.workspace.Repository.clone") as patch_clone:
+            ws_subcmds.execute(args)
+            patch_clone.assert_called_once_with(
+                "repo-url",
+                "%s/repo-name" % self.directory)
 
     @patch("builtins.input",
            Mock(side_effect=["n", "y"]))
