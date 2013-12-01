@@ -28,8 +28,8 @@ class Update(Subcommand):
         """ Parse update subcommand """
         parser = self.subparser.add_parser(
             "update",
-            help="Show repositories update",
-            description="Show repositories update from name.")
+            help="Update repositories",
+            description="Update one or more repositories.")
         parser.add_argument(
             "name", type=str, help="Repo name")
 
