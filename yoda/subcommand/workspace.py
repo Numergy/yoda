@@ -77,34 +77,8 @@ class Workspace(Subcommand):
                     )
                 )
         elif (args.workspace_subcommand == "list"):
-            color = out.color
-            messages = []
-            ws_list = self.ws.list()
-            keylist = sorted(ws_list.keys())
-
-            for key in keylist:
-                messages.append(
-                    color.colored(
-                        (" - %s" % key),
-                        fgcolor="green",
-                        attrs=["dark"]
-                    )
-                )
-                messages.append(
-                    "%s %s" % (color.colored("\t - path: ", "blue"),
-                               ws_list[key]["path"]))
-
-                repositories = ws_list[key]["repositories"] \
-                    if "repositories" in ws_list[key] else {}
-                if len(repositories) > 0:
-                    messages.append(
-                        out.color.colored("\t - repositories:", "blue"))
-                    for repo_name, repo_path in repositories.items():
-                        messages.append(
-                            out.color.colored(
-                                "\t\t - %s:\t" % repo_name, "cyan")
-                            + "%s" % repo_path)
-            out.info("\n".join(messages))
+            for key in sorted(self.ws.list().keys()):
+                out.info(key)
 
     def load_workspaces_subcommands(self, subcmd):
         for key, value in self.ws.list().items():
