@@ -16,6 +16,8 @@
 import os
 import shutil
 
+from prettytable import PrettyTable
+
 from yoda import Workspace as Ws
 from yoda import Output, Repository
 from yoda.subcommands import Subcommand
@@ -77,8 +79,13 @@ class Workspace(Subcommand):
                     )
                 )
         elif (args.workspace_subcommand == "list"):
-            for key in sorted(self.ws.list().keys()):
-                out.info(key)
+            table = PrettyTable(["Name", "Path"])
+            table.align["Name"] = "l"
+            table.align["Path"] = "l"
+            for key, ws in sorted(self.ws.list().items()):
+                table.add_row([key, ws["path"]])
+
+            out.info(table)
 
     def load_workspaces_subcommands(self, subcmd):
         for key, value in self.ws.list().items():

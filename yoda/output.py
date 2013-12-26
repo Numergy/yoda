@@ -28,16 +28,16 @@ class Output:
         self.color = Color()
 
     def info(self, message):
-        self.stdout.write(message + "\n")
+        self.stdout.write(str(message) + "\n")
 
     def success(self, message):
-        self.stdout.write(self.color.colored(message, "green") + "\n")
+        self.stdout.write(self.color.colored(str(message), "green") + "\n")
 
     def warn(self, message):
-        self.stderr.write(self.color.colored(message, "yellow") + "\n")
+        self.stderr.write(self.color.colored(str(message), "yellow") + "\n")
 
     def error(self, message):
-        self.stderr.write(self.color.colored(message, "red") + "\n")
+        self.stderr.write(self.color.colored(str(message), "red") + "\n")
 
     def yn_choice(self, message, default='n'):
         choices = 'Y/n' if default.lower() in ('y', 'yes') else 'y/N'

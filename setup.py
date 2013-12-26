@@ -26,6 +26,7 @@ setup(
     install_requires=[
         u"PyYaml",
         u"pycolorizer"
+        u"PrettyTable"
     ],
     tests_require=[
         u"mock",
