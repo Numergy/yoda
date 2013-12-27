@@ -21,7 +21,7 @@ from .workspace import Workspace
 from .subcommands import Subcommand, Subcommands
 
 
-def find_path(name, config):
+def find_path(name, config, wsonly=False):
     """ Find path for given workspace and|or repository """
     workspace = Workspace(config)
     config = config.get()["workspaces"]
@@ -29,20 +29,23 @@ def find_path(name, config):
     path_list = {}
 
     if name.find('/') != -1:
+        wsonly = False
         ws, repo = name.split('/')
         if (workspace.exists(ws)):
             if (repo in config[ws]["repositories"]):
-                path_list[repo] = config[ws]["repositories"][repo]
+                path_list["%s/%s" % (ws, repo)] = config[ws]["repositories"][repo]
 
     for ws_name, ws in sorted(config.items()):
         if (name == ws_name):
+            if wsonly == True:
+                return {ws_name: ws["path"]}
             repositories = sorted(config[ws_name]["repositories"].items())
             for name, path in repositories:
-                path_list[name] = path
+                path_list["%s/%s" % (ws_name, name)] = path
             break
 
-        for ws_name, ws_path in sorted(ws["repositories"].items()):
-            if (ws_name == name):
-                path_list[ws_name] = ws_path
+        for repo_name, repo_path in sorted(ws["repositories"].items()):
+            if (repo_name == name):
+                path_list["%s/%s" % (ws_name, repo_name)] = repo_path
 
     return path_list

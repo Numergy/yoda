@@ -35,7 +35,7 @@ class Jump(Subcommand):
                                help='Workspace or repository name')
 
     def execute(self, args):
-        path_list = find_path(args.name, self.config)
+        path_list = find_path(args.name, self.config, True)
 
         if len(path_list) == 0:
             self.out.error("No matches for `%s`" % args.name)
