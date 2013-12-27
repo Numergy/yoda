@@ -48,5 +48,6 @@ class Jump(Subcommand):
         self.out.info("Spawn new shell on `%s`" % path)
         self.out.info(
             "Use Ctrl-D to exit and go back to the previous directory")
-        os.system("cd %s; %s" % (path, os.getenv("SHELL")))
+        os.system("cd %s; YODA_JUMP_SESSION=%s %s"
+                  % (path, path, os.getenv("SHELL")))
         self.out.info("Shell on `%s` closed." % path)
