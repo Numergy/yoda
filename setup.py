@@ -25,7 +25,7 @@ setup(
     packages=["yoda", "yoda.subcommand", "yoda.adapter"],
     install_requires=[
         u"PyYaml",
-        u"pycolorizer"
+        u"pycolorizer",
         u"PrettyTable"
     ],
     tests_require=[
