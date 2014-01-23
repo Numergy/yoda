@@ -33,11 +33,12 @@ def find_path(name, config, wsonly=False):
         ws, repo = name.split('/')
         if (workspace.exists(ws)):
             if (repo in config[ws]["repositories"]):
-                path_list["%s/%s" % (ws, repo)] = config[ws]["repositories"][repo]
+                path_name = "%s/%s" % (ws, repo)
+                path_list[path_name] = config[ws]["repositories"][repo]
 
     for ws_name, ws in sorted(config.items()):
         if (name == ws_name):
-            if wsonly == True:
+            if wsonly is True:
                 return {ws_name: ws["path"]}
             repositories = sorted(config[ws_name]["repositories"].items())
             for name, path in repositories:

@@ -60,7 +60,8 @@ class TestSubcommandJump(unittest.TestCase):
         with patch("yoda.subcommand.jump.find_path",
                    return_value=mock_path) as patch_fp:
             self.jump.execute(args)
-            patch_fp.assert_called_once_with("yoda/baz", self.jump.config, True)
+            patch_fp.assert_called_once_with(
+                "yoda/baz", self.jump.config, True)
             self.jump._Jump__jump.assert_called_once_with("/tmp/yoda/baz")
 
     def test_exec_jump_no_matches(self):
