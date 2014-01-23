@@ -15,10 +15,12 @@
 
 import os
 import shutil
+from os import listdir
+from os.path import join
 
 from prettytable import PrettyTable
 
-from yoda import Workspace as Ws
+from yoda import Workspace as Ws, RepositoryError
 from yoda import Output, Repository
 from yoda.subcommands import Subcommand
 
@@ -46,15 +48,10 @@ class Workspace(Subcommand):
             "remove", help="Remove existing workspace")
         subparser.add_parser(
             "list", help="Show registered workspace")
-        sync_parser = subparser.add_parser(
-            "sync", help="Synchronize all directories store in workspace")
 
         add_parser.add_argument("name", type=str, help="Workspace name")
         add_parser.add_argument("path", type=str, help="Workspace path")
         rm_parser.add_argument("name", type=str, help="Workspace name")
-        sync_parser.add_argument(
-            "name", type=str, help="Workspace name", nargs='?'
-        )
 
     def execute(self, args):
         if args.workspace_subcommand is None:
@@ -68,16 +65,6 @@ class Workspace(Subcommand):
         elif (args.workspace_subcommand == "remove"):
             self.ws.remove(args.name)
             out.success("Workspace `%s` successfuly removed" % args.name)
-        elif (args.workspace_subcommand == "sync"):
-            repo_list = self.ws.sync(args.name)
-            out.success("Workspace `%s` synchronized" % args.name)
-            out.success("Added %d repositories:" % len(repo_list))
-            for repo_name, path in repo_list.items():
-                out.success(
-                    out.color.colored(
-                        " - %s" % repo_name, "blue"
-                    )
-                )
         elif (args.workspace_subcommand == "list"):
             table = PrettyTable(["Name", "Path"])
             table.align["Name"] = "l"
@@ -126,9 +113,15 @@ class WorkspaceSubcommands():
 
         remove_parser = subparser.add_parser(
             "remove", help=("Remove repository from %s workspace" % self.name))
-
         remove_parser.add_argument(
             "repo_name", type=str, help="Repository name"
+        )
+
+        sync_parser = subparser.add_parser(
+            "sync", help="Synchronize all directories store in workspace"
+        )
+        sync_parser.add_argument(
+            "name", type=str, help="Workspace name", nargs='?'
         )
 
     def execute(self, args):
@@ -136,6 +129,8 @@ class WorkspaceSubcommands():
             self.add(args.subcommand, args.repo_name, args.url, args.path)
         elif (args.action == "remove"):
             self.remove(args.subcommand, args.repo_name)
+        elif (args.action == "sync"):
+            self.sync(args.subcommand)
 
     def add(self, ws_name, repo_name, url, path):
         config = self.config.get()
@@ -172,3 +167,31 @@ class WorkspaceSubcommands():
         out = Output()
         if (out.yn_choice("Do you want to delete this repository?")):
             shutil.rmtree(repo_path)
+
+    def sync(self, ws_name):
+        """ Synchronise workspace's repositories """
+        config = self.config.get()
+        path = config["workspaces"][ws_name]["path"]
+        repositories = config["workspaces"][ws_name]["repositories"]
+
+        repo_list = {}
+
+        for r in listdir(path):
+            try:
+                repo = Repository(join(path, r))
+            except RepositoryError:
+                continue
+            else:
+                repositories[r] = repo.path
+                repo_list[r] = repo.path
+
+        self.config.write(config)
+        out = Output()
+        out.success("Workspace `%s` synchronized" % ws_name)
+        out.success("Added %d repositories:" % len(repo_list))
+        for repo_name, path in repo_list.items():
+            out.success(
+                out.color.colored(
+                    " - %s" % repo_name, "blue"
+                )
+            )

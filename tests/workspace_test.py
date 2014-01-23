@@ -100,40 +100,6 @@ class TestWorkspace(unittest.TestCase):
         """ Test if parameter is an instance of Config"""
         self.assertRaises(TypeError, lambda: Workspace(()))
 
-    def test_sync(self):
-        """ Test synchrone workspace"""
-        sandbox = Sandbox()
-
-        sandbox.mkdir("workspace1")
-        sandbox.mkdir("workspace1/repo1")
-        sandbox.mkdir("workspace1/repo1/.git")
-        sandbox.mkdir("workspace2")
-        sandbox.mkdir("workspace2/repo2")
-        sandbox.mkdir("workspace2/repo2/.git")
-        sandbox.touch("workspace2/repo3")
-
-        config = mock_config({"workspaces": {
-            "workspace1": {"path": "%s/workspace1" % sandbox.path,
-                           "repositories": {}},
-            "workspace2": {"path": "%s/workspace2" % sandbox.path,
-                           "repositories": {}}}})
-
-        ws = Workspace(config)
-        self.assertEqual({"repo1": "%s/workspace1/repo1" % sandbox.path},
-                         ws.sync("workspace1"))
-        self.assertEqual({"repo2": "%s/workspace2/repo2" % sandbox.path},
-                         ws.sync("workspace2"))
-
-        sandbox.destroy()
-
-    def test_sync_with_invalid_ws(self):
-        """ Test synchronize with invalid workspace """
-        config = mock_config({
-            "workspaces": {"foo": {"path": "/foo", "repositories": {}}}})
-        ws = Workspace(config)
-        self.assertRaises(
-            ValueError, ws.sync, "bar")
-
     def test_repository_exists(self):
         """ Test workspace has repository """
         config_mock_data = {"workspaces": {

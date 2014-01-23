@@ -13,9 +13,8 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
-from os import listdir
-from os.path import join, exists
-from yoda import Config, Repository, RepositoryError
+from os.path import exists
+from yoda import Config, Repository
 
 
 class Workspace:
@@ -61,29 +60,6 @@ class Workspace:
             ws_list[key] = dict({"name": key}, **value)
 
         return ws_list
-
-    def sync(self, name):
-        """ Return workspace's repositories list """
-        if not self.exists(name):
-            raise ValueError("Unknown workspace `%s`" % name)
-
-        config = self.config.get()
-        path = config["workspaces"][name]["path"]
-        repositories = config["workspaces"][name]["repositories"]
-
-        repo_list = {}
-
-        for r in listdir(path):
-            try:
-                repo = Repository(join(path, r))
-            except RepositoryError:
-                continue
-            else:
-                repositories[r] = repo.path
-                repo_list[r] = repo.path
-
-        self.config.write(config)
-        return repo_list
 
     def exists(self, name):
         """ Check if given workspace name exists """
