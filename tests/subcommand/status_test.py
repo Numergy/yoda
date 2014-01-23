@@ -33,7 +33,17 @@ class TestSubcommandStatus(unittest.TestCase):
         self.subparser = self.parser.add_subparsers(dest="subcommand_test")
 
         self.status = Status()
-        self.status.setup("status", mock_config({}), self.subparser)
+        config_data = {
+            "workspaces": {
+                "yoda": {
+                    "path": "/yoda",
+                    "repositories": {
+                        "yoda": "/project/yoda"
+                    }
+                }
+            }
+        }
+        self.status.setup("status", mock_config(config_data), self.subparser)
 
     def tearDown(self):
         """ Tear down test suite """
@@ -48,6 +58,11 @@ class TestSubcommandStatus(unittest.TestCase):
 
         self.assertEqual("status", args.subcommand_test)
         self.assertEqual("ws1/repo1", args.name)
+
+        args = self.parser.parse_args(["status", "--all"])
+
+        self.assertEqual("status", args.subcommand_test)
+        self.assertEqual(True, args.all)
 
     def test_exec_status_workspace_only(self):
         """ Test exec status subcommand """
@@ -64,6 +79,20 @@ class TestSubcommandStatus(unittest.TestCase):
             patch_fp.assert_called_once_with("foo/bar", self.status.config)
             self.status.print_status.assert_called_once_with(
                 "foo/bar", "/tmp/foo/bar")
+
+    def test_exec_status_all_workspaces(self):
+        """ Test exec with all workspaces """
+        args = Mock()
+        args.name = None
+        args.all = True
+
+        mock_path = {"foo/bar": "/tmp/foo/bar"}
+
+        self.status.print_status = Mock()
+
+        with patch("yoda.subcommand.status.find_path",
+                   return_value=mock_path) as patch_fp:
+            self.status.execute(args)
 
     def test_exec_status_no_matches(self):
         """ Test exec status subcommand with no matches """
