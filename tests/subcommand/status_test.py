@@ -64,6 +64,11 @@ class TestSubcommandStatus(unittest.TestCase):
         self.assertEqual("status", args.subcommand_test)
         self.assertEqual(True, args.all)
 
+        self.assertRaises(
+            SystemExit,
+            self.parser.parse_args, ["status", "--all", "ws1/repo1"]
+        )
+
     def test_exec_status_workspace_only(self):
         """ Test exec status subcommand """
         args = Mock()

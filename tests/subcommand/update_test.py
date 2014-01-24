@@ -59,6 +59,16 @@ class TestSubcommandUpdate(unittest.TestCase):
         self.assertEqual("update", args.subcommand_test)
         self.assertEqual("ws1/repo1", args.name)
 
+        args = self.parser.parse_args(["update", "--all"])
+
+        self.assertEqual("update", args.subcommand_test)
+        self.assertEqual(True, args.all)
+
+        self.assertRaises(
+            SystemExit,
+            self.parser.parse_args, ["update", "--all", "ws1/repo1"]
+        )
+
     def test_exec_update_workspace_only(self):
         """ Test exec update subcommand """
         args = Mock()
