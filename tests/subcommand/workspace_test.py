@@ -22,6 +22,8 @@ from mock import Mock, patch
 from ..utils import mock_config, Sandbox
 from yoda.subcommand import Workspace, WorkspaceSubcommands
 
+builtins_module = "builtins" if sys.version[:1] == "3" else "__builtin__"
+
 
 class TestSubcommandWorkspace(unittest.TestCase):
     """ Workspace subcommand test suite """
@@ -257,7 +259,7 @@ class TestWorkspacesSubcommands(unittest.TestCase):
                 "repo-url",
                 "%s/repo-name" % self.directory)
 
-    @patch("builtins.input",
+    @patch("%s.input" % builtins_module,
            Mock(side_effect=["n", "y"]))
     def test_execute_remove_subcommad(self):
         """ Test execute remove subcommands """
