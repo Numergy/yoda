@@ -30,15 +30,30 @@ class Update(Subcommand):
             "update",
             help="Update repositories",
             description="Update one or more repositories.")
-        parser.add_argument(
-            "name", type=str, help="Repo name")
+
+        group = parser.add_mutually_exclusive_group(required=True)
+        group.add_argument('--all', action='store_true', help="All workspaces")
+        group.add_argument('name', type=str, help="Repo name", nargs='?')
 
     def execute(self, args):
         """ Execute update subcommand """
-        path_list = find_path(args.name, self.config)
+        if args.name is not None:
+            self.print_workspace(args.name)
+        elif args.all is not None:
+            self.print_all()
+
+    def print_all(self):
+        """ Print all workspaces update """
+        config = self.config.get()
+        for ws_name in config['workspaces']:
+            self.print_workspace(ws_name)
+
+    def print_workspace(self, name):
+        """ Print workspace update """
+        path_list = find_path(name, self.config)
 
         if len(path_list) == 0:
-            self.out.error("No matches for `%s`" % args.name)
+            self.out.error("No matches for `%s`" % name)
             return False
 
         for name, path in path_list.items():

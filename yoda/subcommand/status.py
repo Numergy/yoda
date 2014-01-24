@@ -43,6 +43,7 @@ class Status(Subcommand):
             self.print_all()
 
     def print_all(self):
+        """ Print all workspaces statius """
         config = self.config.get()
         for ws_name in config['workspaces']:
             self.print_workspace(ws_name)

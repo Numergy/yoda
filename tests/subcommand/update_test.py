@@ -33,7 +33,17 @@ class TestSubcommandUpdate(unittest.TestCase):
         self.subparser = self.parser.add_subparsers(dest="subcommand_test")
 
         self.update = Update()
-        self.update.setup("update", mock_config({}), self.subparser)
+        config_data = {
+            "workspaces": {
+                "yoda": {
+                    "path": "/yoda",
+                    "repositories": {
+                        "yoda": "/project/yoda"
+                    }
+                }
+            }
+        }
+        self.update.setup("update", mock_config(config_data), self.subparser)
 
     def tearDown(self):
         """ Tear down test suite """
@@ -64,6 +74,20 @@ class TestSubcommandUpdate(unittest.TestCase):
             patch_fp.assert_called_once_with("foo/bar", self.update.config)
             self.update.print_update.assert_called_once_with(
                 "foo/bar", "/tmp/foo/bar")
+
+    def test_exec_update_all_workspaces(self):
+        """ Test exec with all workspaces """
+        args = Mock()
+        args.name = None
+        args.all = True
+
+        mock_path = {"foo/bar": "/tmp/foo/bar"}
+
+        self.update.print_update = Mock()
+
+        with patch("yoda.subcommand.update.find_path",
+                   return_value=mock_path) as patch_fp:
+            self.update.execute(args)
 
     def test_exec_update_no_matches(self):
         """ Test exec update subcommand with no matches """
