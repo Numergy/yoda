@@ -13,6 +13,7 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
+import sys
 import unittest
 import argparse
 import os
@@ -201,9 +202,12 @@ class TestWorkspacesSubcommands(unittest.TestCase):
         )
         ws_subcmds.parse()
 
-        args = self.parser.parse_args(["yoda"])
-
-        self.assertIsNone(ws_subcmds.execute(args))
+        try:
+            args = self.parser.parse_args(["yoda"])
+            self.assertIsNone(ws_subcmds.execute(args))
+        except SystemExit:
+            #Raised in Python 2.7.x
+            self.assertEqual("2.7", sys.version[:3])
 
     def test_parse_add(self):
         """ Test parse add subcommands """
@@ -247,7 +251,7 @@ class TestWorkspacesSubcommands(unittest.TestCase):
              "%s/repo-name" % self.directory, "-u", "repo-url"])
 
         with patch(
-                "yoda.subcommand.workspace.Repository.clone") as patch_clone:
+                "yoda.subcommand.workspace.clone") as patch_clone:
             ws_subcmds.execute(args)
             patch_clone.assert_called_once_with(
                 "repo-url",

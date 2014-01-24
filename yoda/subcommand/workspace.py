@@ -22,10 +22,11 @@ from prettytable import PrettyTable
 
 from yoda import Workspace as Ws, RepositoryError
 from yoda import Output, Repository
+from yoda.repository import clone
 from yoda.subcommands import Subcommand
 
 
-class Workspace(Subcommand):
+class Workspace(Subcommand, object):
     ws = None
     subparser = None
 
@@ -144,7 +145,7 @@ class WorkspaceSubcommands():
             raise ValueError("Repository %s already exists" % repo_name)
 
         if url is not None:
-            Repository.clone(url, repo_path)
+           clone(url, repo_path)
 
         if (os.path.exists(repo_path) is False):
             os.mkdir(repo_path)

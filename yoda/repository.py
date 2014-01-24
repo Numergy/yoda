@@ -59,14 +59,15 @@ class Repository:
     def update(self):
         return self.adapter.update()
 
-    def clone(url, path):
-        """ Clone a repository """
-        adapter = None
-        if url[:4] == "git@" or url[-4:] == ".git":
-            adapter = Git(path)
 
-        if adapter is None:
-            raise RepositoryAdapterNotFound(
-                "Can't find adapter for `%s` repository url" % url)
+def clone(url, path):
+    """Clone a repository."""
+    adapter = None
+    if url[:4] == "git@" or url[-4:] == ".git":
+        adapter = Git(path)
 
-        adapter.clone(url)
+    if adapter is None:
+        raise RepositoryAdapterNotFound(
+            "Can't find adapter for `%s` repository url" % url)
+
+    adapter.clone(url)

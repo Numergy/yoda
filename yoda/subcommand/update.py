@@ -17,7 +17,7 @@ from yoda.subcommands import Subcommand
 from yoda import find_path, Repository, Output
 
 
-class Update(Subcommand):
+class Update(Subcommand, object):
 
     def setup(self, name, config, subparser):
         self.subparser = subparser
