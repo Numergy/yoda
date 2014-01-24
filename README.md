@@ -1,16 +1,142 @@
 # YODA
 
-Multiple repositories management.
+```
+ ::\`--._,'.::.`._.--'/:: Multiple
+ ::::.  ` __::__ '  .::::    repositories
+ ::::::-:.`'..`'.:-::::::        management.
+ ::::::::\ `--' /:::::::: 
+```
+## Requirements
+
+- PyYaml
+- pycolorizer
+- PrettyTable
+
+### Tests packages
+- mock
+- pep8
+- nose
+- coverage
 
 ## Installation
+Yoda is available only on github, it will be packaged on Pypi when first release.
 
-Available for Python 2.x & 3.x
+Yoda is compatible with following python version:
+- Python 2.7.x
+- Python 3.x
 
-Install yoda:
-`$ ./setup.py install`
+```bash
+pip install https://github.com/numergy/yoda.git
+```
 
 Uninstall yoda:
-`$ pip uninstall yoda`
+```bash
+pip uninstall yoda
+```
+
+## Usage
+```bash
+$ yoda --help
+usage: yoda [-h] [subcommand] ...
+
+Manage your repositories easier. Each workspaces are subcommands, type `yoda
+workspace_name -h` to show help.
+
+positional arguments:
+  [subcommand]
+      jump        Jump to directory
+      status      Show repositories status
+      workspace   Workspace managment
+      update      Update repositories
+
+optional arguments:
+  -h, --help    show this help message and exit
+```
+
+#### yoda workspace
+The `workspace` subcommand allows you to manages your yoda's workspaces.
+A workspace contains some properties (path, repositories list).
+
+You can create workspace simply with a `name` and a `path`:
+```bash
+yoda workspace add ws_name /path/to/workspace
+```
+
+To remove a workspace:
+```bash
+yoda workspace remove ws_name
+```
+
+To print workspace list:
+```bash
+yoda workspace list
+```
+
+#### yoda status
+`status` subcommand allows you to show repositories status in a workspace.
+
+For example, to show status of all repositories in `my_ws` workspace:
+```bash
+yoda status my_ws
+```
+
+You can show status for a single repository:
+```bash
+yoda status my_ws/my_repo
+yoda status my_repo
+```
+
+To show status of all workspaces, use `--all` option:
+```bash
+yoda status --all
+```
+
+#### yoda update
+`update` subcommand is similary of `status` subcommand.
+
+To update all repositories in `my_ws` workspace:
+```bash
+yoda update my_ws
+```
+
+For a single repository:
+```bash
+yoda update my_ws/my_repo
+```
+
+To update all workspaces:
+```bash
+yoda update --all
+```
+
+#### yoda jump
+`jump` subcommand allows you to spawn new shell in repository or workspace path.
+
+```bash
+sliim@host:~$ yoda jump my_ws/my_repo
+Spawn new shell on `/path/to/my_ws/my_repo/`
+Use Ctrl-D to exit and go back to the previous directory
+
+sliim@host:/path/to/my_ws/my_repo$
+```
+
+#### Workspaces subcommands
+Each defined workspace in yoda have subcommands, for example if you have a workspace named `my_ws` you can type:
+```bash
+$ yoda my_ws --help
+usage: yoda my_ws [-h] {add,remove,sync} ...
+
+Manage repositories in my_ws workspace
+
+positional arguments:
+  {add,remove,sync}
+    add              Add repository to my_ws workspace
+    remove           Remove repository from my_ws workspace
+    sync             Synchronize all directories stored in workspace
+
+optional arguments:
+  -h, --help         show this help message and exit
+```
 
 ## Running tests
 In project root directory, run following command to
@@ -20,3 +146,6 @@ To run unittests:
 
 To check code style:
 `$ pep8 ./`
+
+## License
+See COPYING file.
