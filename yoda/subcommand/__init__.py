@@ -13,6 +13,7 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 from yoda.subcommand.jump import Jump
+from yoda.subcommand.show import Show
 from yoda.subcommand.status import Status
 from yoda.subcommand.update import Update
 from yoda.subcommand.workspace import Workspace

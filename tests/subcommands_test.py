@@ -87,7 +87,7 @@ class TestSubcommands(unittest.TestCase):
         self.mocks["subcmd"].execute.assert_called_once()
 
     def test_execute_with_wrong_command(self):
-        """Test execute without subcommand."""
+        """Test execute with wrong subcommand."""
         args = Mock()
         args.subcommand = "fake"
         self.subcmds.commands = {"Mock": self.mocks["subcmd"]}

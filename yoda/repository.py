@@ -19,7 +19,7 @@ from yoda.adapter import Git
 
 
 class RepositoryError(Exception):
-    """Genereic repository error."""
+    """Generic repository error."""
     pass
 
 

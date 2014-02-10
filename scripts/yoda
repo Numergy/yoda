@@ -17,13 +17,21 @@
 import argcomplete
 import os
 
-from yoda import Config, Output, Subcommands
-from yoda.subcommand import Workspace, Status, Jump, Update
+from yoda import Config
+from yoda import Output
+from yoda import Subcommands
+
+from yoda.subcommand import Jump
+from yoda.subcommand import Show
+from yoda.subcommand import Status
+from yoda.subcommand import Update
+from yoda.subcommand import Workspace
 
 yoda_config = Config("%s/.yodarc" % os.environ.get("HOME"))
 out = Output()
 
 subcmd = Subcommands(yoda_config)
+subcmd.add_command(Show())
 subcmd.add_command(Status())
 subcmd.add_command(Update())
 subcmd.add_command(Jump())

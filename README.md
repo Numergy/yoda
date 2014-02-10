@@ -37,20 +37,22 @@ pip uninstall yoda
 ## Usage
 ```bash
 $ yoda --help
-usage: yoda [-h] [subcommand] ...
+usage: yoda [-h] [--version] [subcommand] ...
 
 Manage your repositories easier. Each workspaces are subcommands, type `yoda
 workspace_name -h` to show help.
 
 positional arguments:
   [subcommand]
+      show        Show workspace details
       jump        Jump to directory
       status      Show repositories status
-      workspace   Workspace managment
       update      Update repositories
+      workspace   Workspace managment
 
 optional arguments:
   -h, --help    show this help message and exit
+  --version     show program's version number and exit
 ```
 
 #### yoda workspace
@@ -70,6 +72,12 @@ yoda workspace remove ws_name
 To print workspace list:
 ```bash
 yoda workspace list
+```
+
+#### yoda show
+`show` subcommand allows you to print a workspace details. You can pass --all options to show details for all registered workspaces.
+```bash
+yoda show my_ws
 ```
 
 #### yoda status
