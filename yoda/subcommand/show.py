@@ -14,6 +14,7 @@
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 from prettytable import PrettyTable
+from pycolorizer import Color
 
 from yoda import Output
 from yoda import Repository
@@ -55,9 +56,11 @@ class Show(Subcommand, object):
             raise ValueError("Workspace `%s` doesn't exists.")
 
         out = Output()
+        color = Color()
         workspaces = self.workspace.list()
-        table = PrettyTable(["Repository name"])
-        table.align["Repository name"] = "l"
+        named = "%s's repository name" % color.colored(name, "green")
+        table = PrettyTable([named])
+        table.align[named] = "l"
         for repo in workspaces[name]["repositories"]:
             table.add_row([repo])
 
@@ -66,5 +69,4 @@ class Show(Subcommand, object):
     def show_all(self):
         """Show details for all workspaces."""
         for ws in self.workspace.list().keys():
-            print(ws)
             self.show_workspace(ws)
