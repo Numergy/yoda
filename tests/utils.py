@@ -18,8 +18,8 @@ import mock
 import os
 import shutil
 
-from mock import Mock
 from mock import MagicMock
+from mock import Mock
 from yoda import Config
 
 
@@ -33,11 +33,11 @@ def mock_config(data):
 
 
 class Sandbox:
-    """ Sandbox environment utility """
+    """Sandbox environment utility."""
     path = None
 
     def __init__(self, path=None):
-        """ Init sandbox environment """
+        """Init sandbox environment."""
         if path is None:
             path = os.path.dirname(os.path.realpath(__file__)) + "/sandbox"
 
@@ -48,16 +48,16 @@ class Sandbox:
         os.mkdir(path)
 
     def mkdir(self, directory):
-        """ Create directory in sandbox. """
+        """Create directory in sandbox.."""
         os.mkdir(os.path.join(self.path, directory))
 
     def touch(self, file):
-        """ Create file  into sandbox """
+        """Create file  into sandbox."""
         full_path = os.path.join(self.path, file)
         with open(full_path, 'w'):
             os.utime(full_path, None)
 
     def destroy(self):
-        """ Destroy sandbox environment """
+        """Destroy sandbox environment."""
         if os.path.exists(self.path):
             shutil.rmtree(self.path)

@@ -21,43 +21,43 @@ from yoda import Output
 
 
 class TestOutput(unittest.TestCase):
-    """ Yoda output test suite """
+    """Yoda output test suite."""
 
     out = None
     stdout = None
     stderr = None
 
     def setUp(self):
-        """ Setup output object """
+        """Setup output object."""
         self.stdout = self.stderr = Mock()
         self.stdout.write.return_value = None
         self.stderr.write.return_value = None
         self.out = Output(self.stdout, self.stderr)
 
     def test_info(self):
-        """ Test printing an information message """
+        """Test printing an information message."""
         self.out.info("foo")
         self.stdout.write.assert_called_once_with("foo\n")
 
     def test_success(self):
-        """ Test printing a success message """
+        """Test printing a success message."""
         self.out.success("bar")
         self.stdout.write.assert_called_once_with("\x1b[32mbar\x1b[0m\n")
 
     def test_warn(self):
-        """ Test printing a warning message """
+        """Test printing a warning message."""
         self.out.warn("baz")
         self.stderr.write.assert_called_once_with("\x1b[33mbaz\x1b[0m\n")
 
     def test_error(self):
-        """ Test printing an error message """
+        """Test printing an error message."""
         self.out.error("foobar")
         self.stderr.write.assert_called_once_with("\x1b[31mfoobar\x1b[0m\n")
 
     @patch("builtins.input",
            Mock(side_effect=["n", "y", "1337"]))
     def test_yn_choice(self):
-        """ Test printing input question """
+        """Test printing input question."""
         self.assertFalse(self.out.yn_choice("Test?"))
         self.assertTrue(self.out.yn_choice("Test?"))
         self.assertFalse(self.out.yn_choice("Test?"))

@@ -13,23 +13,26 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
-import unittest
 import argparse
 import os
+import unittest
 
-from mock import Mock, patch
-from ..utils import mock_config, Sandbox
-from yoda.subcommand import Workspace, WorkspaceSubcommands
+from mock import Mock
+from mock import patch
+from tests.utils import mock_config
+from tests.utils import Sandbox
+from yoda.subcommand import Workspace
+from yoda.subcommand import WorkspaceSubcommands
 
 
 class TestSubcommandWorkspace(unittest.TestCase):
-    """ Workspace subcommand test suite """
+    """Workspace subcommand test suite."""
     parser = None
     subparser = None
     workspace = None
 
     def setUp(self):
-        """ Setup test suite """
+        """Setup test suite."""
         self.parser = argparse.ArgumentParser(prog="yoda_test")
         self.subparser = self.parser.add_subparsers(dest="subcommand_test")
 
@@ -48,12 +51,12 @@ class TestSubcommandWorkspace(unittest.TestCase):
             "workspace", mock_config(config_data), self.subparser)
 
     def tearDown(self):
-        """ Tear down test suite """
+        """Tear down test suite."""
         self.parser = None
         self.workspace = None
 
     def test_parse_add(self):
-        """ Test workspace add parsing """
+        """Test workspace add parsing."""
         self.workspace.parse()
         args = self.parser.parse_args(["workspace", "add", "foo", "/tmp/foo"])
 
@@ -63,7 +66,7 @@ class TestSubcommandWorkspace(unittest.TestCase):
         self.assertEqual("/tmp/foo", args.path)
 
     def test_parse_remove(self):
-        """ Test workspace remove parsing """
+        """Test workspace remove parsing."""
         self.workspace.parse()
         args = self.parser.parse_args(["workspace", "remove", "foo"])
 
@@ -72,14 +75,14 @@ class TestSubcommandWorkspace(unittest.TestCase):
         self.assertEqual("foo", args.name)
 
     def test_parse_list(self):
-        """ Test workspace list parsing """
+        """Test workspace list parsing."""
         self.workspace.parse()
         args = self.parser.parse_args(["workspace", "list"])
         self.assertEqual("workspace", args.subcommand_test)
         self.assertEqual("list", args.workspace_subcommand)
 
     def test_exec_add(self):
-        """ Test workspace add execution """
+        """Test workspace add execution."""
         ws = Mock()
         ws.add = Mock()
 
@@ -94,7 +97,7 @@ class TestSubcommandWorkspace(unittest.TestCase):
         ws.add.assert_called_with("foo", "/foo")
 
     def test_exec_remove(self):
-        """ Test workspace remove execution """
+        """Test workspace remove execution."""
         ws = Mock()
         ws.remove = Mock()
 
@@ -108,7 +111,7 @@ class TestSubcommandWorkspace(unittest.TestCase):
         ws.remove.assert_called_with("foo")
 
     def test_exec_list(self):
-        """ Test workspace list execution """
+        """Test workspace list execution."""
         ws_list = {
             "yoda": {
                 "path": "/project/yoda",
@@ -133,7 +136,7 @@ class TestSubcommandWorkspace(unittest.TestCase):
         ws.list.assert_called_with()
 
     def test_exec_without_command(self):
-        """ Test workspace without subcommand """
+        """Test workspace without subcommand."""
         ws = Mock()
         args = Mock()
         args.workspace_subcommand = None
@@ -142,7 +145,7 @@ class TestSubcommandWorkspace(unittest.TestCase):
         self.assertIsNone(self.workspace.execute(args))
 
     def test_exec_with_wrong_command(self):
-        """ Test workspace without subcommand """
+        """Test workspace without subcommand."""
         ws = Mock()
         args = Mock()
         args.workspace_subcommand = "test"
@@ -151,7 +154,7 @@ class TestSubcommandWorkspace(unittest.TestCase):
         self.assertIsNone(self.workspace.execute(args))
 
     def test_load_workspaces_subcommands(self):
-        """ Test workspaces subcommands """
+        """Test workspaces subcommands."""
         ws = Mock()
         ws.list = Mock(return_value={"foo":
                                      {"path": "/foo",
@@ -168,13 +171,13 @@ class TestSubcommandWorkspace(unittest.TestCase):
 
 
 class TestWorkspacesSubcommands(unittest.TestCase):
-    """ Test suite for workspaces subcommands setup """
+    """Test suite for workspaces subcommands setup."""
     parser = None
     config_data = None
     directory = None
 
     def setUp(self):
-        """ Setup test suite """
+        """Setup test suite."""
         self.sandbox = Sandbox()
         self.directory = self.sandbox.path + "/tmp"
         self.sandbox.mkdir("tmp")
@@ -189,12 +192,12 @@ class TestWorkspacesSubcommands(unittest.TestCase):
         }
 
     def tearDown(self):
-        """ Tear down test suite """
+        """Tear down test suite."""
         self.sandbox.destroy()
         self.parser = None
 
     def test_exec_without_command(self):
-        """ Test repository execute without subcommand """
+        """Test repository execute without subcommand."""
         subparser = self.parser.add_subparsers(dest="subcommand_test")
         ws_subcmds = WorkspaceSubcommands(
             "yoda", subparser, mock_config(self.config_data)
@@ -206,7 +209,7 @@ class TestWorkspacesSubcommands(unittest.TestCase):
         self.assertIsNone(ws_subcmds.execute(args))
 
     def test_parse_add(self):
-        """ Test parse add subcommands """
+        """Test parse add subcommands."""
         subparser = self.parser.add_subparsers(dest="subcommand_test")
         ws_subcmds = WorkspaceSubcommands(
             "yoda", subparser, mock_config(self.config_data)
@@ -222,7 +225,7 @@ class TestWorkspacesSubcommands(unittest.TestCase):
         self.assertEqual("repo-path", args.path)
 
     def test_execute_add_subcommand_repo_already_exists(self):
-        """ Test execute add subcommands when repo name already exists """
+        """Test execute add subcommands when repo name already exists."""
         subparser = self.parser.add_subparsers(dest="subcommand")
         ws_subcmds = WorkspaceSubcommands(
             "yoda", subparser, mock_config(self.config_data)
@@ -235,7 +238,7 @@ class TestWorkspacesSubcommands(unittest.TestCase):
         self.assertRaises(ValueError, lambda: ws_subcmds.execute(args))
 
     def test_execute_add_subcommand(self):
-        """ Test execute add subcommand """
+        """Test execute add subcommand."""
         subparser = self.parser.add_subparsers(dest="subcommand")
         ws_subcmds = WorkspaceSubcommands(
             "yoda", subparser, mock_config(self.config_data)
@@ -256,7 +259,7 @@ class TestWorkspacesSubcommands(unittest.TestCase):
     @patch("builtins.input",
            Mock(side_effect=["n", "y"]))
     def test_execute_remove_subcommad(self):
-        """ Test execute remove subcommands """
+        """Test execute remove subcommands."""
         self.sandbox.mkdir("tmp/repo-name")
         self.config_data["workspaces"]["yoda"]["repositories"] = {
             "repo-name": self.directory + "/repo-name"
@@ -280,7 +283,7 @@ class TestWorkspacesSubcommands(unittest.TestCase):
         self.assertRaises(ValueError, lambda: ws_subcmds.execute(args))
 
     def test_sync(self):
-        """ Test synchronize workspace"""
+        """Test synchronize workspace."""
         subparser = self.parser.add_subparsers(dest="subcommand_test")
         ws_subcmds = WorkspaceSubcommands(
             "yoda", subparser, mock_config(self.config_data)
@@ -293,7 +296,7 @@ class TestWorkspacesSubcommands(unittest.TestCase):
         self.assertEqual("sync", args.action)
 
     def test_execute_sync_subcommand(self):
-        """ Test execute sync subcommand """
+        """Test execute sync subcommand."""
         self.sandbox.mkdir("tmp/repo-name")
         self.config_data["workspaces"]["yoda"]["repositories"] = {
             "repo-name": self.directory + "/repo-name"

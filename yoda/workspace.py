@@ -14,7 +14,7 @@
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 from os.path import exists
-from yoda import Config, Repository
+from yoda import Config
 
 
 class Workspace:
@@ -22,13 +22,13 @@ class Workspace:
     config = None
 
     def __init__(self, config):
-        """ Workspace object initialization """
+        """Workspace object initialization."""
         if not isinstance(config, Config):
             raise TypeError("Variable config is not an instance of Config")
         self.config = config
 
     def add(self, name, path):
-        """ Add a workspace entry in user config file """
+        """Add a workspace entry in user config file."""
         if not (exists(path)):
             raise ValueError("Workspace path `%s` doesn't exists." % path)
 
@@ -41,7 +41,7 @@ class Workspace:
         self.config.write(config)
 
     def remove(self, name):
-        """ Remove workspace from config file """
+        """Remove workspace from config file."""
         config = self.config.get()
 
         if not (self.exists(name)):
@@ -52,7 +52,7 @@ class Workspace:
         self.config.write(config)
 
     def list(self):
-        """ List all available workspaces """
+        """List all available workspaces."""
         config = self.config.get()
         ws_list = {}
 
@@ -62,11 +62,11 @@ class Workspace:
         return ws_list
 
     def exists(self, name):
-        """ Check if given workspace name exists """
+        """Check if given workspace name exists."""
         return name in self.list().keys()
 
     def repository_exists(self, workspace, repo):
-        """ Return True if workspace contains repository name. """
+        """Return True if workspace contains repository name."""
         if not self.exists(workspace):
             return False
 

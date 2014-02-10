@@ -19,17 +19,17 @@ from yoda.adapter import Git
 
 
 class RepositoryError(Exception):
-    """ Genereic repository error """
+    """Genereic repository error."""
     pass
 
 
 class RepositoryPathInvalid(RepositoryError):
-    """ Repository path is invalid, doesn't exists or is not a directory. """
+    """Repository path is invalid, doesn't exists or is not a directory."""
     pass
 
 
 class RepositoryAdapterNotFound(RepositoryError):
-    """ Repository invalid because adapter not found """
+    """Repository invalid because adapter not found."""
     pass
 
 
@@ -60,7 +60,7 @@ class Repository:
         return self.adapter.update()
 
     def clone(url, path):
-        """ Clone a repository """
+        """Clone a repository."""
         adapter = None
         if url[:4] == "git@" or url[-4:] == ".git":
             adapter = Git(path)

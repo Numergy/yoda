@@ -14,8 +14,8 @@
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 import os
-
-from yoda import Output, find_path
+from yoda import find_path
+from yoda import Output
 from yoda.subcommands import Subcommand
 
 

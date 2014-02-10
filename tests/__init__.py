@@ -16,16 +16,17 @@
 import os
 import unittest
 
-from .utils import mock_config, Sandbox
+from tests.utils import mock_config
+from tests.utils import Sandbox
 
 from yoda import find_path
 
 
 class TestFindPathFunction(unittest.TestCase):
-    """ Test suite for find_path function """
+    """Test suite for find_path function."""
 
     def setUp(self):
-        """ Setup test suite """
+        """Setup test suite."""
         self.sandbox = Sandbox()
         self.sandbox.mkdir("yoda")
         self.sandbox.mkdir("yoda/yoda")
@@ -58,11 +59,11 @@ class TestFindPathFunction(unittest.TestCase):
         self.config = mock_config(config_data)
 
     def tearDown(self):
-        """ Destroy sandbox """
+        """Destroy sandbox."""
         self.sandbox.destroy()
 
     def test_find_path_workspace(self):
-        """ Test find_path for workspace """
+        """Test find_path for workspace."""
         res = find_path("yoda", self.config)
         self.assertEqual(4, len(res))
         self.assertIn("yoda/yoda", res)
@@ -71,28 +72,28 @@ class TestFindPathFunction(unittest.TestCase):
         self.assertIn("sliim/yoda", res)
 
     def test_find_path_workspace_only(self):
-        """ Test find_path for workspace only """
+        """Test find_path for workspace only."""
         res = find_path("sliim", self.config, True)
         self.assertEqual(1, len(res))
         self.assertIn("sliim", res)
 
     def test_find_path_repository(self):
-        """ Test find_path for repository """
+        """Test find_path for repository."""
         res = find_path("other", self.config)
         self.assertEqual(1, len(res))
         self.assertIn("yoda/other", res)
 
     def test_find_path_workspace_and_repository(self):
-        """ Test find_path for workspace/repository"""
+        """Test find_path for workspace/repository."""
         res = find_path("yoda/1337", self.config)
         self.assertEqual(1, len(res))
         self.assertIn("yoda/1337", res)
 
     def test_find_path_no_matches(self):
-        """ Test find_path when no matches found """
+        """Test find_path when no matches found."""
         self.assertEqual({}, find_path("foo/bar", self.config))
 
     def test_find_path_no_workspace(self):
-        """ Test find_path when no workspace registered """
+        """Test find_path when no workspace registered."""
         self.assertEqual({}, find_path(
             "yoda/yoda", mock_config({"workspaces": {}})))

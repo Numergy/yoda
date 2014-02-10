@@ -17,22 +17,22 @@ from yoda.adapter import Abstract
 
 
 class Git(Abstract):
-    """ Git Adapter """
+    """Git Adapter."""
 
     executable = "git"
 
     def status(self):
-        """ Show git status """
+        """Show git status."""
         return self.exec_on_path("git status")
 
     def clone(self, url):
-        """ Clone repository from url """
+        """Clone repository from url."""
         return self.execute("git clone %s %s" % (url, self.path))
 
     def update(self):
-        """ Update repository """
+        """Update repository."""
         return self.exec_on_path("git pull --rebase")
 
     def show(self):
-        """ Show repository details """
+        """Show repository details."""
         raise NotImplemented("TODO: Not implemented")

@@ -13,8 +13,10 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
+from yoda import find_path
+from yoda import Output
+from yoda import Repository
 from yoda.subcommands import Subcommand
-from yoda import find_path, Repository, Output
 
 
 class Update(Subcommand):
@@ -25,7 +27,7 @@ class Update(Subcommand):
         super(Update, self).setup(name, config, subparser)
 
     def parse(self):
-        """ Parse update subcommand """
+        """Parse update subcommand."""
         parser = self.subparser.add_parser(
             "update",
             help="Update repositories",
@@ -36,20 +38,20 @@ class Update(Subcommand):
         group.add_argument('name', type=str, help="Repo name", nargs='?')
 
     def execute(self, args):
-        """ Execute update subcommand """
+        """Execute update subcommand."""
         if args.name is not None:
             self.print_workspace(args.name)
         elif args.all is not None:
             self.print_all()
 
     def print_all(self):
-        """ Print all workspaces update """
+        """Print all workspaces update."""
         config = self.config.get()
         for ws_name in config['workspaces']:
             self.print_workspace(ws_name)
 
     def print_workspace(self, name):
-        """ Print workspace update """
+        """Print workspace update."""
         path_list = find_path(name, self.config)
 
         if len(path_list) == 0:
@@ -60,7 +62,7 @@ class Update(Subcommand):
             self.print_update(name, path)
 
     def print_update(self, repo_name, repo_path):
-        """ Print repository update """
+        """Print repository update."""
         try:
             repo = Repository(repo_path)
             self.out.success(

@@ -13,5 +13,5 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
-from .abstract import Abstract
-from .git import Git
+from yoda.adapter.abstract import Abstract
+from yoda.adapter.git import Git

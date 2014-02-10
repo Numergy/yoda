@@ -13,14 +13,14 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
-import subprocess
-
+from abc import ABCMeta
+from abc import abstractmethod
 from distutils.spawn import find_executable
-from abc import ABCMeta, abstractmethod
+import subprocess
 
 
 class Abstract:
-    """ SCM Adapter interface """
+    """SCM Adapter interface."""
     __metaclass__ = ABCMeta
 
     path = None
@@ -30,16 +30,16 @@ class Abstract:
         self.path = path
 
     def execute(self, command, path=None):
-        """ Execute command with os.popen and return output"""
+        """Execute command with os.popen and return output."""
         self.check_executable()
         subprocess.Popen(command, shell=True, cwd=path).communicate()
 
     def exec_on_path(self, command):
-        """ Execute command in repository path """
+        """Execute command in repository path."""
         self.execute("%s" % (command), self.path)
 
     def check_executable(self):
-        """ Check adapter executable exists """
+        """Check adapter executable exists."""
         if not find_executable(self.executable):
             raise Exception("Executable %s not found" % self.executable)
 

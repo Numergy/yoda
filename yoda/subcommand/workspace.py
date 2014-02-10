@@ -14,15 +14,15 @@
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 import os
-import shutil
 from os import listdir
 from os.path import join
-
 from prettytable import PrettyTable
-
-from yoda import Workspace as Ws, RepositoryError
-from yoda import Output, Repository
+import shutil
+from yoda import Output
+from yoda import Repository
+from yoda import RepositoryError
 from yoda.subcommands import Subcommand
+from yoda import Workspace as Ws
 
 
 class Workspace(Subcommand):
@@ -86,7 +86,7 @@ class WorkspaceSubcommands():
     config = None
 
     def __init__(self, name, subparser, config):
-        """ Initialize workspace name """
+        """Initialize workspace name."""
         self.name = name
         self.parser = subparser.add_parser(
             name,
@@ -169,7 +169,7 @@ class WorkspaceSubcommands():
             shutil.rmtree(repo_path)
 
     def sync(self, ws_name):
-        """ Synchronise workspace's repositories """
+        """Synchronise workspace's repositories."""
         config = self.config.get()
         path = config["workspaces"][ws_name]["path"]
         repositories = config["workspaces"][ws_name]["repositories"]

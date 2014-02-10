@@ -16,17 +16,17 @@
 import os
 import unittest
 
+from tests.utils import Sandbox
 from yoda import Config
-from .utils import Sandbox
 
 
 class TestConfig(unittest.TestCase):
-    """ Yoda configuration test suite """
+    """Yoda configuration test suite."""
 
     file = None
 
     def setUp(self):
-        """ Setup test file """
+        """Setup test file."""
         self.sandbox = Sandbox()
         self.file = self.sandbox.path + "/yoda_config_test.txt"
         file = open(self.file, "w")
@@ -34,17 +34,17 @@ class TestConfig(unittest.TestCase):
         file.close()
 
     def tearDown(self):
-        """ Remove test file """
+        """Remove test file."""
         os.remove(self.file)
 
     def test_init(self):
         file = "/tmp/yoda_config.txt"
-        conf = Config(file)
+        Config(file)
         self.assertTrue(os.path.exists(file))
         os.remove(file)
 
     def test_get(self):
-        """ Test get configuration """
+        """Test get configuration."""
         conf = Config(self.file)
         config = conf.get()
         self.assertIn("foo", config)
@@ -54,7 +54,7 @@ class TestConfig(unittest.TestCase):
         self.assertEqual("buz", config["foo"]["bur"])
 
     def test_write(self):
-        """ Test write configuration """
+        """Test write configuration."""
         config = {
             "foobar": {
                 "baz": "foo",
