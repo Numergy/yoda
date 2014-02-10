@@ -14,7 +14,25 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
+import os
+from setuptools.command.install import install
 from setuptools import setup
+from subprocess import call
+
+
+class InstallCommand(install):
+    def run(self):
+        bash_completion = os.path.expanduser(
+            "~/.bash_completion.d/python-argcomplete.sh"
+        )
+        bash_dir = os.path.dirname(bash_completion)
+        if os.path.exists(bash_dir) is False:
+            os.mkdir(bash_dir)
+
+        if os.path.exists(bash_completion) is False:
+            os.system("activate-global-python-argcomplete --dest=" + bash_dir)
+
+        super(InstallCommand, self).run()
 
 setup(
     name="yoda",
@@ -26,12 +44,16 @@ setup(
     install_requires=[
         u"PyYaml",
         u"pycolorizer",
-        u"PrettyTable"
+        u"PrettyTable",
+        u"argcomplete"
     ],
     tests_require=[
         u"mock",
         u"nose",
         u"pep8",
         u"coverage"
-    ]
+    ],
+    cmdclass={
+        "install": InstallCommand,
+    }
 )
