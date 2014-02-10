@@ -30,7 +30,7 @@ class TestConfig(unittest.TestCase):
         self.sandbox = Sandbox()
         self.file = self.sandbox.path + "/yoda_config_test.txt"
         file = open(self.file, "w")
-        file.write("foo: \n  bar: baz\n  bur: buz\n")
+        file.write("foobar: \n  bar: baz\n  bur: buz\n")
         file.close()
 
     def tearDown(self):
@@ -43,16 +43,6 @@ class TestConfig(unittest.TestCase):
         self.assertTrue(os.path.exists(file))
         os.remove(file)
 
-    def test_get(self):
-        """Test get configuration."""
-        conf = Config(self.file)
-        config = conf.get()
-        self.assertIn("foo", config)
-        self.assertIn("bar", config["foo"])
-        self.assertEqual("baz", config["foo"]["bar"])
-        self.assertIn("bur", config["foo"])
-        self.assertEqual("buz", config["foo"]["bur"])
-
     def test_write(self):
         """Test write configuration."""
         config = {
@@ -63,9 +53,15 @@ class TestConfig(unittest.TestCase):
         }
 
         conf = Config(self.file)
-        conf.write(config)
+        conf.update(config)
+        self.assertEqual("foobar:\n  baz: foo\n  foo: bar\n", self.read_file())
+
+        del conf["foobar"]
+        conf["foo"] = "bar"
+        self.assertEqual("foo: bar\n", self.read_file())
+
+    def read_file(self):
         file = open(self.file, "r")
         content = file.read()
         file.close()
-
-        self.assertEqual("foobar:\n  baz: foo\n  foo: bar\n", content)
+        return content

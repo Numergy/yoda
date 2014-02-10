@@ -20,8 +20,8 @@ import unittest
 
 from mock import Mock
 from mock import patch
-from tests.utils import mock_config
 from tests.utils import Sandbox
+from yoda import Config
 from yoda.subcommand import Workspace
 from yoda.subcommand import WorkspaceSubcommands
 
@@ -30,6 +30,7 @@ builtins_module = "builtins" if sys.version[:1] == "3" else "__builtin__"
 
 class TestSubcommandWorkspace(unittest.TestCase):
     """Workspace subcommand test suite."""
+    sandbox = None
     parser = None
     subparser = None
     workspace = None
@@ -38,6 +39,9 @@ class TestSubcommandWorkspace(unittest.TestCase):
         """Setup test suite."""
         self.parser = argparse.ArgumentParser(prog="yoda_test")
         self.subparser = self.parser.add_subparsers(dest="subcommand_test")
+        self.sandbox = Sandbox()
+        self.sandbox.mkdir("tmp")
+        self.sandbox.mkdir("tmp/repo-name")
 
         config_data = {
             "workspaces": {
@@ -49,12 +53,16 @@ class TestSubcommandWorkspace(unittest.TestCase):
                 }
             }
         }
+
+        conf = Config(self.sandbox.path + "/config")
+        conf.update(config_data)
         self.workspace = Workspace()
         self.workspace.setup(
-            "workspace", mock_config(config_data), self.subparser)
+            "workspace", conf, self.subparser)
 
     def tearDown(self):
         """Tear down test suite."""
+        self.sandbox.destroy()
         self.parser = None
         self.workspace = None
 
@@ -175,6 +183,7 @@ class TestSubcommandWorkspace(unittest.TestCase):
 
 class TestWorkspacesSubcommands(unittest.TestCase):
     """Test suite for workspaces subcommands setup."""
+    config = None
     parser = None
     config_data = None
     directory = None
@@ -183,7 +192,6 @@ class TestWorkspacesSubcommands(unittest.TestCase):
         """Setup test suite."""
         self.sandbox = Sandbox()
         self.directory = self.sandbox.path + "/tmp"
-        self.sandbox.mkdir("tmp")
 
         self.parser = argparse.ArgumentParser(prog="yoda_test")
         self.config_data = {
@@ -194,6 +202,9 @@ class TestWorkspacesSubcommands(unittest.TestCase):
             }
         }
 
+        self.config = Config(self.sandbox.path + "/config")
+        self.config.update(self.config_data)
+
     def tearDown(self):
         """Tear down test suite."""
         self.sandbox.destroy()
@@ -203,7 +214,7 @@ class TestWorkspacesSubcommands(unittest.TestCase):
         """Test repository execute without subcommand."""
         subparser = self.parser.add_subparsers(dest="subcommand_test")
         ws_subcmds = WorkspaceSubcommands(
-            "yoda", subparser, mock_config(self.config_data)
+            "yoda", subparser, self.config
         )
         ws_subcmds.parse()
 
@@ -218,7 +229,7 @@ class TestWorkspacesSubcommands(unittest.TestCase):
         """Test parse add subcommands."""
         subparser = self.parser.add_subparsers(dest="subcommand_test")
         ws_subcmds = WorkspaceSubcommands(
-            "yoda", subparser, mock_config(self.config_data)
+            "yoda", subparser, self.config
         )
         ws_subcmds.parse()
 
@@ -234,11 +245,12 @@ class TestWorkspacesSubcommands(unittest.TestCase):
         """Test execute add subcommands when repo name already exists."""
         subparser = self.parser.add_subparsers(dest="subcommand")
         ws_subcmds = WorkspaceSubcommands(
-            "yoda", subparser, mock_config(self.config_data)
+            "yoda", subparser, self.config
         )
         ws_subcmds.parse()
 
         args = self.parser.parse_args(["yoda", "add", "repo-name"])
+        self.sandbox.mkdir("tmp")
         ws_subcmds.execute(args)
         self.assertTrue(os.path.exists(self.directory + "/repo-name"))
         self.assertRaises(ValueError, lambda: ws_subcmds.execute(args))
@@ -247,7 +259,7 @@ class TestWorkspacesSubcommands(unittest.TestCase):
         """Test execute add subcommand."""
         subparser = self.parser.add_subparsers(dest="subcommand")
         ws_subcmds = WorkspaceSubcommands(
-            "yoda", subparser, mock_config(self.config_data)
+            "yoda", subparser, self.config
         )
         ws_subcmds.parse()
 
@@ -257,6 +269,7 @@ class TestWorkspacesSubcommands(unittest.TestCase):
 
         with patch(
                 "yoda.subcommand.workspace.clone") as patch_clone:
+            self.sandbox.mkdir("tmp")
             ws_subcmds.execute(args)
             patch_clone.assert_called_once_with(
                 "repo-url",
@@ -266,22 +279,16 @@ class TestWorkspacesSubcommands(unittest.TestCase):
            Mock(side_effect=["n", "y"]))
     def test_execute_remove_subcommad(self):
         """Test execute remove subcommands."""
-        self.sandbox.mkdir("tmp/repo-name")
         self.config_data["workspaces"]["yoda"]["repositories"] = {
             "repo-name": self.directory + "/repo-name"
         }
         subparser = self.parser.add_subparsers(dest="subcommand")
         ws_subcmds = WorkspaceSubcommands(
-            "yoda", subparser, mock_config(self.config_data)
+            "yoda", subparser, self.config
         )
         ws_subcmds.parse()
 
         args = self.parser.parse_args(["yoda", "remove", "repo-name"])
-        ws_subcmds.execute(args)
-        self.assertTrue(os.path.exists(self.directory + "/repo-name"))
-        self.config_data["workspaces"]["yoda"]["repositories"] = {
-            "repo-name": self.directory + "/repo-name"
-        }
         ws_subcmds.execute(args)
         self.assertFalse(os.path.exists(self.directory + "/repo-name"))
 
@@ -292,7 +299,7 @@ class TestWorkspacesSubcommands(unittest.TestCase):
         """Test synchronize workspace."""
         subparser = self.parser.add_subparsers(dest="subcommand_test")
         ws_subcmds = WorkspaceSubcommands(
-            "yoda", subparser, mock_config(self.config_data)
+            "yoda", subparser, self.config
         )
         ws_subcmds.parse()
 
@@ -303,12 +310,11 @@ class TestWorkspacesSubcommands(unittest.TestCase):
 
     def test_execute_sync_subcommand(self):
         """Test execute sync subcommand."""
-        self.sandbox.mkdir("tmp/repo-name")
         self.config_data["workspaces"]["yoda"]["repositories"] = {
             "repo-name": self.directory + "/repo-name"
         }
         subparser = self.parser.add_subparsers(dest="subcommand")
-        config = mock_config(self.config_data)
+        config = self.config
         ws_subcmds = WorkspaceSubcommands(
             "yoda", subparser, config
         )
@@ -317,12 +323,10 @@ class TestWorkspacesSubcommands(unittest.TestCase):
         args = self.parser.parse_args(
             ["yoda", "sync", "yoda"]
         )
+        self.sandbox.mkdir("tmp")
 
         self.assertFalse(ws_subcmds.execute(args))
-        config.write.assert_called_once_with(self.config_data)
-        config.write.reset_mock()
         with patch(
                 "yoda.subcommand.workspace.Repository.__init__",
                 return_value=None):
             ws_subcmds.execute(args)
-            config.write.assert_called_once_with(self.config_data)

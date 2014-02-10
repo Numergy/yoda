@@ -16,9 +16,8 @@
 import os
 import unittest
 
-from tests.utils import mock_config
 from tests.utils import Sandbox
-
+from yoda import Config
 from yoda import find_path
 
 
@@ -56,7 +55,9 @@ class TestFindPathFunction(unittest.TestCase):
             }
         }
 
-        self.config = mock_config(config_data)
+        self.sandbox = Sandbox()
+        self.config = Config(self.sandbox.path + "/config")
+        self.config.update(config_data)
 
     def tearDown(self):
         """Destroy sandbox."""
@@ -95,5 +96,6 @@ class TestFindPathFunction(unittest.TestCase):
 
     def test_find_path_no_workspace(self):
         """Test find_path when no workspace registered."""
+        self.config = Config(self.sandbox.path + "/fake-config")
         self.assertEqual({}, find_path(
-            "yoda/yoda", mock_config({"workspaces": {}})))
+            "yoda/yoda", self.config))

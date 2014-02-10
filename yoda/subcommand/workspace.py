@@ -135,8 +135,7 @@ class WorkspaceSubcommands():
             self.sync(args.subcommand)
 
     def add(self, ws_name, repo_name, url, path):
-        config = self.config.get()
-        ws = config["workspaces"][ws_name]
+        ws = self.config["workspaces"][ws_name]
         repo_path = ws["path"] + "/" + repo_name if path is None else path
 
         if ("repositories" not in ws):
@@ -152,12 +151,11 @@ class WorkspaceSubcommands():
             os.mkdir(repo_path)
 
         ws["repositories"][repo_name] = repo_path
-        self.config.write(config)
         out = Output()
         out.success("Repository %s added" % repo_name)
 
     def remove(self, ws_name, repo_name):
-        config = self.config.get()
+        config = self.config
         if (repo_name not in config["workspaces"][ws_name]["repositories"]):
             raise ValueError(
                 "%s not found in %s workspace" % (repo_name, ws_name)
@@ -165,16 +163,14 @@ class WorkspaceSubcommands():
 
         repo_path = config["workspaces"][ws_name]["repositories"][repo_name]
         del config["workspaces"][ws_name]["repositories"][repo_name]
-        self.config.write(config)
         out = Output()
         if (out.yn_choice("Do you want to delete this repository?")):
             shutil.rmtree(repo_path)
 
     def sync(self, ws_name):
         """Synchronise workspace's repositories."""
-        config = self.config.get()
-        path = config["workspaces"][ws_name]["path"]
-        repositories = config["workspaces"][ws_name]["repositories"]
+        path = self.config["workspaces"][ws_name]["path"]
+        repositories = self.config["workspaces"][ws_name]["repositories"]
 
         repo_list = {}
 
@@ -187,7 +183,6 @@ class WorkspaceSubcommands():
                 repositories[r] = repo.path
                 repo_list[r] = repo.path
 
-        self.config.write(config)
         out = Output()
         out.success("Workspace `%s` synchronized" % ws_name)
         out.success("Added %d repositories:" % len(repo_list))

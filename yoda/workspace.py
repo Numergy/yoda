@@ -28,35 +28,27 @@ class Workspace:
         self.config = config
 
     def add(self, name, path):
-        """Add a workspace entry in user config file."""
+        """Add a workspace entry in user self.config file."""
         if not (exists(path)):
             raise ValueError("Workspace path `%s` doesn't exists." % path)
 
         if (self.exists(name)):
             raise ValueError("Workspace `%s` already exists." % name)
 
-        config = self.config.get()
-        config["workspaces"][name] = {"path": path, "repositories": {}}
-
-        self.config.write(config)
+        self.config["workspaces"][name] = {"path": path, "repositories": {}}
 
     def remove(self, name):
-        """Remove workspace from config file."""
-        config = self.config.get()
-
+        """Remove workspace from self.config file."""
         if not (self.exists(name)):
             raise ValueError("Workspace `%s` doesn't exists." % name)
 
-        config["workspaces"].pop(name, 0)
-
-        self.config.write(config)
+        self.config["workspaces"].pop(name, 0)
 
     def list(self):
         """List all available workspaces."""
-        config = self.config.get()
         ws_list = {}
 
-        for key, value in config["workspaces"].items():
+        for key, value in self.config["workspaces"].items():
             ws_list[key] = dict({"name": key}, **value)
 
         return ws_list

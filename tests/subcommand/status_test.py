@@ -18,12 +18,15 @@ import unittest
 
 from mock import Mock
 from mock import patch
-from tests.utils import mock_config
+from tests.utils import Sandbox
+from yoda import Config
 from yoda.subcommand import Status
 
 
 class TestSubcommandStatus(unittest.TestCase):
     """Status subcommand test suite."""
+    sandbox = None
+    config = None
     parser = None
     subparser = None
     status = None
@@ -44,7 +47,11 @@ class TestSubcommandStatus(unittest.TestCase):
                 }
             }
         }
-        self.status.setup("status", mock_config(config_data), self.subparser)
+
+        self.sandbox = Sandbox()
+        self.config = Config(self.sandbox.path + "/config")
+        self.config.update(config_data)
+        self.status.setup("status", self.config, self.subparser)
 
     def tearDown(self):
         """Tear down test suite."""

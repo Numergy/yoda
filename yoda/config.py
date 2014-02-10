@@ -17,29 +17,41 @@ import os.path
 import yaml
 
 
-class Config:
+class Config(dict):
 
     config_file = None
 
-    def __init__(self, config_file):
+    def __init__(self, config_file, *args, **kwargs):
         """Workspace object initialization."""
         self.config_file = config_file
-        if not os.path.exists(config_file):
-            config = {"workspaces": {}}
-            self.write(config)
+        super(Config, self).__init__(*args, **kwargs)
+        if not os.path.exists(config_file) or config_file is None:
+            self.update({"workspaces": {}})
+            self.write()
+        else:
+            file = open(self.config_file)
+            config = yaml.load(file.read())
+            file.close()
+            if config is not None:
+                self.update(config)
 
-    def get(self):
-        """Get config file contents."""
-        file = open(self.config_file)
-        config = yaml.load(file.read())
-        file.close()
-        return config
+    def __delitem__(self, key):
+        super(Config, self).__delitem__(key)
+        self.write()
 
-    def write(self, data):
+    def __setitem__(self, key, value):
+        super(Config, self).__setitem__(key, value)
+        self.write()
+
+    def update(self, *args, **kwargs):
+        super(Config, self).update(*args, **kwargs)
+        self.write()
+
+    def write(self):
         """
         Write config in configuration file.
         Data must me a dict.
         """
         file = open(self.config_file, "w+")
-        file.write(yaml.dump(data, default_flow_style=False))
+        file.write(yaml.dump(dict(self), default_flow_style=False))
         file.close()

@@ -27,7 +27,7 @@ from yoda.workspace import Workspace
 def find_path(name, config, wsonly=False):
     """Find path for given workspace and|or repository."""
     workspace = Workspace(config)
-    config = config.get()["workspaces"]
+    config = config["workspaces"]
 
     path_list = {}
 

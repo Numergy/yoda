@@ -46,8 +46,7 @@ class Update(Subcommand, object):
 
     def print_all(self):
         """Print all workspaces update."""
-        config = self.config.get()
-        for ws_name in config['workspaces']:
+        for ws_name in self.config['workspaces']:
             self.print_workspace(ws_name)
 
     def print_workspace(self, name):
