@@ -19,7 +19,7 @@ from yoda import Repository
 from yoda.subcommands import Subcommand
 
 
-class Update(Subcommand):
+class Update(Subcommand, object):
 
     def setup(self, name, config, subparser):
         self.subparser = subparser

@@ -19,7 +19,7 @@ from yoda import Output
 from yoda.subcommands import Subcommand
 
 
-class Jump(Subcommand):
+class Jump(Subcommand, object):
 
     def setup(self, name, config, subparser):
         self.subparser = subparser

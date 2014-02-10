@@ -13,11 +13,14 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
+import sys
 import unittest
 
 from mock import Mock
 from mock import patch
 from yoda import Output
+
+builtins_module = "builtins" if sys.version[:1] == "3" else "__builtin__"
 
 
 class TestOutput(unittest.TestCase):
@@ -54,7 +57,7 @@ class TestOutput(unittest.TestCase):
         self.out.error("foobar")
         self.stderr.write.assert_called_once_with("\x1b[31mfoobar\x1b[0m\n")
 
-    @patch("builtins.input",
+    @patch("%s.input" % builtins_module,
            Mock(side_effect=["n", "y", "1337"]))
     def test_yn_choice(self):
         """Test printing input question."""

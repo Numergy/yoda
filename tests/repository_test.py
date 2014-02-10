@@ -20,6 +20,7 @@ from mock import patch
 from tests.utils import Sandbox
 from yoda.adapter import Git as GitAdapter
 from yoda import Repository
+from yoda.repository import clone
 from yoda import RepositoryAdapterNotFound
 from yoda import RepositoryPathInvalid
 
@@ -66,10 +67,22 @@ class TestRepository(unittest.TestCase):
         repo = Repository("%s/git_repo" % self.sandbox.path)
         self.assertIsInstance(repo.adapter, GitAdapter)
 
+
+class TestClone(unittest.TestCase):
+    """Clone function test suite."""
+
+    def setUp(self):
+        """Setup sandbox."""
+        self.sandbox = Sandbox()
+
+    def tearDown(self):
+        """Destroy sandbox."""
+        self.sandbox.destroy()
+
     def test_clone_git_repository_http(self):
         """Test clone git repository over http."""
         with patch("yoda.repository.Git.clone") as patch_clone:
-            Repository.clone(
+            clone(
                 "https://git.project.org/foo/bar.git",
                 "%s/bar" % self.sandbox.path)
             patch_clone.assert_called_once_with(
@@ -78,7 +91,7 @@ class TestRepository(unittest.TestCase):
     def test_clone_git_repository_ssh(self):
         """Test clone git repository over ssh."""
         with patch("yoda.repository.Git.clone") as patch_clone:
-            Repository.clone(
+            clone(
                 "git@project.org:foo/bar",
                 "%s/bar" % self.sandbox.path)
             patch_clone.assert_called_once_with(
@@ -88,6 +101,6 @@ class TestRepository(unittest.TestCase):
         """Test clone git repository when adapter not found."""
         self.assertRaises(
             RepositoryAdapterNotFound,
-            Repository.clone,
+            clone,
             "https://project.org/foo/bar",
             "%s/bar" % self.sandbox.path)

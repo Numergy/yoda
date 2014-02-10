@@ -15,6 +15,7 @@
 
 import argparse
 import os
+import sys
 import unittest
 
 from mock import Mock
@@ -23,6 +24,8 @@ from tests.utils import mock_config
 from tests.utils import Sandbox
 from yoda.subcommand import Workspace
 from yoda.subcommand import WorkspaceSubcommands
+
+builtins_module = "builtins" if sys.version[:1] == "3" else "__builtin__"
 
 
 class TestSubcommandWorkspace(unittest.TestCase):
@@ -204,9 +207,12 @@ class TestWorkspacesSubcommands(unittest.TestCase):
         )
         ws_subcmds.parse()
 
-        args = self.parser.parse_args(["yoda"])
-
-        self.assertIsNone(ws_subcmds.execute(args))
+        try:
+            args = self.parser.parse_args(["yoda"])
+            self.assertIsNone(ws_subcmds.execute(args))
+        except SystemExit:
+            #Raised in Python 2.7.x
+            self.assertEqual("2.7", sys.version[:3])
 
     def test_parse_add(self):
         """Test parse add subcommands."""
@@ -250,13 +256,13 @@ class TestWorkspacesSubcommands(unittest.TestCase):
              "%s/repo-name" % self.directory, "-u", "repo-url"])
 
         with patch(
-                "yoda.subcommand.workspace.Repository.clone") as patch_clone:
+                "yoda.subcommand.workspace.clone") as patch_clone:
             ws_subcmds.execute(args)
             patch_clone.assert_called_once_with(
                 "repo-url",
                 "%s/repo-name" % self.directory)
 
-    @patch("builtins.input",
+    @patch("%s.input" % builtins_module,
            Mock(side_effect=["n", "y"]))
     def test_execute_remove_subcommad(self):
         """Test execute remove subcommands."""

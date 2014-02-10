@@ -17,15 +17,17 @@ import os
 from os import listdir
 from os.path import join
 from prettytable import PrettyTable
+
 import shutil
 from yoda import Output
 from yoda import Repository
+from yoda.repository import clone
 from yoda import RepositoryError
 from yoda.subcommands import Subcommand
 from yoda import Workspace as Ws
 
 
-class Workspace(Subcommand):
+class Workspace(Subcommand, object):
     ws = None
     subparser = None
 
@@ -144,7 +146,7 @@ class WorkspaceSubcommands():
             raise ValueError("Repository %s already exists" % repo_name)
 
         if url is not None:
-            Repository.clone(url, repo_path)
+            clone(url, repo_path)
 
         if (os.path.exists(repo_path) is False):
             os.mkdir(repo_path)
