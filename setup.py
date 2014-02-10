@@ -38,7 +38,7 @@ setup(
     name="yoda",
     version="0.1",
     description="",
-    license="",
+    license="GPLv3",
     scripts=["scripts/yoda"],
     packages=["yoda", "yoda.subcommand", "yoda.adapter"],
     install_requires=[
