@@ -15,6 +15,8 @@
 
 import argparse
 
+from yoda.version import get_version
+
 
 class Subcommand:
     config = None
@@ -38,9 +40,12 @@ class Subcommands:
             description="""Manage your repositories easier.
             Each workspaces are subcommands,
             type `yoda workspace_name -h` to show help.""")
+
         self.subparser = self.parser.add_subparsers(
             dest="subcommand",
             metavar="[subcommand]")
+
+        self.__generic_arguments(self.parser)
 
     def add_command(self, command):
         command_name = command.__class__.__name__.lower()
@@ -58,3 +63,9 @@ class Subcommands:
 
         if (args.subcommand in self.commands):
             self.commands[args.subcommand].execute(args)
+
+    def __generic_arguments(self, parser):
+        parser.add_argument(
+            "--version",
+            action="version",
+            version="%(prog)s {}".format(get_version()))
