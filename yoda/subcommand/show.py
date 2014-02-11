@@ -16,8 +16,10 @@
 from prettytable import PrettyTable
 from pycolorizer import Color
 
+from yoda import find_path
 from yoda import Output
 from yoda import Repository
+from yoda import RepositoryAdapterNotFound
 from yoda.subcommands import Subcommand
 from yoda import Workspace
 
@@ -59,10 +61,16 @@ class Show(Subcommand, object):
         color = Color()
         workspaces = self.workspace.list()
         named = "%s's repository name" % color.colored(name, "green")
-        table = PrettyTable([named])
+        table = PrettyTable([named, "SCM"])
         table.align[named] = "l"
-        for repo in workspaces[name]["repositories"]:
-            table.add_row([repo])
+        for repo_name in workspaces[name]["repositories"]:
+            fullname = "%s/%s" % (name, repo_name)
+            try:
+                repo = Repository(find_path(fullname, self.config)[fullname])
+                repo_scm = repo.get_scm()
+            except RepositoryAdapterNotFound:
+                repo_scm = None
+            table.add_row([repo_name, repo_scm])
 
         out.info(table)
 
