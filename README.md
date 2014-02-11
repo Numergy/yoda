@@ -22,14 +22,12 @@
 - coverage
 
 ## Installation
-Yoda is available only on github, it will be packaged on Pypi when first release.
-
-Yoda is compatible with following python version:
+Yoda is available only on Pypi and is compatible with following python version:
 - Python 2.7.x
 - Python 3.x
 
 ```bash
-pip install https://github.com/numergy/yoda.git
+pip install yoda
 ```
 
 Uninstall yoda:
