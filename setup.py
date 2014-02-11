@@ -20,7 +20,7 @@ from setuptools import setup
 from subprocess import call
 
 
-class InstallCommand(install):
+class InstallCommand(install, object):
     def run(self):
         bash_completion = os.path.expanduser(
             "~/.bash_completion.d/python-argcomplete.sh"
@@ -30,7 +30,7 @@ class InstallCommand(install):
             os.mkdir(bash_dir)
 
         if os.path.exists(bash_completion) is False:
-            os.system("activate-global-python-argcomplete --dest=" + bash_dir)
+            os.system(u"activate-global-python-argcomplete --dest=" + bash_dir)
 
         super(InstallCommand, self).run()
 
@@ -54,6 +54,6 @@ setup(
         u"coverage"
     ],
     cmdclass={
-        "install": InstallCommand,
+        u"install": InstallCommand,
     }
 )
