@@ -14,8 +14,8 @@
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 from yoda.config import Config
-from yoda.output import Output
 from yoda.logger import Logger
+from yoda.output import Output
 from yoda.repository import Repository
 from yoda.repository import RepositoryAdapterNotFound
 from yoda.repository import RepositoryError
