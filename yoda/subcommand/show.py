@@ -57,24 +57,37 @@ class Show(Subcommand, object):
         if not self.workspace.exists(name):
             raise ValueError("Workspace `%s` doesn't exists." % name)
 
-        out = Output()
         color = Color()
         workspaces = self.workspace.list()
-        named = "%s's repository name" % color.colored(name, "green")
-        table = PrettyTable([named, "SCM"])
-        table.align[named] = "l"
+
+        self.out.info("<== %s workspace ==>" % color.colored(name, "green"))
+        self.out.info("\tPath: %s" % workspaces[name]["path"])
+        self.out.info("\tNumber of repositories: %s"
+                      % color.colored(
+                          len(workspaces[name]["repositories"]),
+                          "blue"))
+
+        repo_colored = color.colored("Repositories", "blue")
+        trepositories = PrettyTable(
+            [repo_colored, "Path", "+"])
+        trepositories.align[repo_colored] = "l"
+        trepositories.align["Path"] = "l"
+
         for repo_name in workspaces[name]["repositories"]:
             fullname = "%s/%s" % (name, repo_name)
+            fullpath = find_path(fullname, self.config)[fullname]
             try:
-                repo = Repository(find_path(fullname, self.config)[fullname])
+                repo = Repository(fullpath)
                 repo_scm = repo.get_scm()
             except RepositoryAdapterNotFound:
                 repo_scm = None
-            table.add_row([repo_name, repo_scm])
+            trepositories.add_row(
+                [color.colored(repo_name, "blue"), fullpath, repo_scm])
 
-        out.info(table)
+        self.out.info(trepositories)
 
     def show_all(self):
         """Show details for all workspaces."""
         for ws in self.workspace.list().keys():
             self.show_workspace(ws)
+            self.out.info("\n\n")
