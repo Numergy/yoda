@@ -55,7 +55,7 @@ class Show(Subcommand, object):
     def show_workspace(self, name):
         """Show specific workspace."""
         if not self.workspace.exists(name):
-            raise ValueError("Workspace `%s` doesn't exists.")
+            raise ValueError("Workspace `%s` doesn't exists." % name)
 
         out = Output()
         color = Color()
