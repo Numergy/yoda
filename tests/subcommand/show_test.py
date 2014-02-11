@@ -110,8 +110,8 @@ class TestSubcommandShow(unittest.TestCase):
         self.show.show_workspace = Mock()
         self.show.execute(args)
 
-        calls = [call("my_workspace"), call("another_workspace")]
-        self.show.show_workspace.assert_has_calls(calls)
+        self.show.show_workspace.assert_has_calls([call("my_workspace")])
+        self.show.show_workspace.assert_has_calls([call("another_workspace")])
 
     def test_show_workspace_no_matches(self):
         """Test exec show subcommand when no matches."""
