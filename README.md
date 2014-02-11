@@ -17,6 +17,7 @@
 - mock
 - pep8
 - flake8
+- tox
 - nose
 - coverage
 

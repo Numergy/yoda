@@ -51,6 +51,7 @@ setup(
         u"nose",
         u"flake8",
         u"pep8",
+        u"tox",
         u"coverage"
     ],
     cmdclass={
