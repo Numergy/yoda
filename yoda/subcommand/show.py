@@ -65,13 +65,14 @@ class Show(Subcommand, object):
         self.out.info("\tNumber of repositories: %s"
                       % color.colored(
                           len(workspaces[name]["repositories"]),
-                          "blue"))
+                          "yellow"))
 
         repo_colored = color.colored("Repositories", "blue")
+        path_colored = color.colored("Path", "blue")
         trepositories = PrettyTable(
-            [repo_colored, "Path", "+"])
+            [repo_colored, path_colored, color.colored("+", "blue")])
         trepositories.align[repo_colored] = "l"
-        trepositories.align["Path"] = "l"
+        trepositories.align[path_colored] = "l"
 
         for repo_name in workspaces[name]["repositories"]:
             fullname = "%s/%s" % (name, repo_name)
@@ -82,7 +83,7 @@ class Show(Subcommand, object):
             except RepositoryAdapterNotFound:
                 repo_scm = None
             trepositories.add_row(
-                [color.colored(repo_name, "blue"), fullpath, repo_scm])
+                [color.colored(repo_name, "cyan"), fullpath, repo_scm])
 
         self.out.info(trepositories)
 
