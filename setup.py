@@ -36,7 +36,8 @@ class InstallCommand(install, object):
 setup(
     name="yoda",
     version="0.1b",
-    description="",
+    description="Multiple repositories management",
+    url="https://github.com/Numergy/yoda",
     license="GPLv3",
     scripts=["scripts/yoda"],
     packages=["yoda", "yoda.subcommand", "yoda.adapter"],
