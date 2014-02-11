@@ -13,13 +13,16 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
+import logging
 import os
+import shutil
+
 from os import listdir
 from os.path import join
 from prettytable import PrettyTable
+from pycolorizer import Color
 
-import shutil
-from yoda import Output
+from yoda import yn_choice
 from yoda import Repository
 from yoda.repository import clone
 from yoda import RepositoryError
@@ -30,10 +33,12 @@ from yoda import Workspace as Ws
 class Workspace(Subcommand, object):
     ws = None
     subparser = None
+    logger = None
 
     def setup(self, name, config, subparser):
         self.ws = Ws(config)
         self.subparser = subparser
+        self.logger = logging.getLogger(__name__)
         super(Workspace, self).setup(name, config, subparser)
 
     def parse(self):
@@ -60,13 +65,15 @@ class Workspace(Subcommand, object):
             self.parser.print_help()
             return None
 
-        out = Output()
+        color = Color()
         if (args.workspace_subcommand == "add"):
             self.ws.add(args.name, args.path)
-            out.success("Workspace `%s` successfuly added" % args.name)
+            self.logger.info(color.colored(
+                "Workspace `%s` successfuly added" % args.name, "green"))
         elif (args.workspace_subcommand == "remove"):
             self.ws.remove(args.name)
-            out.success("Workspace `%s` successfuly removed" % args.name)
+            self.logger.info(color.colored(
+                "Workspace `%s` successfuly removed" % args.name, "green"))
         elif (args.workspace_subcommand == "list"):
             table = PrettyTable(["Name", "Path"])
             table.align["Name"] = "l"
@@ -74,7 +81,7 @@ class Workspace(Subcommand, object):
             for key, ws in sorted(self.ws.list().items()):
                 table.add_row([key, ws["path"]])
 
-            out.info(table)
+            self.logger.info(table)
 
     def load_workspaces_subcommands(self, subcmd):
         for key, value in self.ws.list().items():
@@ -86,6 +93,7 @@ class WorkspaceSubcommands():
     name = None
     parser = None
     config = None
+    logger = None
 
     def __init__(self, name, subparser, config):
         """Initialize workspace name."""
@@ -94,6 +102,7 @@ class WorkspaceSubcommands():
             name,
             description="Manage repositories in %s workspace" % name)
         self.config = config
+        self.logger = logging.getLogger(__name__)
 
     def parse(self):
         subparser = self.parser.add_subparsers(dest="action")
@@ -151,8 +160,7 @@ class WorkspaceSubcommands():
             os.mkdir(repo_path)
 
         ws["repositories"][repo_name] = repo_path
-        out = Output()
-        out.success("Repository %s added" % repo_name)
+        self.logger.info("Repository %s added" % repo_name)
 
     def remove(self, ws_name, repo_name):
         config = self.config
@@ -163,8 +171,8 @@ class WorkspaceSubcommands():
 
         repo_path = config["workspaces"][ws_name]["repositories"][repo_name]
         del config["workspaces"][ws_name]["repositories"][repo_name]
-        out = Output()
-        if (out.yn_choice("Do you want to delete this repository?")):
+
+        if (yn_choice("Do you want to delete this repository?")):
             shutil.rmtree(repo_path)
 
     def sync(self, ws_name):
@@ -183,12 +191,10 @@ class WorkspaceSubcommands():
                 repositories[r] = repo.path
                 repo_list[r] = repo.path
 
-        out = Output()
-        out.success("Workspace `%s` synchronized" % ws_name)
-        out.success("Added %d repositories:" % len(repo_list))
+        logger = logging.getLogger(__name__)
+        color = Color()
+        logger.info("Workspace `%s` synchronized" % ws_name)
+        logger.info("Added %d repositories:" % len(repo_list))
         for repo_name, path in repo_list.items():
-            out.success(
-                out.color.colored(
-                    " - %s" % repo_name, "blue"
-                )
-            )
+            logger.info(color.colored(
+                " - %s" % repo_name, "blue"))

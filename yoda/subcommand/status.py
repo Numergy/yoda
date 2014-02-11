@@ -13,8 +13,11 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
+import logging
+
+from pycolorizer import Color
+
 from yoda import find_path
-from yoda import Output
 from yoda import Repository
 from yoda.subcommands import Subcommand
 
@@ -23,7 +26,7 @@ class Status(Subcommand, object):
 
     def setup(self, name, config, subparser):
         self.subparser = subparser
-        self.out = Output()
+        self.logger = logging.getLogger(__name__)
         super(Status, self).setup(name, config, subparser)
 
     def parse(self):
@@ -54,7 +57,7 @@ class Status(Subcommand, object):
         path_list = find_path(name, self.config)
 
         if len(path_list) == 0:
-            self.out.error("No matches for `%s`" % name)
+            self.logger.error("No matches for `%s`" % name)
             return False
 
         for name, path in path_list.items():
@@ -62,12 +65,13 @@ class Status(Subcommand, object):
 
     def print_status(self, repo_name, repo_path):
         """Print repository status."""
+        color = Color()
         try:
             repo = Repository(repo_path)
-            self.out.success(
-                "=> [%s] %s" % (repo_name, repo_path))
+            self.logger.info(color.colored(
+                "=> [%s] %s" % (repo_name, repo_path), "green"))
             repo.status()
-            self.out.info("\n")
+            self.logger.info("\n")
         except ValueError as e:
-            self.out.error(e)
+            self.logger.error(e)
             pass

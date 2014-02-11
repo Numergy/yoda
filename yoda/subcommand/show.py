@@ -13,11 +13,12 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
+import logging
+
 from prettytable import PrettyTable
 from pycolorizer import Color
 
 from yoda import find_path
-from yoda import Output
 from yoda import Repository
 from yoda import RepositoryAdapterNotFound
 from yoda.subcommands import Subcommand
@@ -27,11 +28,12 @@ from yoda import Workspace
 class Show(Subcommand, object):
 
     workspace = None
+    logger = None
 
     def setup(self, name, config, subparser):
         self.workspace = Workspace(config)
         self.subparser = subparser
-        self.out = Output()
+        self.logger = logging.getLogger(__name__)
         super(Show, self).setup(name, config, subparser)
 
     def parse(self):
@@ -60,12 +62,12 @@ class Show(Subcommand, object):
         color = Color()
         workspaces = self.workspace.list()
 
-        self.out.info("<== %s workspace ==>" % color.colored(name, "green"))
-        self.out.info("\tPath: %s" % workspaces[name]["path"])
-        self.out.info("\tNumber of repositories: %s"
-                      % color.colored(
-                          len(workspaces[name]["repositories"]),
-                          "yellow"))
+        self.logger.info("<== %s workspace ==>" % color.colored(name, "green"))
+        self.logger.info("\tPath: %s" % workspaces[name]["path"])
+        self.logger.info("\tNumber of repositories: %s"
+                         % color.colored(
+                             len(workspaces[name]["repositories"]),
+                             "yellow"))
 
         repo_colored = color.colored("Repositories", "blue")
         path_colored = color.colored("Path", "blue")
@@ -85,10 +87,10 @@ class Show(Subcommand, object):
             trepositories.add_row(
                 [color.colored(repo_name, "cyan"), fullpath, repo_scm])
 
-        self.out.info(trepositories)
+        self.logger.info(trepositories)
 
     def show_all(self):
         """Show details for all workspaces."""
         for ws in self.workspace.list().keys():
             self.show_workspace(ws)
-            self.out.info("\n\n")
+            self.logger.info("\n\n")

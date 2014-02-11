@@ -16,6 +16,7 @@
 import argparse
 import unittest
 
+from mock import call
 from mock import Mock
 from mock import patch
 from tests.utils import Sandbox
@@ -113,18 +114,18 @@ class TestSubcommandUpdate(unittest.TestCase):
         args = Mock()
         args.name = "foobar"
 
-        self.update.out = Mock()
+        self.update.logger = Mock()
         self.update.print_update = Mock()
 
         with patch("yoda.subcommand.update.find_path", return_value={}):
             self.assertFalse(self.update.execute(args))
-            self.update.out.error.assert_called_once_with(
+            self.update.logger.error.assert_called_once_with(
                 "No matches for `foobar`")
 
     def test_print_update(self):
         """Test print_update."""
-        self.update.out = Mock()
+        self.update.logger = Mock()
         with patch("yoda.subcommand.update.Repository"):
             self.update.print_update("foo", "bar")
-            self.update.out.success.assert_called_once_with(
-                "=> [foo] bar")
+            self.update.logger.info.assert_has_calls(
+                [call("\033[32m=> [foo] bar\033[0m")])

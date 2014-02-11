@@ -18,6 +18,8 @@ import logging
 import os
 import traceback
 
+from prettytable import PrettyTable
+
 BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(8)
 RESET_SEQ = "\033[0m"
 COLOR_SEQ = "\033[1;%dm"
@@ -25,7 +27,7 @@ COLORS = {
     'WARNING': YELLOW,
     'INFO': WHITE,
     'DEBUG': BLUE,
-    'CRITICAL': YELLOW,
+    'CRITICAL': RED,
     'ERROR': RED
 }
 FORMAT = """[%(asctime)s] [%(levelname)s] <%(name)s> - \
@@ -36,13 +38,23 @@ LFORMAT = "%(levelname)s: %(message)s"
 class Formatter(logging.Formatter):
     def format(self, record):
         rec = copy.copy(record)
+
         if isinstance(rec.msg, Exception) and self._fmt == FORMAT:
             rec.msg = "%s\n%s" % (rec.msg, traceback.format_exc())
 
+        if isinstance(rec.msg, PrettyTable):
+            rec.msg = "\n%s" % rec.msg
+
         level = record.levelname
+
         if level in COLORS:
             lvlname = COLOR_SEQ % (30 + COLORS[level]) + level + RESET_SEQ
-            record.levelname = lvlname
+            rec.levelname = lvlname
+
+        if level == "INFO" and self._fmt != FORMAT:
+            formatter = Formatter("%(message)s")
+            return formatter.format(rec)
+
         return logging.Formatter.format(self, rec)
 
 
@@ -60,5 +72,3 @@ class Logger(logging.Logger):
 
         self.addHandler(logfile)
         self.addHandler(console)
-
-        return

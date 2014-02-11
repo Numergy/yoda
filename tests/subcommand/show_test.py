@@ -125,11 +125,12 @@ class TestSubcommandShow(unittest.TestCase):
         args = Mock()
         args.name = "my_workspace"
 
-        with patch("yoda.subcommand.show.Output.info") as mock_output:
-            self.show.execute(args)
-            calls = [
-                call("<== \x1b[32mmy_workspace\x1b[0m workspace ==>"),
-                call("\tPath: /my_workspace"),
-                call("\tNumber of repositories: \x1b[33m1\x1b[0m")
-            ]
-            mock_output.assert_has_calls(calls)
+        self.show.logger = Mock()
+        self.show.execute(args)
+
+        calls = [
+            call("<== \x1b[32mmy_workspace\x1b[0m workspace ==>"),
+            call("\tPath: /my_workspace"),
+            call("\tNumber of repositories: \x1b[33m1\x1b[0m")
+        ]
+        self.show.logger.info.assert_has_calls(calls)

@@ -13,9 +13,10 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
+import logging
 import os
+
 from yoda import find_path
-from yoda import Output
 from yoda.subcommands import Subcommand
 
 
@@ -23,7 +24,7 @@ class Jump(Subcommand, object):
 
     def setup(self, name, config, subparser):
         self.subparser = subparser
-        self.out = Output()
+        self.logger = logging.getLogger(__name__)
         super(Jump, self).setup(name, config, subparser)
 
     def parse(self):
@@ -38,16 +39,16 @@ class Jump(Subcommand, object):
         path_list = find_path(args.name, self.config, True)
 
         if len(path_list) == 0:
-            self.out.error("No matches for `%s`" % args.name)
+            self.logger.error("No matches for `%s`" % args.name)
             return False
 
         for name, path in path_list.items():
             return self.__jump(path)
 
     def __jump(self, path):
-        self.out.info("Spawn new shell on `%s`" % path)
-        self.out.info(
+        self.logger.info("Spawn new shell on `%s`" % path)
+        self.logger.info(
             "Use Ctrl-D to exit and go back to the previous directory")
         os.system("cd %s; YODA_JUMP_SESSION=%s %s"
                   % (path, path, os.getenv("SHELL")))
-        self.out.info("Shell on `%s` closed." % path)
+        self.logger.info("Shell on `%s` closed." % path)

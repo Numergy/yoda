@@ -15,7 +15,6 @@
 
 from yoda.config import Config
 from yoda.logger import Logger
-from yoda.output import Output
 from yoda.repository import Repository
 from yoda.repository import RepositoryAdapterNotFound
 from yoda.repository import RepositoryError
@@ -54,3 +53,10 @@ def find_path(name, config, wsonly=False):
                 path_list["%s/%s" % (ws_name, repo_name)] = repo_path
 
     return path_list
+
+
+def yn_choice(message, default='n'):
+    choices = 'Y/n' if default.lower() in ('y', 'yes') else 'y/N'
+    choice = input("%s (%s) " % (message, choices))
+    values = ('y', 'yes', '') if default == 'y' else ('y', 'yes')
+    return choice.strip().lower() in values

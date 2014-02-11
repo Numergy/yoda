@@ -78,11 +78,11 @@ class TestSubcommandJump(unittest.TestCase):
         args = Mock()
         args.name = "foo/bar"
 
-        self.jump.out = Mock()
+        self.jump.logger = Mock()
 
         with patch("yoda.subcommand.jump.find_path", return_value={}):
             self.assertFalse(self.jump.execute(args))
-            self.jump.out.error.assert_called_once_with(
+            self.jump.logger.error.assert_called_once_with(
                 "No matches for `foo/bar`")
 
     def test_exec_jump_method(self):
@@ -90,7 +90,7 @@ class TestSubcommandJump(unittest.TestCase):
         args = Mock()
         args.name = "foo/bar"
 
-        self.jump.out = Mock()
+        self.jump.logger = Mock()
         os_system = Mock()
 
         with patch("os.system", return_value=os_system):
@@ -104,4 +104,4 @@ class TestSubcommandJump(unittest.TestCase):
                     call("Use Ctrl-D to exit and go "
                          "back to the previous directory"),
                     call("Shell on `/tmp/yoda/baz` closed.")]
-                assert self.jump.out.info.mock_calls == calls
+                assert self.jump.logger.info.mock_calls == calls

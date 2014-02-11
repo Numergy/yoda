@@ -14,11 +14,16 @@
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 import os
+import sys
 import unittest
+
+from mock import Mock
+from mock import patch
 
 from tests.utils import Sandbox
 from yoda import Config
 from yoda import find_path
+from yoda import yn_choice
 
 
 class TestFindPathFunction(unittest.TestCase):
@@ -99,3 +104,16 @@ class TestFindPathFunction(unittest.TestCase):
         self.config = Config(self.sandbox.path + "/fake-config")
         self.assertEqual({}, find_path(
             "yoda/yoda", self.config))
+
+builtins_module = "builtins" if sys.version[:1] == "3" else "__builtin__"
+
+
+class YNChoiceTest(unittest.TestCase):
+    """Test suite for yn_choice function."""
+    @patch("%s.input" % builtins_module,
+           Mock(side_effect=["n", "y", "1337"]))
+    def test_yn_choice(self):
+        """Test printing input question."""
+        self.assertFalse(yn_choice("Test?"))
+        self.assertTrue(yn_choice("Test?"))
+        self.assertFalse(yn_choice("Test?"))
