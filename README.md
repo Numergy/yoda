@@ -40,21 +40,22 @@ pip uninstall yoda
 ## Usage
 ```bash
 $ yoda --help
-usage: yoda [-h] [--version] [subcommand] ...
+usage: yoda [-h] [-d] [--version] [subcommand] ...
 
 Manage your repositories easier. Each workspaces are subcommands, type `yoda
 workspace_name -h` to show help.
 
 positional arguments:
   [subcommand]
-      show        Show workspace details
-      jump        Jump to directory
-      status      Show repositories status
-      update      Update repositories
-      workspace   Workspace managment
+    jump        Jump to directory
+    update      Update repositories
+    status      Show repositories status
+    workspace   Workspace managment
+    show        Show workspace details
 
 optional arguments:
   -h, --help    show this help message and exit
+  -d, --debug   show debug informations
   --version     show program's version number and exit
 ```
 
