@@ -1,4 +1,4 @@
-# YODA
+# YODA | [![Build Status](https://travis-ci.org/Numergy/yoda.png?branch=master)](https://travis-ci.org/Numergy/yoda)
 
 ```
  ::\`--._,'.::.`._.--'/:: Multiple
