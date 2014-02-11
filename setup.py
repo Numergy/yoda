@@ -34,7 +34,7 @@ class InstallCommand(install, object):
         super(InstallCommand, self).run()
 
 setup(
-    name="Yoda",
+    name="yoda",
     version="0.1b",
     description="",
     license="GPLv3",

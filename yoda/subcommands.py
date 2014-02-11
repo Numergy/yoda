@@ -36,7 +36,7 @@ class Subcommands:
     def __init__(self, config):
         self.config = config
         self.parser = argparse.ArgumentParser(
-            prog="yoda",
+            prog="Yoda",
             description="""Manage your repositories easier.
             Each workspaces are subcommands,
             type `yoda workspace_name -h` to show help.""")
