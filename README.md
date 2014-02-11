@@ -160,6 +160,19 @@ autoload -U compinit
 compinit -i
 ```
 
+## Bash completions
+Yoda use [argcomplete](https://github.com/kislyuk/argcomplete) for bash completion.
+
+Global completion requires bash support for `complete -D`, which was introduced in bash 4.2. On older
+systems, you will need to update bash to use this feature. Check the version of the running copy of bash with
+`echo $BASH_VERSION`.
+
+If global completion is not activated, put this piece of code in your `.bashrc`.
+
+```bash
+eval "$(register-python-argcomplete yoda)"
+```
+
 ## Running tests
 In project root directory, run following command to
 
