@@ -15,7 +15,7 @@
 
 import argparse
 
-from yoda.version import get_version
+from yoda.version import custom_version_output
 
 
 class Subcommand:
@@ -68,4 +68,4 @@ class Subcommands:
         parser.add_argument(
             "--version",
             action="version",
-            version="%(prog)s {}".format(get_version()))
+            version="%s" % custom_version_output())

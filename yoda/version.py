@@ -16,8 +16,25 @@
 
 import pkg_resources
 
+from pycolorizer import Color
+from yoda import Output
+
 
 def get_version():
+    """Get version from package resources."""
     requirement = pkg_resources.Requirement.parse("yoda")
     provider = pkg_resources.get_provider(requirement)
     return provider.version
+
+
+def custom_version_output():
+    """Print customized version for --version option."""
+    out = Output()
+    color = Color()
+    out.info("""
+ ::\`--._,'.::.`._.--'/:: Multiple
+ ::::.  ` __::__ '  .::::   repositories
+ ::::::-:.`'..`'.:-::::::          manager
+ ::::::::\ `--' /::::::::
+""")
+    return "Yoda %s" % color.colored(get_version(), "blue")
