@@ -181,7 +181,10 @@ To run unittests:
 `$ nosetests`
 
 To check code style:
-`$ pep8 ./`
+```bash
+$ pep8 ./
+$ flake8 ./
+```
 
 ## License
 See [COPYING](https://github.com/Numergy/yoda/blob/master/COPYING) file.
