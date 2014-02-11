@@ -15,23 +15,7 @@
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 import os
-from setuptools.command.install import install
 from setuptools import setup
-
-
-class InstallCommand(install, object):
-    def run(self):
-        bash_completion = os.path.expanduser(
-            "~/.bash_completion.d/python-argcomplete.sh"
-        )
-        bash_dir = os.path.dirname(bash_completion)
-        if os.path.exists(bash_dir) is False:
-            os.mkdir(bash_dir)
-
-        if os.path.exists(bash_completion) is False:
-            os.system(u"activate-global-python-argcomplete --dest=" + bash_dir)
-
-        super(InstallCommand, self).run()
 
 setup(
     name="yoda",
@@ -55,7 +39,4 @@ setup(
         u"tox",
         u"coverage"
     ],
-    cmdclass={
-        u"install": InstallCommand,
-    }
 )

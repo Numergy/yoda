@@ -149,7 +149,7 @@ optional arguments:
 ```
 
 ## Zsh completions
-To Enable zsh completions, copy file `tools/zsh-completions/_yoda` in your zsh completions directory.
+To enable zsh completions, copy file `tools/zsh-completions/_yoda` in your zsh completions directory.
 Be sure you have enabled the zsh completions system.
 
 For example with completions directory `~/.zsh.d/completions/`:
@@ -162,9 +162,12 @@ compinit -i
 ## Bash completions
 Yoda use [argcomplete](https://github.com/kislyuk/argcomplete) for bash completion.
 
-Global completion requires bash support for `complete -D`, which was introduced in bash 4.2. On older
-systems, you will need to update bash to use this feature. Check the version of the running copy of bash with
-`echo $BASH_VERSION`.
+To enable bash completions, you must execute `activate-global-python-argcomplete` command that will try to install the file
+`bash_completion.d/python-argcomplete.sh` into an appropriate location on your system
+(`/etc/bash_completion.d/` or `~/.bash_completion.d/`). If it fails, but you know the correct location of your bash completion scripts directory, you can specify it with `--dest`:
+```bash
+activate-global-python-argcomplete --dest=/path/to/bash_completion.d
+```
 
 If global completion is not activated, put this piece of code in your `.bashrc`.
 
