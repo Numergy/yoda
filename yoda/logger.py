@@ -62,15 +62,19 @@ class Logger(logging.Logger):
     def __init__(self, name):
         logging.Logger.__init__(self, name, logging.DEBUG)
 
+    def set_file_handler(self, logfile):
+        """Set FileHandler"""
+        handler = logging.FileHandler(logfile)
+        handler.setLevel(logging.NOTSET)
+        handler.setFormatter(Formatter(FORMAT))
+
+        self.addHandler(handler)
+
+    def set_console_handler(self, debug=False):
+        """Set Console handler."""
         console = logging.StreamHandler()
         console.setFormatter(Formatter(LFORMAT))
-        console.setLevel(logging.INFO)
+        if not debug:
+            console.setLevel(logging.INFO)
 
-        #FIXME: Hardcoded filepath, put him in config file!
-        logfile = logging.FileHandler(
-            "%s/.yoda.log" % os.environ.get("HOME"))
-        logfile.setLevel(logging.NOTSET)
-        logfile.setFormatter(Formatter(FORMAT))
-
-        self.addHandler(logfile)
         self.addHandler(console)

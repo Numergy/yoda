@@ -30,8 +30,15 @@ from yoda.subcommand import Update
 from yoda.subcommand import Workspace
 
 logging.setLoggerClass(Logger)
+logger = logging.getLogger("yoda")
 
 yoda_config = Config("%s/.yodarc" % os.environ.get("HOME"))
+
+logfile = "%s/.yoda.log" % os.environ.get("HOME")
+if "logfile" in yoda_config:
+    logfile = yoda_config["logfile"]
+
+logger.set_file_handler(logfile)
 
 subcmd = Subcommands(yoda_config)
 subcmd.add_command(Show())
@@ -46,6 +53,8 @@ subcmd.parse()
 argcomplete.autocomplete(subcmd.parser)
 
 args = subcmd.parser.parse_args()
+logger.set_console_handler(True if args.debug else False)
+
 try:
     subcmd.execute(args)
 except Exception as e:
