@@ -184,4 +184,4 @@ To check code style:
 `$ pep8 ./`
 
 ## License
-See COPYING file.
+See [COPYING](https://github.com/Numergy/yoda/blob/master/COPYING) file.
