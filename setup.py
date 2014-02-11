@@ -17,7 +17,6 @@
 import os
 from setuptools.command.install import install
 from setuptools import setup
-from subprocess import call
 
 
 class InstallCommand(install, object):
