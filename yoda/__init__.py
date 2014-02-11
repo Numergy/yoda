@@ -15,6 +15,7 @@
 
 from yoda.config import Config
 from yoda.output import Output
+from yoda.logger import Logger
 from yoda.repository import Repository
 from yoda.repository import RepositoryAdapterNotFound
 from yoda.repository import RepositoryError

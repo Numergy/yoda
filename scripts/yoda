@@ -15,20 +15,23 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 import argcomplete
+import logging
 import os
 
 from yoda import Config
-from yoda import Output
+from yoda import Logger
 from yoda import Subcommands
 
 from yoda.subcommand import Jump
 from yoda.subcommand import Show
 from yoda.subcommand import Status
 from yoda.subcommand import Update
+
 from yoda.subcommand import Workspace
 
+logging.setLoggerClass(Logger)
+
 yoda_config = Config("%s/.yodarc" % os.environ.get("HOME"))
-out = Output()
 
 subcmd = Subcommands(yoda_config)
 subcmd.add_command(Show())
@@ -46,4 +49,5 @@ args = subcmd.parser.parse_args()
 try:
     subcmd.execute(args)
 except Exception as e:
-    out.error(e)
+    logger = logging.getLogger(__name__)
+    logger.error(e)
