@@ -1,0 +1,107 @@
+#compdef yoda
+
+typeset -A opt_args
+
+_arguments -C \
+  '1:cmd:->cmds' \
+  '2:subcmd:->subcmds' \
+  '3:subsubcmd:->subsubcmds' \
+&& ret=0
+
+if [ -z "$YODA_WORKSPACE_LIST" ]; then
+    YODA_WORKSPACE_LIST=()
+    for ws in $(python -c "from yoda import Config, Workspace; ws = Workspace(Config('$HOME/.yodarc')); print('\n'.join(ws.list().keys()))"); do
+        YODA_WORKSPACES+=($ws)
+        YODA_WORKSPACE_LIST+="$ws:$ws workspace"
+    done
+fi
+
+if [ -z "$YODA_REPOSITORY_LIST" ]; then
+    YODA_REPOSITORY_LIST=()
+    for repo in $(echo -e "from yoda import Config, Workspace; ws = Workspace(Config('$HOME/.yodarc'))\nfor k, v in ws.list().items():\n\tfor repo in v['repositories']: print('%s/%s' % (k, repo))" | python); do
+        YODA_REPOSITORY_LIST+="$repo:$repo repository"
+    done
+fi
+
+case "$state" in
+  (cmds)
+     local commands; commands=(
+      'workspace:Workspace managment.'
+      'jump:Jump to a workspace or repository.'
+      'status:Show repositories status.'
+      'update:Update some repositories.'
+      'show:Show workspace details.'
+     )
+
+     for ws in $YODA_WORKSPACE_LIST; do; commands+=$ws; done
+
+     _describe -t commands 'command' commands && ret=0
+  ;;
+
+  (subcmds)
+    case $line[1] in
+        (workspace)
+            local workspaces; workspaces=(
+                'add:Add workspace'
+                'remove:Remove workspace'
+                'list:List all workspaces')
+
+            _describe -t workspaces 'workspace' workspaces && ret=0
+            ;;
+        (jump)
+            local jumps; jumps=()
+            for ws in $YODA_WORKSPACE_LIST; do; jumps+=$ws; done
+            for repo in $YODA_REPOSITORY_LIST; do; jumps+=$repo; done
+            _describe -t jumps 'jump' jumps && ret=0
+            ;;
+        (show)
+            local shows; shows=()
+            for ws in $YODA_WORKSPACE_LIST; do; shows+=$ws; done
+            _describe -t shows 'show' shows && ret=0
+            ;;
+        (update)
+            local updates; updates=()
+            for ws in $YODA_WORKSPACE_LIST; do; updates+=$ws; done
+            for repo in $YODA_REPOSITORY_LIST; do; updates+=$repo; done
+            _describe -t updates 'update' updates && ret=0
+            ;;
+        (status)
+            local stats; stats=()
+            for ws in $YODA_WORKSPACE_LIST; do; stats+=$ws; done
+            for repo in $YODA_REPOSITORY_LIST; do; stats+=$repo; done
+            _describe -t stats 'status' stats && ret=0
+            ;;
+        (*)
+            for ws in $YODA_WORKSPACES; do
+                if [[ $ws == $line[1] ]]; then
+                    local workspaces; workspaces=(
+                        "add:Add repository to $ws workspace."
+                        "remove:Remove repository from $ws workspace."
+                        "sync:Synchronize all directories stored in $ws workspace.")
+                    _describe -t workspaces $ws workspaces && ret=0
+                fi
+            done
+        esac
+  ;;
+
+  (subsubcmds)
+    case $line[1] in
+        (workspace)
+            case $line[2] in
+                (remove)
+                    local workspaces; workspaces=()
+                    for ws in $YODA_WORKSPACE_LIST; do; workspaces+=$ws; done
+                    _describe -t workspaces 'workspace' workspaces && ret=0
+                ;;
+            esac
+        ;;
+    esac
+    ;;
+
+esac
+
+return 0
+
+## Local variables:
+## mode: shell-script
+## End:

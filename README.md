@@ -146,6 +146,17 @@ optional arguments:
   -h, --help         show this help message and exit
 ```
 
+## Zsh completions
+To Enable zsh completions, copy file `tools/zsh-completions/_yoda` in your zsh completions directory.
+Be sure you have enabled the zsh completions system.
+
+For example with completions directory `~/.zsh.d/completions/`:
+```zsh
+fpath=($HOME/.zsh.d/completions $fpath)
+autoload -U compinit
+compinit -i
+```
+
 ## Running tests
 In project root directory, run following command to
 
