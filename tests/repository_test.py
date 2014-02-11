@@ -67,6 +67,22 @@ class TestRepository(unittest.TestCase):
         repo = Repository("%s/git_repo" % self.sandbox.path)
         self.assertIsInstance(repo.adapter, GitAdapter)
 
+    def test_get_scm(self):
+        """Test get scm for a repository."""
+        self.sandbox.mkdir("git_repo")
+        self.sandbox.mkdir("git_repo/.git")
+
+        repo = Repository("%s/git_repo" % self.sandbox.path)
+        self.assertEquals("Git", repo.get_scm())
+
+    def test_get_scm_none(self):
+        """Test get scm for a repository when adapter is None."""
+        self.sandbox.mkdir("git_repo")
+        self.sandbox.mkdir("git_repo/.git")
+
+        repo = Repository("%s/git_repo" % self.sandbox.path)
+        repo.adapter = None
+        self.assertEquals(None, repo.get_scm())
 
 class TestClone(unittest.TestCase):
     """Clone function test suite."""

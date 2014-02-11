@@ -53,6 +53,12 @@ class Repository:
             if scm == ".git":
                 self.adapter = Git(path)
 
+    def get_scm(self):
+        """Get scm used as string."""
+        if self.adapter is None:
+            return None
+        return self.adapter.__class__.__name__
+
     def status(self):
         return self.adapter.status()
 
