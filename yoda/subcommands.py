@@ -66,6 +66,10 @@ class Subcommands:
 
     def __generic_arguments(self, parser):
         parser.add_argument(
+            "-d", "--debug",
+            action="store_true",
+            help="show debug informations")
+        parser.add_argument(
             "--version",
             action="version",
             version="%(prog)s {}".format(get_version()))
