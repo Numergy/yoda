@@ -8,3 +8,4 @@ __pycache__
 yoda.egg-info
 .project
 .pydevproject
+.python-version
