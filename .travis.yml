@@ -1,10 +1,11 @@
 language: python
-python:
-  - "2.7"
-  - "3.2"
-  - "3.3"
+python: 2.7
+env:
+    - TOX_ENV=py27
+    - TOX_ENV=py32
+    - TOX_ENV=py33
+    - TOX_ENV=pypy
+    - TOX_ENV=pep8
 script:
-  - nosetests
-  - flake8
-  - pep8
+    - tox -e $TOX_ENV
 install: pip install .
