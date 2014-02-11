@@ -13,8 +13,10 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
+import copy
 import logging
 import os
+import traceback
 
 BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(8)
 RESET_SEQ = "\033[0m"
@@ -33,12 +35,15 @@ LFORMAT = "%(levelname)s: %(message)s"
 
 class Formatter(logging.Formatter):
     def format(self, record):
-        #TODO: backtrace for errors
+        rec = copy.copy(record)
+        if isinstance(rec.msg, Exception) and self._fmt == FORMAT:
+            rec.msg = "%s\n%s" % (rec.msg, traceback.format_exc())
+
         level = record.levelname
         if level in COLORS:
             lvlname = COLOR_SEQ % (30 + COLORS[level]) + level + RESET_SEQ
             record.levelname = lvlname
-        return logging.Formatter.format(self, record)
+        return logging.Formatter.format(self, rec)
 
 
 class Logger(logging.Logger):
