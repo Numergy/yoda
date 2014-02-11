@@ -91,6 +91,23 @@ class TestWorkspace(unittest.TestCase):
              "path": "/bar",
              "repositories": {}}, list["bar"])
 
+    def test_get_workspace(self):
+        """Test get workspace from name."""
+        config_mock_data = {"workspaces": {
+            "foo": {"path": "/foo", "repositories": {}}}}
+        self.config.update(config_mock_data)
+
+        ws = Workspace(self.config)
+        self.assertEqual({
+            "name": "foo",
+            "path": "/foo",
+            "repositories": {}}, ws.get("foo"))
+
+    def test_get_workspace_none(self):
+        """Test get workspace that doesn't exists."""
+        ws = Workspace(self.config)
+        self.assertIsNone(ws.get("foo"))
+
     def test_exists(self):
         """Test exists workspace."""
         config_mock_data = {

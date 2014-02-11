@@ -53,6 +53,14 @@ class Workspace:
 
         return ws_list
 
+    def get(self, name):
+        """
+        Get workspace infos from name.
+        Return None if workspace doesn't exists.
+        """
+        ws_list = self.list()
+        return ws_list[name] if name in ws_list else None
+
     def exists(self, name):
         """Check if given workspace name exists."""
         return name in self.list().keys()
