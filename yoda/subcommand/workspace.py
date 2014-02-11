@@ -22,12 +22,12 @@ from os.path import join
 from prettytable import PrettyTable
 from pycolorizer import Color
 
-from yoda import yn_choice
 from yoda import Repository
 from yoda.repository import clone
 from yoda import RepositoryError
 from yoda.subcommands import Subcommand
 from yoda import Workspace as Ws
+from yoda import yn_choice
 
 
 class Workspace(Subcommand, object):
