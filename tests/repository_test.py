@@ -84,6 +84,7 @@ class TestRepository(unittest.TestCase):
         repo.adapter = None
         self.assertEquals(None, repo.get_scm())
 
+
 class TestClone(unittest.TestCase):
     """Clone function test suite."""
 

@@ -16,9 +16,6 @@
 
 import pkg_resources
 
-from pycolorizer import Color
-from yoda import Output
-
 
 def get_version():
     """Get version from package resources."""
