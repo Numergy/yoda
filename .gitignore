@@ -9,3 +9,4 @@ yoda.egg-info
 .project
 .pydevproject
 .python-version
+.tox
