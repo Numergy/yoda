@@ -11,10 +11,12 @@
 - PyYaml
 - pycolorizer
 - PrettyTable
+- argcomplete
 
 ### Tests packages
 - mock
 - pep8
+- flake8
 - nose
 - coverage
 
