@@ -60,14 +60,16 @@ class Formatter(logging.Formatter):
 
 class Logger(logging.Logger):
     def __init__(self, name):
-        logging.Logger.__init__(self, name, logging.INFO)
+        logging.Logger.__init__(self, name, logging.DEBUG)
 
         console = logging.StreamHandler()
         console.setFormatter(Formatter(LFORMAT))
+        console.setLevel(logging.INFO)
 
         #FIXME: Hardcoded filepath, put him in config file!
         logfile = logging.FileHandler(
             "%s/.yoda.log" % os.environ.get("HOME"))
+        logfile.setLevel(logging.NOTSET)
         logfile.setFormatter(Formatter(FORMAT))
 
         self.addHandler(logfile)
