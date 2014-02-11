@@ -45,18 +45,22 @@ class TestSubcommandShow(unittest.TestCase):
                 "my_workspace": {
                     "path": "/my_workspace",
                     "repositories": {
-                        "repo1": "/my_workspace/repo1"
+                        "repo1": self.sandbox.path + "/my_workspace/repo1"
                     }
                 },
                 "another_workspace": {
                     "path": "/another_workspace",
                     "repositories": {
-                        "repo1": "/another_workspace/repo1"
+                        "repo1": self.sandbox.path + "/another_workspace/repo1"
                     }
                 }
             }
         }
 
+        self.sandbox.mkdir("my_workspace")
+        self.sandbox.mkdir("my_workspace/repo1")
+        self.sandbox.mkdir("another_workspace")
+        self.sandbox.mkdir("another_workspace/repo1")
         self.config.update(config_data)
 
         self.show = Show()
@@ -115,3 +119,17 @@ class TestSubcommandShow(unittest.TestCase):
         args.name = "not_exists"
 
         self.assertRaises(ValueError, self.show.execute, args)
+
+    def test_show_workspace(self):
+        """Test exec show subcommand with workspaces."""
+        args = Mock()
+        args.name = "my_workspace"
+
+        with patch("yoda.subcommand.show.Output.info") as mock_output:
+            self.show.execute(args)
+            calls = [
+                call("<== \x1b[32mmy_workspace\x1b[0m workspace ==>"),
+                call("\tPath: /my_workspace"),
+                call("\tNumber of repositories: \x1b[33m1\x1b[0m")
+            ]
+            mock_output.assert_has_calls(calls)
