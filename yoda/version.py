@@ -25,16 +25,3 @@ def get_version():
     requirement = pkg_resources.Requirement.parse("yoda")
     provider = pkg_resources.get_provider(requirement)
     return provider.version
-
-
-def custom_version_output():
-    """Print customized version for --version option."""
-    out = Output()
-    color = Color()
-    out.info("""
- ::\`--._,'.::.`._.--'/:: Multiple
- ::::.  ` __::__ '  .::::   repositories
- ::::::-:.`'..`'.:-::::::          manager
- ::::::::\ `--' /::::::::
-""")
-    return "Yoda %s" % color.colored(get_version(), "blue")
