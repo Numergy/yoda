@@ -176,12 +176,15 @@ eval "$(register-python-argcomplete yoda)"
 ```
 
 ## Running tests
-In project root directory, run following command to
+Yoda use [tox](tox.readthedocs.org), a test command line tool.  
+Run `tox` command in the project's root directory to run unittests, and flake8/pep8 checkers.
+
+You can also run each tests independently:
 
 To run unittests:
 `$ nosetests`
 
-To check code style:
+To run checkers:
 ```bash
 $ pep8 ./
 $ flake8 ./
