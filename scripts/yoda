@@ -26,19 +26,20 @@ from yoda.subcommand import Jump
 from yoda.subcommand import Show
 from yoda.subcommand import Status
 from yoda.subcommand import Update
-
 from yoda.subcommand import Workspace
+
+yoda_config = Config("%s/.yodarc" % os.environ.get("HOME"))
+yoda_dir = "%s/.yoda.d/" % os.environ.get("HOME")
+log_file = "%s/yoda.log" % yoda_dir
+if "logfile" in yoda_config:
+    log_file = yoda_config["logfile"]
+
+if not os.path.exists(yoda_dir):
+    os.mkdir(yoda_dir)
 
 logging.setLoggerClass(Logger)
 logger = logging.getLogger("yoda")
-
-yoda_config = Config("%s/.yodarc" % os.environ.get("HOME"))
-
-logfile = "%s/.yoda.log" % os.environ.get("HOME")
-if "logfile" in yoda_config:
-    logfile = yoda_config["logfile"]
-
-logger.set_file_handler(logfile)
+logger.set_file_handler(log_file)
 
 subcmd = Subcommands(yoda_config)
 subcmd.add_command(Show())
