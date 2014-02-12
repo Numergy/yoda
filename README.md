@@ -1,4 +1,4 @@
-# YODA | [![Build Status](https://travis-ci.org/Numergy/yoda.png?branch=master)](https://travis-ci.org/Numergy/yoda)
+# YODA | [![Pypi package](http://badge.fury.io/py/yoda.png)](http://badge.fury.io/py/yoda) [![Build Status](https://travis-ci.org/Numergy/yoda.png?branch=master)](https://travis-ci.org/Numergy/yoda)
 
 ```
  ::\`--._,'.::.`._.--'/:: Multiple
