@@ -8,6 +8,11 @@
 ```
 ## Requirements
 
+Yoda is compatible with following python versions:
+- Python 2.7.x
+- Python 3.x
+
+### Dependencies
 - PyYaml
 - pycolorizer
 - PrettyTable
@@ -22,17 +27,19 @@
 - coverage
 
 ## Installation
-Yoda is available only on Pypi and is compatible with following python version:
-- Python 2.7.x
-- Python 3.x
-
+Yoda is packaged on Pypi, so you can install it with the following command:  
 ```bash
 pip install yoda
 ```
 
-Uninstall yoda:
+to uninstall yoda:
 ```bash
 pip uninstall yoda
+```
+
+You can also install development version:
+```bash
+pip install https://github.com/Numergy/yoda
 ```
 
 ## Usage
@@ -176,7 +183,7 @@ eval "$(register-python-argcomplete yoda)"
 ```
 
 ## Running tests
-Yoda use [tox](tox.readthedocs.org), a test command line tool.  
+Yoda use [tox](http://tox.readthedocs.org), a test command line tool.  
 Run `tox` command in the project's root directory to run unittests, and flake8/pep8 checkers.
 
 You can also run each tests independently:
