@@ -39,7 +39,7 @@ pip uninstall yoda
 
 You can also install development version:
 ```bash
-pip install https://github.com/Numergy/yoda
+pip install https://github.com/Numergy/yoda/archive/master.zip
 ```
 
 ## Usage
