@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <title>Yoda by Numergy</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Yoda</h1>
+        <h2>Multiple repositories management</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/Numergy/yoda/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/Numergy/yoda/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/Numergy/yoda" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1>
+<a name="yoda" class="anchor" href="#yoda"><span class="octicon octicon-link"></span></a>YODA</h1>
+
+<pre><code> ::\`--._,'.::.`._.--'/:: Multiple
+ ::::.  ` __::__ '  .::::    repositories
+ ::::::-:.`'..`'.:-::::::        management.
+ ::::::::\ `--' /:::::::: 
+</code></pre>
+
+<h2>
+<a name="requirements" class="anchor" href="#requirements"><span class="octicon octicon-link"></span></a>Requirements</h2>
+
+<ul>
+<li>PyYaml</li>
+<li>pycolorizer</li>
+<li>PrettyTable</li>
+<li>argcomplete</li>
+</ul><h3>
+<a name="tests-packages" class="anchor" href="#tests-packages"><span class="octicon octicon-link"></span></a>Tests packages</h3>
+
+<ul>
+<li>mock</li>
+<li>pep8</li>
+<li>flake8</li>
+<li>tox</li>
+<li>nose</li>
+<li>coverage</li>
+</ul><h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Yoda is available only on Pypi and is compatible with following python version:</p>
+
+<ul>
+<li>Python 2.7.x</li>
+<li>Python 3.x</li>
+</ul><div class="highlight highlight-bash"><pre>pip install yoda
+</pre></div>
+
+<p>Uninstall yoda:</p>
+
+<div class="highlight highlight-bash"><pre>pip uninstall yoda
+</pre></div>
+
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span>yoda --help
+usage: yoda <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-d<span class="o">]</span> <span class="o">[</span>--version<span class="o">]</span> <span class="o">[</span>subcommand<span class="o">]</span> ...
+
+Manage your repositories easier. Each workspaces are subcommands, <span class="nb">type</span> <span class="sb">`</span>yoda
+workspace_name -h<span class="sb">`</span> to show help.
+
+positional arguments:
+  <span class="o">[</span>subcommand<span class="o">]</span>
+    jump        Jump to directory
+    update      Update repositories
+    status      Show repositories status
+    workspace   Workspace managment
+    show        Show workspace details
+
+optional arguments:
+  -h, --help    show this <span class="nb">help </span>message and <span class="nb">exit</span>
+  -d, --debug   show debug informations
+  --version     show program<span class="err">'</span>s version number and <span class="nb">exit</span>
+</pre></div>
+
+<h4>
+<a name="yoda-workspace" class="anchor" href="#yoda-workspace"><span class="octicon octicon-link"></span></a>yoda workspace</h4>
+
+<p>The <code>workspace</code> subcommand allows you to manages your yoda's workspaces.
+A workspace contains some properties (path, repositories list).</p>
+
+<p>You can create workspace simply with a <code>name</code> and a <code>path</code>:</p>
+
+<div class="highlight highlight-bash"><pre>yoda workspace add ws_name /path/to/workspace
+</pre></div>
+
+<p>To remove a workspace:</p>
+
+<div class="highlight highlight-bash"><pre>yoda workspace remove ws_name
+</pre></div>
+
+<p>To print workspace list:</p>
+
+<div class="highlight highlight-bash"><pre>yoda workspace list
+</pre></div>
+
+<h4>
+<a name="yoda-show" class="anchor" href="#yoda-show"><span class="octicon octicon-link"></span></a>yoda show</h4>
+
+<p><code>show</code> subcommand allows you to print a workspace details. You can pass --all options to show details for all registered workspaces.</p>
+
+<div class="highlight highlight-bash"><pre>yoda show my_ws
+</pre></div>
+
+<h4>
+<a name="yoda-status" class="anchor" href="#yoda-status"><span class="octicon octicon-link"></span></a>yoda status</h4>
+
+<p><code>status</code> subcommand allows you to show repositories status in a workspace.</p>
+
+<p>For example, to show status of all repositories in <code>my_ws</code> workspace:</p>
+
+<div class="highlight highlight-bash"><pre>yoda status my_ws
+</pre></div>
+
+<p>You can show status for a single repository:</p>
+
+<div class="highlight highlight-bash"><pre>yoda status my_ws/my_repo
+yoda status my_repo
+</pre></div>
+
+<p>To show status of all workspaces, use <code>--all</code> option:</p>
+
+<div class="highlight highlight-bash"><pre>yoda status --all
+</pre></div>
+
+<h4>
+<a name="yoda-update" class="anchor" href="#yoda-update"><span class="octicon octicon-link"></span></a>yoda update</h4>
+
+<p><code>update</code> subcommand is similary of <code>status</code> subcommand.</p>
+
+<p>To update all repositories in <code>my_ws</code> workspace:</p>
+
+<div class="highlight highlight-bash"><pre>yoda update my_ws
+</pre></div>
+
+<p>For a single repository:</p>
+
+<div class="highlight highlight-bash"><pre>yoda update my_ws/my_repo
+</pre></div>
+
+<p>To update all workspaces:</p>
+
+<div class="highlight highlight-bash"><pre>yoda update --all
+</pre></div>
+
+<h4>
+<a name="yoda-jump" class="anchor" href="#yoda-jump"><span class="octicon octicon-link"></span></a>yoda jump</h4>
+
+<p><code>jump</code> subcommand allows you to spawn new shell in repository or workspace path.</p>
+
+<div class="highlight highlight-bash"><pre>sliim@host:~<span class="nv">$ </span>yoda jump my_ws/my_repo
+Spawn new shell on <span class="sb">`</span>/path/to/my_ws/my_repo/<span class="sb">`</span>
+Use Ctrl-D to <span class="nb">exit </span>and go back to the previous directory
+
+sliim@host:/path/to/my_ws/my_repo<span class="err">$</span>
+</pre></div>
+
+<h4>
+<a name="workspaces-subcommands" class="anchor" href="#workspaces-subcommands"><span class="octicon octicon-link"></span></a>Workspaces subcommands</h4>
+
+<p>Each defined workspace in yoda have subcommands, for example if you have a workspace named <code>my_ws</code> you can type:</p>
+
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span>yoda my_ws --help
+usage: yoda my_ws <span class="o">[</span>-h<span class="o">]</span> <span class="o">{</span>add,remove,sync<span class="o">}</span> ...
+
+Manage repositories in my_ws workspace
+
+positional arguments:
+  <span class="o">{</span>add,remove,sync<span class="o">}</span>
+    add              Add repository to my_ws workspace
+    remove           Remove repository from my_ws workspace
+    sync             Synchronize all directories stored in workspace
+
+optional arguments:
+  -h, --help         show this <span class="nb">help </span>message and <span class="nb">exit</span>
+</pre></div>
+
+<h2>
+<a name="zsh-completions" class="anchor" href="#zsh-completions"><span class="octicon octicon-link"></span></a>Zsh completions</h2>
+
+<p>To enable zsh completions, copy file <code>tools/zsh-completions/_yoda</code> in your zsh completions directory.
+Be sure you have enabled the zsh completions system.</p>
+
+<p>For example with completions directory <code>~/.zsh.d/completions/</code>:</p>
+
+<pre lang="zsh"><code>fpath=($HOME/.zsh.d/completions $fpath)
+autoload -U compinit
+compinit -i
+</code></pre>
+
+<h2>
+<a name="bash-completions" class="anchor" href="#bash-completions"><span class="octicon octicon-link"></span></a>Bash completions</h2>
+
+<p>Yoda use <a href="https://github.com/kislyuk/argcomplete">argcomplete</a> for bash completion.</p>
+
+<p>To enable bash completions, you must execute <code>activate-global-python-argcomplete</code> command that will try to install the file
+<code>bash_completion.d/python-argcomplete.sh</code> into an appropriate location on your system
+(<code>/etc/bash_completion.d/</code> or <code>~/.bash_completion.d/</code>). If it fails, but you know the correct location of your bash completion scripts directory, you can specify it with <code>--dest</code>:</p>
+
+<div class="highlight highlight-bash"><pre>activate-global-python-argcomplete --dest<span class="o">=</span>/path/to/bash_completion.d
+</pre></div>
+
+<p>If global completion is not activated, put this piece of code in your <code>.bashrc</code>.</p>
+
+<div class="highlight highlight-bash"><pre><span class="nb">eval</span> <span class="s2">"$(register-python-argcomplete yoda)"</span>
+</pre></div>
+
+<h2>
+<a name="running-tests" class="anchor" href="#running-tests"><span class="octicon octicon-link"></span></a>Running tests</h2>
+
+<p>In project root directory, run following command to</p>
+
+<p>To run unittests:
+<code>$ nosetests</code></p>
+
+<p>To check code style:</p>
+
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span>pep8 ./
+<span class="nv">$ </span>flake8 ./
+</pre></div>
+
+<h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>See <a href="https://github.com/Numergy/yoda/blob/master/COPYING">COPYING</a> file.</p>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
