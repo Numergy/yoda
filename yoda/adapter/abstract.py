@@ -16,6 +16,7 @@
 from abc import ABCMeta
 from abc import abstractmethod
 from distutils.spawn import find_executable
+import logging
 import subprocess
 
 
@@ -32,7 +33,20 @@ class Abstract:
     def execute(self, command, path=None):
         """Execute command with os.popen and return output."""
         self.check_executable()
-        subprocess.Popen(command, shell=True, cwd=path).communicate()
+        stdout, stderr = subprocess.Popen(
+            command,
+            shell=True,
+            cwd=path,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        ).communicate()
+
+        logger = logging.getLogger(__name__)
+        if stdout:
+            logger.info(stdout.decode("utf-8"))
+
+        if stderr:
+            logger.error(stderr.decode("utf-8"))
 
     def exec_on_path(self, command):
         """Execute command in repository path."""

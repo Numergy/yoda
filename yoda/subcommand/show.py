@@ -93,4 +93,4 @@ class Show(Subcommand, object):
         """Show details for all workspaces."""
         for ws in self.workspace.list().keys():
             self.show_workspace(ws)
-            self.logger.info("\n\n")
+            print("\n\n")

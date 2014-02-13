@@ -71,7 +71,7 @@ class Status(Subcommand, object):
             self.logger.info(color.colored(
                 "=> [%s] %s" % (repo_name, repo_path), "green"))
             repo.status()
-            self.logger.info("\n")
+            print("\n")
         except ValueError as e:
             self.logger.error(e)
             pass
