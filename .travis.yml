@@ -7,5 +7,8 @@ env:
     - TOX_ENV=pypy
 install:
     - pip install tox
+    - pip install coveralls --use-mirrors
 script:
     - tox -e $TOX_ENV
+after_success:
+    - coveralls
