@@ -30,13 +30,15 @@ from yoda.subcommand import Update
 from yoda.subcommand import Workspace
 
 yoda_config = Config("%s/.yodarc" % os.environ.get("HOME"))
-yoda_dir = "%s/.yoda.d/" % os.environ.get("HOME")
-log_file = "%s/yoda.log" % yoda_dir
+log_file = None
 if "logfile" in yoda_config:
     log_file = yoda_config["logfile"]
 
-if not os.path.exists(yoda_dir):
-    os.mkdir(yoda_dir)
+if log_file is None or os.access(os.path.dirname(log_file), os.W_OK) is False:
+    yoda_dir = "%s/.yoda.d/" % os.environ.get("HOME")
+    log_file = "%s/yoda.log" % yoda_dir
+    if not os.path.exists(yoda_dir):
+        os.mkdir(yoda_dir)
 
 logging.setLoggerClass(Logger)
 logger = logging.getLogger("yoda")
