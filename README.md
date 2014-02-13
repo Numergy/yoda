@@ -45,18 +45,19 @@ pip install https://github.com/Numergy/yoda/archive/master.zip
 ## Usage
 ```bash
 $ yoda --help
-usage: yoda [-h] [-d] [--version] [subcommand] ...
+usage: Yoda [-h] [-d] [--version] [subcommand] ...
 
 Manage your repositories easier. Each workspaces are subcommands, type `yoda
 workspace_name -h` to show help.
 
 positional arguments:
   [subcommand]
+    config      Get and set global configurations
+    workspace   Workspace managment
     jump        Jump to directory
     update      Update repositories
-    status      Show repositories status
-    workspace   Workspace managment
     show        Show workspace details
+    status      Show repositories status
 
 optional arguments:
   -h, --help    show this help message and exit
@@ -87,6 +88,14 @@ yoda workspace list
 `show` subcommand allows you to print a workspace details. You can pass --all options to show details for all registered workspaces.
 ```bash
 yoda show my_ws
+```
+
+#### yoda config
+`config` subcommand allows you to `set` and `get` yoda's configuration.
+```bash
+$ yoda config set logfile /var/log/yoda.log
+$ yoda config get logfile
+/var/log/yoda.log
 ```
 
 #### yoda status

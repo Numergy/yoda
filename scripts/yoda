@@ -22,6 +22,7 @@ from yoda import Config
 from yoda import Logger
 from yoda import Subcommands
 
+from yoda.subcommand import Config as CfgSubcommand
 from yoda.subcommand import Jump
 from yoda.subcommand import Show
 from yoda.subcommand import Status
@@ -46,6 +47,7 @@ subcmd.add_command(Show())
 subcmd.add_command(Status())
 subcmd.add_command(Update())
 subcmd.add_command(Jump())
+subcmd.add_command(CfgSubcommand())
 ws_cmd = Workspace()
 subcmd.add_command(ws_cmd)
 ws_cmd.load_workspaces_subcommands(subcmd)
