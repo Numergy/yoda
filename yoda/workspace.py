@@ -36,6 +36,7 @@ class Workspace:
             raise ValueError("Workspace `%s` already exists." % name)
 
         self.config["workspaces"][name] = {"path": path, "repositories": {}}
+        self.config.write()
 
     def remove(self, name):
         """Remove workspace from self.config file."""
@@ -43,6 +44,7 @@ class Workspace:
             raise ValueError("Workspace `%s` doesn't exists." % name)
 
         self.config["workspaces"].pop(name, 0)
+        self.config.write()
 
     def list(self):
         """List all available workspaces."""
