@@ -208,3 +208,6 @@ $ flake8 ./
 
 ## License
 See [COPYING](https://github.com/Numergy/yoda/blob/master/COPYING) file.
+
+## Changelog
+To see what has changed in recent versions of yoda, see the [CHANGELOG](https://github.com/Numergy/yoda/blob/master/CHANGELOG.md)
