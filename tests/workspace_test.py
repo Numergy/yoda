@@ -31,6 +31,9 @@ class TestWorkspace(unittest.TestCase):
 
     def setUp(self):
         self.sandbox = Sandbox()
+        self.sandbox.mkdir("my_ws")
+        self.sandbox.mkdir("my_ws/my_repo")
+        self.sandbox.mkdir("my_ws/my_repo/.git")
         self.config = Config(self.sandbox.path + "/config")
 
     def tearDown(self):
@@ -177,10 +180,6 @@ class TestWorkspace(unittest.TestCase):
 
     def test_sync(self):
         """Test sync workspace."""
-        self.sandbox.mkdir("my_ws")
-        self.sandbox.mkdir("my_ws/my_repo")
-        self.sandbox.mkdir("my_ws/my_repo/.git")
-
         self.config.update({
             "workspaces": {
                 "my_ws": {
@@ -203,10 +202,6 @@ class TestWorkspace(unittest.TestCase):
 
     def test_remove_repository_not_found(self):
         """Test remove a workspace's repository that doesn't exists."""
-        self.sandbox.mkdir("my_ws")
-        self.sandbox.mkdir("my_ws/my_repo")
-        self.sandbox.mkdir("my_ws/my_repo/.git")
-
         self.config.update({
             "workspaces": {
                 "my_ws": {
@@ -223,10 +218,6 @@ class TestWorkspace(unittest.TestCase):
 
     def test_remove_repository(self):
         """Test remove a workspace's repository."""
-        self.sandbox.mkdir("my_ws")
-        self.sandbox.mkdir("my_ws/my_repo")
-        self.sandbox.mkdir("my_ws/my_repo/.git")
-
         self.config.update({
             "workspaces": {
                 "my_ws": {
@@ -249,3 +240,70 @@ class TestWorkspace(unittest.TestCase):
                 "my_ws": {
                     "path": os.path.join(self.sandbox.path, "my_ws"),
                     "repositories": {}}}})
+
+    def test_add_repository_not_found(self):
+        """Test add a repository that already exists."""
+        self.config.update({
+            "workspaces": {
+                "my_ws": {
+                    "path": os.path.join(self.sandbox.path, "my_ws"),
+                    "repositories": {
+                        "my_repo": os.path.join(self.sandbox.path,
+                                                "my_ws",
+                                                "my_repo")}}}})
+
+        ws = Workspace(self.config)
+
+        self.assertRaises(
+            ValueError, ws.add_repo, "my_ws", "my_repo")
+
+    def test_add_repository_with_clone(self):
+        """Test add a repository with clone."""
+        self.config.update({
+            "workspaces": {
+                "my_ws": {
+                    "path": os.path.join(self.sandbox.path, "my_ws"),
+                    "repositories": {}}}})
+
+        ws = Workspace(self.config)
+        with patch("yoda.workspace.clone",
+                   return_value=None) as clone_patch:
+            ws.add_repo("my_ws", "my_repo", "https://fake.url")
+            clone_patch.assert_called_once_with(
+                "https://fake.url",
+                os.path.join(self.sandbox.path, "my_ws", "my_repo"))
+
+        assert_config_file_contains(
+            self,
+            self.config.config_file,
+            {"workspaces": {
+                "my_ws": {
+                    "path": os.path.join(self.sandbox.path, "my_ws"),
+                    "repositories": {
+                        "my_repo": os.path.join(self.sandbox.path,
+                                                "my_ws",
+                                                "my_repo")}}}})
+
+    def test_add_repository_with_path(self):
+        """Test add a repository with path."""
+        self.sandbox.mkdir("repository")
+        self.config.update({
+            "workspaces": {
+                "my_ws": {
+                    "path": os.path.join(self.sandbox.path, "my_ws"),
+                    "repositories": {}}}})
+
+        ws = Workspace(self.config)
+        ws.add_repo("my_ws",
+                    "repo",
+                    path=os.path.join(self.sandbox.path, "repository"))
+
+        assert_config_file_contains(
+            self,
+            self.config.config_file,
+            {"workspaces": {
+                "my_ws": {
+                    "path": os.path.join(self.sandbox.path, "my_ws"),
+                    "repositories": {
+                        "repo": os.path.join(self.sandbox.path,
+                                             "repository")}}}})

@@ -22,6 +22,7 @@ from yoda import Config
 from yoda import Repository
 from yoda import RepositoryError
 from yoda import yn_choice
+from yoda.repository import clone
 
 
 class Workspace:
@@ -118,3 +119,26 @@ class Workspace:
 
         if (yn_choice("Do you want to delete this repository?")):
             shutil.rmtree(repo_path)
+
+    def add_repo(self, wname, rname, url=None, path=None):
+        logger = logging.getLogger(__name__)
+        ws = self.config["workspaces"][wname]
+        repo_path = ws["path"] + "/" + rname if path is None else path
+
+        if ("repositories" not in ws):
+            ws["repositories"] = {}
+
+        if (rname in ws["repositories"]):
+            raise ValueError("Repository %s already exists" % rname)
+
+        if url is not None:
+            clone(url, repo_path)
+
+        if (os.path.exists(repo_path) is False):
+            os.mkdir(repo_path)
+
+        self.config["workspaces"][wname] = ws
+        self.config["workspaces"][wname]["repositories"][rname] = repo_path
+        self.config.write()
+
+        logger.info("Repository %s added" % rname)

@@ -22,7 +22,6 @@ from prettytable import PrettyTable
 from pycolorizer import Color
 
 from yoda import Repository
-from yoda.repository import clone
 from yoda import RepositoryError
 from yoda.subcommands import Subcommand
 from yoda import Workspace as Ws
@@ -137,27 +136,8 @@ class WorkspaceSubcommands():
         ws = Ws(self.config)
 
         if (args.action == "add"):
-            self.add(args.subcommand, args.repo_name, args.url, args.path)
+            ws.add_repo(args.subcommand, args.repo_name, args.url, args.path)
         elif (args.action == "remove"):
             ws.rm_repo(args.subcommand, args.repo_name)
         elif (args.action == "sync"):
             ws.sync(args.subcommand)
-
-    def add(self, ws_name, repo_name, url, path):
-        ws = self.config["workspaces"][ws_name]
-        repo_path = ws["path"] + "/" + repo_name if path is None else path
-
-        if ("repositories" not in ws):
-            ws["repositories"] = {}
-
-        if (repo_name in ws["repositories"]):
-            raise ValueError("Repository %s already exists" % repo_name)
-
-        if url is not None:
-            clone(url, repo_path)
-
-        if (os.path.exists(repo_path) is False):
-            os.mkdir(repo_path)
-
-        ws["repositories"][repo_name] = repo_path
-        self.logger.info("Repository %s added" % repo_name)

@@ -267,7 +267,7 @@ class TestWorkspacesSubcommands(unittest.TestCase):
              "%s/repo-name" % self.sandbox.path, "-u", "repo-url"])
 
         with patch(
-                "yoda.subcommand.workspace.clone") as patch_clone:
+                "yoda.workspace.clone") as patch_clone:
             self.sandbox.mkdir("tmp")
             ws_subcmds.execute(args)
             patch_clone.assert_called_once_with(
@@ -276,8 +276,8 @@ class TestWorkspacesSubcommands(unittest.TestCase):
 
     @patch("%s.input" % builtins_module,
            Mock(side_effect=["n", "y"]))
-    def test_execute_remove_subcommad(self):
-        """Test execute remove subcommands."""
+    def test_execute_remove_subcommand(self):
+        """Test execute remove subcommand."""
         self.config_data["workspaces"]["yoda"]["repositories"] = {
             "repo-name": self.sandbox.path + "/repo-name"
         }
