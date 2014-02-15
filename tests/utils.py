@@ -14,6 +14,7 @@
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 import os
 import shutil
+import yaml
 
 
 class Sandbox:
@@ -45,3 +46,12 @@ class Sandbox:
         """Destroy sandbox environment."""
         if os.path.exists(self.path):
             shutil.rmtree(self.path)
+
+
+def assert_config_file_contains(testcase, config_file, expected):
+    """Custom assert to check content of config_file"""
+    file = open(config_file)
+    config = yaml.load(file.read())
+    file.close()
+
+    testcase.assertEquals(config, expected)

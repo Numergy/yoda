@@ -28,7 +28,7 @@ class Workspace:
         self.config = config
 
     def add(self, name, path):
-        """Add a workspace entry in user self.config file."""
+        """Add a workspace entry in user config file."""
         if not (exists(path)):
             raise ValueError("Workspace path `%s` doesn't exists." % path)
 
@@ -39,7 +39,7 @@ class Workspace:
         self.config.write()
 
     def remove(self, name):
-        """Remove workspace from self.config file."""
+        """Remove workspace from config file."""
         if not (self.exists(name)):
             raise ValueError("Workspace `%s` doesn't exists." % name)
 

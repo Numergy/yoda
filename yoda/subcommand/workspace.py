@@ -180,7 +180,8 @@ class WorkspaceSubcommands():
         path = self.config["workspaces"][ws_name]["path"]
         repositories = self.config["workspaces"][ws_name]["repositories"]
 
-        repo_list = {}
+        logger = logging.getLogger(__name__)
+        color = Color()
 
         for r in listdir(path):
             try:
@@ -189,12 +190,11 @@ class WorkspaceSubcommands():
                 continue
             else:
                 repositories[r] = repo.path
-                repo_list[r] = repo.path
 
-        logger = logging.getLogger(__name__)
-        color = Color()
         logger.info("Workspace `%s` synchronized" % ws_name)
-        logger.info("Added %d repositories:" % len(repo_list))
-        for repo_name, path in repo_list.items():
+        for repo_name, path in repositories.items():
             logger.info(color.colored(
                 " - %s" % repo_name, "blue"))
+
+        self.config["workspaces"][ws_name]["repositories"]
+        self.config.write()

@@ -18,6 +18,7 @@ import unittest
 import yaml
 
 from tests.utils import Sandbox
+from tests.utils import assert_config_file_contains
 from yoda import Config
 from yoda import Workspace
 
@@ -47,7 +48,8 @@ class TestWorkspace(unittest.TestCase):
         ws = Workspace(self.config)
         ws.add("bar", os.path.join(self.sandbox.path, "bar"))
 
-        self.assert_config_file_contains(
+        assert_config_file_contains(
+            self,
             self.config.config_file, {
                 "workspaces": {
                     "foo": {
@@ -79,7 +81,8 @@ class TestWorkspace(unittest.TestCase):
         ws = Workspace(self.config)
         ws.remove("foo")
 
-        self.assert_config_file_contains(
+        assert_config_file_contains(
+            self,
             self.config.config_file,
             {"workspaces": {}})
 
@@ -171,11 +174,3 @@ class TestWorkspace(unittest.TestCase):
         self.config.update(config_mock_data)
         ws = Workspace(self.config)
         self.assertFalse(ws.repository_exists("bar", "repo1"))
-
-    def assert_config_file_contains(self, config_file, expected):
-        """Custom assert to check content of config_file"""
-        file = open(config_file)
-        config = yaml.load(file.read())
-        file.close()
-
-        self.assertEquals(config, expected)
