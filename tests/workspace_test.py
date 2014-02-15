@@ -15,6 +15,7 @@
 from mock import patch
 import os.path
 import unittest
+import yaml
 
 from tests.utils import Sandbox
 from yoda import Config
@@ -37,9 +38,24 @@ class TestWorkspace(unittest.TestCase):
     def test_add(self):
         """Test add workspace."""
         self.config.update({
-            "workspaces": {"foo": {"path": "/foo", "repositories": {}}}})
+            "workspaces": {
+                "foo": {
+                    "path": os.path.join(self.sandbox.path, "foo"),
+                    "repositories": {}}}})
+
+        self.sandbox.mkdir("bar")
         ws = Workspace(self.config)
-        ws.add("bar", os.path.realpath(__file__))
+        ws.add("bar", os.path.join(self.sandbox.path, "bar"))
+
+        self.assert_config_file_contains(
+            self.config.config_file, {
+                "workspaces": {
+                    "foo": {
+                        "path": os.path.join(self.sandbox.path, "foo"),
+                        "repositories": {}},
+                    "bar": {
+                        "path": os.path.join(self.sandbox.path, "bar"),
+                        "repositories": {}}}})
 
     def test_add_existing_workspace(self):
         """Test add workspace with existing name."""
@@ -62,6 +78,10 @@ class TestWorkspace(unittest.TestCase):
             "workspaces": {"foo": {"path": "/foo", "repositories": {}}}})
         ws = Workspace(self.config)
         ws.remove("foo")
+
+        self.assert_config_file_contains(
+            self.config.config_file,
+            {"workspaces": {}})
 
     def test_remove_nonexistent(self):
         """Test remove workspace that doesn't exists."""
@@ -151,3 +171,11 @@ class TestWorkspace(unittest.TestCase):
         self.config.update(config_mock_data)
         ws = Workspace(self.config)
         self.assertFalse(ws.repository_exists("bar", "repo1"))
+
+    def assert_config_file_contains(self, config_file, expected):
+        """Custom assert to check content of config_file"""
+        file = open(config_file)
+        config = yaml.load(file.read())
+        file.close()
+
+        self.assertEquals(config, expected)
