@@ -1,5 +1,11 @@
 # CHANGELOG
 
+##0.1.2.1 (15 Feb 2014)
+- Fixed issue [#14](https://github.com/Numergy/yoda/issues/14) for following commands:
+  - yoda `ws_name` sync
+  - yoda `ws_name` add
+  - yoda `ws_name` remove
+  
 ##0.1.2 (14 Feb 2014)
 - Add changelog file ([https://github.com/Numergy/yoda/issues/15](https://github.com/Numergy/yoda/issues/15))
 - Can't add workspace ([https://github.com/Numergy/yoda/issues/14](https://github.com/Numergy/yoda/issues/14))
