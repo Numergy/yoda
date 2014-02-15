@@ -15,7 +15,6 @@
 
 import logging
 import os
-import shutil
 
 from os import listdir
 from os.path import join
@@ -27,7 +26,6 @@ from yoda.repository import clone
 from yoda import RepositoryError
 from yoda.subcommands import Subcommand
 from yoda import Workspace as Ws
-from yoda import yn_choice
 
 
 class Workspace(Subcommand, object):
@@ -136,12 +134,14 @@ class WorkspaceSubcommands():
         )
 
     def execute(self, args):
+        ws = Ws(self.config)
+
         if (args.action == "add"):
             self.add(args.subcommand, args.repo_name, args.url, args.path)
         elif (args.action == "remove"):
-            self.remove(args.subcommand, args.repo_name)
+            ws.rm_repo(args.subcommand, args.repo_name)
         elif (args.action == "sync"):
-            self.sync(args.subcommand)
+            ws.sync(args.subcommand)
 
     def add(self, ws_name, repo_name, url, path):
         ws = self.config["workspaces"][ws_name]
@@ -161,40 +161,3 @@ class WorkspaceSubcommands():
 
         ws["repositories"][repo_name] = repo_path
         self.logger.info("Repository %s added" % repo_name)
-
-    def remove(self, ws_name, repo_name):
-        config = self.config
-        if (repo_name not in config["workspaces"][ws_name]["repositories"]):
-            raise ValueError(
-                "%s not found in %s workspace" % (repo_name, ws_name)
-            )
-
-        repo_path = config["workspaces"][ws_name]["repositories"][repo_name]
-        del config["workspaces"][ws_name]["repositories"][repo_name]
-
-        if (yn_choice("Do you want to delete this repository?")):
-            shutil.rmtree(repo_path)
-
-    def sync(self, ws_name):
-        """Synchronise workspace's repositories."""
-        path = self.config["workspaces"][ws_name]["path"]
-        repositories = self.config["workspaces"][ws_name]["repositories"]
-
-        logger = logging.getLogger(__name__)
-        color = Color()
-
-        for r in listdir(path):
-            try:
-                repo = Repository(join(path, r))
-            except RepositoryError:
-                continue
-            else:
-                repositories[r] = repo.path
-
-        logger.info("Workspace `%s` synchronized" % ws_name)
-        for repo_name, path in repositories.items():
-            logger.info(color.colored(
-                " - %s" % repo_name, "blue"))
-
-        self.config["workspaces"][ws_name]["repositories"]
-        self.config.write()

@@ -13,16 +13,6 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
-from yoda.config import Config
-from yoda.logger import Logger
-from yoda.repository import Repository
-from yoda.repository import RepositoryAdapterNotFound
-from yoda.repository import RepositoryError
-from yoda.repository import RepositoryPathInvalid
-from yoda.subcommands import Subcommand
-from yoda.subcommands import Subcommands
-from yoda.workspace import Workspace
-
 
 def find_path(name, config, wsonly=False):
     """Find path for given workspace and|or repository."""
@@ -60,3 +50,13 @@ def yn_choice(message, default='n'):
     choice = input("%s (%s) " % (message, choices))
     values = ('y', 'yes', '') if default == 'y' else ('y', 'yes')
     return choice.strip().lower() in values
+
+from yoda.config import Config
+from yoda.logger import Logger
+from yoda.repository import Repository
+from yoda.repository import RepositoryAdapterNotFound
+from yoda.repository import RepositoryError
+from yoda.repository import RepositoryPathInvalid
+from yoda.subcommands import Subcommand
+from yoda.subcommands import Subcommands
+from yoda.workspace import Workspace

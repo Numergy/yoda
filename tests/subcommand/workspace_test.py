@@ -319,41 +319,10 @@ class TestWorkspacesSubcommands(unittest.TestCase):
         ws_subcmds.parse()
 
         args = self.parser.parse_args(
-            ["yoda", "sync", "yoda"]
-        )
-        self.sandbox.mkdir("tmp")
+            ["yoda", "sync", "yoda"])
 
         self.assertFalse(ws_subcmds.execute(args))
         with patch(
-                "yoda.subcommand.workspace.Repository.__init__",
+                "yoda.subcommand.workspace.Ws.sync",
                 return_value=None):
             ws_subcmds.execute(args)
-
-    def test_sync(self):
-        """Test sync workspace."""
-        self.sandbox.mkdir("my_ws")
-        self.sandbox.mkdir("my_ws/my_repo")
-        self.sandbox.mkdir("my_ws/my_repo/.git")
-
-        self.config.update({
-            "workspaces": {
-                "my_ws": {
-                    "path": os.path.join(self.sandbox.path, "my_ws"),
-                    "repositories": {}}}})
-
-        subparser = self.parser.add_subparsers(dest="subcommand")
-        ws_subcmds = WorkspaceSubcommands(
-            "yoda", subparser, self.config
-        )
-        ws_subcmds.sync("my_ws")
-
-        assert_config_file_contains(
-            self,
-            self.config.config_file,
-            {"workspaces": {
-                "my_ws": {
-                    "path": os.path.join(self.sandbox.path, "my_ws"),
-                    "repositories": {
-                        "my_repo": os.path.join(self.sandbox.path,
-                                                "my_ws",
-                                                "my_repo")}}}})

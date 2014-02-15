@@ -174,3 +174,78 @@ class TestWorkspace(unittest.TestCase):
         self.config.update(config_mock_data)
         ws = Workspace(self.config)
         self.assertFalse(ws.repository_exists("bar", "repo1"))
+
+    def test_sync(self):
+        """Test sync workspace."""
+        self.sandbox.mkdir("my_ws")
+        self.sandbox.mkdir("my_ws/my_repo")
+        self.sandbox.mkdir("my_ws/my_repo/.git")
+
+        self.config.update({
+            "workspaces": {
+                "my_ws": {
+                    "path": os.path.join(self.sandbox.path, "my_ws"),
+                    "repositories": {}}}})
+
+        ws = Workspace(self.config)
+        ws.sync("my_ws")
+
+        assert_config_file_contains(
+            self,
+            self.config.config_file,
+            {"workspaces": {
+                "my_ws": {
+                    "path": os.path.join(self.sandbox.path, "my_ws"),
+                    "repositories": {
+                        "my_repo": os.path.join(self.sandbox.path,
+                                                "my_ws",
+                                                "my_repo")}}}})
+
+    def test_remove_repository_not_found(self):
+        """Test remove a workspace's repository that doesn't exists."""
+        self.sandbox.mkdir("my_ws")
+        self.sandbox.mkdir("my_ws/my_repo")
+        self.sandbox.mkdir("my_ws/my_repo/.git")
+
+        self.config.update({
+            "workspaces": {
+                "my_ws": {
+                    "path": os.path.join(self.sandbox.path, "my_ws"),
+                    "repositories": {
+                        "my_repo": os.path.join(self.sandbox.path,
+                                                "my_ws",
+                                                "my_repo")}}}})
+
+        ws = Workspace(self.config)
+
+        self.assertRaises(
+            ValueError, ws.rm_repo, "my_ws", "my_repo2")
+
+    def test_remove_repository(self):
+        """Test remove a workspace's repository."""
+        self.sandbox.mkdir("my_ws")
+        self.sandbox.mkdir("my_ws/my_repo")
+        self.sandbox.mkdir("my_ws/my_repo/.git")
+
+        self.config.update({
+            "workspaces": {
+                "my_ws": {
+                    "path": os.path.join(self.sandbox.path, "my_ws"),
+                    "repositories": {
+                        "my_repo": os.path.join(self.sandbox.path,
+                                                "my_ws",
+                                                "my_repo")}}}})
+
+        ws = Workspace(self.config)
+
+        with patch("yoda.workspace.yn_choice",
+                   return_value=None):
+            ws.rm_repo("my_ws", "my_repo")
+
+        assert_config_file_contains(
+            self,
+            self.config.config_file,
+            {"workspaces": {
+                "my_ws": {
+                    "path": os.path.join(self.sandbox.path, "my_ws"),
+                    "repositories": {}}}})

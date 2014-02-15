@@ -13,8 +13,15 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
-from os.path import exists
+import logging
+import shutil
+
+import os
+from pycolorizer import Color
 from yoda import Config
+from yoda import Repository
+from yoda import RepositoryError
+from yoda import yn_choice
 
 
 class Workspace:
@@ -29,7 +36,7 @@ class Workspace:
 
     def add(self, name, path):
         """Add a workspace entry in user config file."""
-        if not (exists(path)):
+        if not (os.path.exists(path)):
             raise ValueError("Workspace path `%s` doesn't exists." % path)
 
         if (self.exists(name)):
@@ -74,3 +81,40 @@ class Workspace:
 
         workspaces = self.list()
         return repo in workspaces[workspace]["repositories"]
+
+    def sync(self, ws_name):
+        """Synchronise workspace's repositories."""
+        path = self.config["workspaces"][ws_name]["path"]
+        repositories = self.config["workspaces"][ws_name]["repositories"]
+
+        logger = logging.getLogger(__name__)
+        color = Color()
+
+        for r in os.listdir(path):
+            try:
+                repo = Repository(os.path.join(path, r))
+            except RepositoryError:
+                continue
+            else:
+                repositories[r] = repo.path
+
+        logger.info("Workspace `%s` synchronized" % ws_name)
+        for repo_name, path in repositories.items():
+            logger.info(color.colored(
+                " - %s" % repo_name, "blue"))
+
+        self.config["workspaces"][ws_name]["repositories"]
+        self.config.write()
+
+    def rm_repo(self, wname, rname):
+        if (rname not in self.config["workspaces"][wname]["repositories"]):
+            raise ValueError(
+                "%s not found in %s workspace" % (rname, wname))
+
+        repo_path = self.config["workspaces"][wname]["repositories"][rname]
+        del self.config["workspaces"][wname]["repositories"][rname]
+
+        self.config.write()
+
+        if (yn_choice("Do you want to delete this repository?")):
+            shutil.rmtree(repo_path)
