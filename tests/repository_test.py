@@ -19,6 +19,7 @@ import unittest
 from mock import patch
 from tests.utils import Sandbox
 from yoda.adapter import Git as GitAdapter
+from yoda.adapter import Svn as SvnAdapter
 from yoda import Repository
 from yoda.repository import clone
 from yoda import RepositoryAdapterNotFound
@@ -66,6 +67,14 @@ class TestRepository(unittest.TestCase):
 
         repo = Repository("%s/git_repo" % self.sandbox.path)
         self.assertIsInstance(repo.adapter, GitAdapter)
+
+    def test_repository_valid_scm_svn(self):
+        """Test repository is valid and is a git repository."""
+        self.sandbox.mkdir("svn_repo")
+        self.sandbox.mkdir("svn_repo/.svn")
+
+        repo = Repository("%s/svn_repo" % self.sandbox.path)
+        self.assertIsInstance(repo.adapter, SvnAdapter)
 
     def test_get_scm(self):
         """Test get scm for a repository."""
@@ -121,3 +130,12 @@ class TestClone(unittest.TestCase):
             clone,
             "https://project.org/foo/bar",
             "%s/bar" % self.sandbox.path)
+
+    def test_clone_svn_repository(self):
+        """Test clone svn repository over http."""
+        with patch("yoda.repository.Svn.clone") as patch_clone:
+            clone(
+                "svn://numergy/yoda",
+                "%s/bar" % self.sandbox.path)
+            patch_clone.assert_called_once_with(
+                "svn://numergy/yoda")

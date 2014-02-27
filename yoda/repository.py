@@ -16,6 +16,7 @@
 import os
 
 from yoda.adapter import Git
+from yoda.adapter import Svn
 
 
 class RepositoryError(Exception):
@@ -37,7 +38,7 @@ class Repository:
     path = None
     adapter = None
 
-    scm_dirs = [".git"]
+    scm_dirs = [".git", ".svn"]
 
     def __init__(self, path):
         if not os.path.exists(path) or not os.path.isdir(path):
@@ -52,6 +53,8 @@ class Repository:
             self.path = path
             if scm == ".git":
                 self.adapter = Git(path)
+            if scm == ".svn":
+                self.adapter = Svn(path)
 
     def get_scm(self):
         """Get scm used as string."""
@@ -71,6 +74,8 @@ def clone(url, path):
     adapter = None
     if url[:4] == "git@" or url[-4:] == ".git":
         adapter = Git(path)
+    if url[:6] == "svn://":
+        adapter = Svn(path)
 
     if adapter is None:
         raise RepositoryAdapterNotFound(
