@@ -56,7 +56,7 @@ class TestGit(unittest.TestCase):
             os.path.join(self.sandbox.path, "repo"))
 
     def test_clone(self):
-        """Test git status."""
+        """Test git clone."""
         self.git.clone("git@project.org:foo/bar")
         self.git.execute.assert_called_once_with(
             "git clone %s %s" % (

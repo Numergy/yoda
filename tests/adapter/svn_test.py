@@ -56,7 +56,7 @@ class TestGit(unittest.TestCase):
             os.path.join(self.sandbox.path, "repo"))
 
     def test_clone(self):
-        """Test svn status."""
+        """Test svn clone."""
         self.svn.clone("svn@project.org:foo/bar")
         self.svn.execute.assert_called_once_with(
             "svn checkout %s %s" % (

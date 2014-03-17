@@ -75,11 +75,11 @@ class TestAdapterAbstract(unittest.TestCase):
             self.assertRaises(Exception, self.adapter.check_executable)
 
     def test_status(self):
-        """Test git status."""
+        """Test abstract status."""
         self.assertIsNone(self.adapter.status())
 
     def test_show(self):
-        """Test git update."""
+        """Test abstract show."""
         self.assertIsNone(self.adapter.show())
 
     def test_update(self):
@@ -87,5 +87,5 @@ class TestAdapterAbstract(unittest.TestCase):
         self.assertIsNone(self.adapter.update())
 
     def test_clone(self):
-        """Test git status."""
+        """Test abstract clone."""
         self.assertIsNone(self.adapter.clone())
