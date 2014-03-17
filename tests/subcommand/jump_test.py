@@ -55,7 +55,8 @@ class TestSubcommandJump(SubcommandTestHelper):
             self.subcommand.execute(args)
             patch_fp.assert_called_once_with(
                 "yoda/baz", self.subcommand.config, True)
-            self.subcommand._Jump__jump.assert_called_once_with("/tmp/yoda/baz")
+            self.subcommand._Jump__jump.assert_called_once_with(
+                "/tmp/yoda/baz")
 
     def test_exec_jump_no_matches(self):
         """Test exec jump subcommand when no matches."""
