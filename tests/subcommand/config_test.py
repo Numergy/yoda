@@ -15,7 +15,7 @@
 
 from logging import RootLogger
 
-from tests.test_helpers import SubcommandTestHelper
+from tests.helpers import SubcommandTestHelper
 
 from mock import call
 from mock import Mock

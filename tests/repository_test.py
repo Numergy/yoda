@@ -17,7 +17,7 @@ import os
 import unittest
 
 from mock import patch
-from tests.test_helpers import Sandbox
+from tests.helpers import Sandbox
 from yoda.adapter import Git as GitAdapter
 from yoda.adapter import Svn as SvnAdapter
 from yoda import Repository

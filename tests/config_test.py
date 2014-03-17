@@ -16,7 +16,7 @@
 import os
 import unittest
 
-from tests.test_helpers import Sandbox
+from tests.helpers import Sandbox
 from yoda import Config
 
 

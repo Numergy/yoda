@@ -20,7 +20,7 @@ import mock
 from mock import Mock
 from mock import patch
 import subprocess
-from tests.test_helpers import Sandbox
+from tests.helpers import Sandbox
 from yoda.adapter import Abstract
 
 

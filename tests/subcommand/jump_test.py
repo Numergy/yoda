@@ -16,12 +16,12 @@
 import argparse
 import unittest
 
-from tests.test_helpers import SubcommandTestHelper
+from tests.helpers import SubcommandTestHelper
 
 from mock import call
 from mock import Mock
 from mock import patch
-from tests.test_helpers import Sandbox
+from tests.helpers import Sandbox
 from yoda import Config
 from yoda.subcommand import Jump
 

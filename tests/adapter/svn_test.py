@@ -18,7 +18,7 @@ import unittest
 
 from mock import Mock
 
-from tests.test_helpers import Sandbox
+from tests.helpers import Sandbox
 
 from yoda.adapter import Svn
 

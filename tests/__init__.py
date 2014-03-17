@@ -20,7 +20,7 @@ import unittest
 from mock import Mock
 from mock import patch
 
-from tests.test_helpers import Sandbox
+from tests.helpers import Sandbox
 from yoda import Config
 from yoda import find_path
 from yoda import yn_choice
