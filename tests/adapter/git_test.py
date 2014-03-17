@@ -18,7 +18,7 @@ import unittest
 
 from mock import Mock
 
-from tests.utils import Sandbox
+from tests.test_helpers import Sandbox
 
 from yoda.adapter import Git
 

@@ -17,7 +17,7 @@ import os.path
 import unittest
 import yaml
 
-from tests.utils import Sandbox
+from tests.test_helpers import Sandbox
 from tests.utils import assert_config_file_contains
 from yoda import Config
 from yoda import Workspace
