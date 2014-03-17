@@ -54,23 +54,23 @@ class TestSubcommandWorkspace(SubcommandTestHelper):
         """Test workspace add parsing."""
         self.assert_subcommand_parsing(
             ["workspace", "add", "foo", "/tmp/foo"], {
-                "workspace": "subcommand",
-                "add": "workspace_subcommand",
-                "foo": "name",
-                "/tmp/foo": "path"})
+                "subcommand": "workspace",
+                "workspace_subcommand": "add",
+                "name": "foo",
+                "path": "/tmp/foo"})
 
     def test_parse_remove(self):
         """Test workspace remove parsing."""
         self.assert_subcommand_parsing(["workspace", "remove", "foo"], {
-            "workspace": "subcommand",
-            "remove": "workspace_subcommand",
-            "foo": "name"})
+            "subcommand": "workspace",
+            "workspace_subcommand": "remove",
+            "name": "foo"})
 
     def test_parse_list(self):
         """Test workspace list parsing."""
         self.assert_subcommand_parsing(["workspace", "list"], {
-            "workspace": "subcommand",
-            "list": "workspace_subcommand"})
+            "subcommand": "workspace",
+            "workspace_subcommand": "list"})
 
     def test_exec_add(self):
         """Test workspace add execution."""
@@ -188,10 +188,10 @@ class TestWorkspacesSubcommands(SubcommandTestHelper):
         self.assert_subcommand_parsing(
             ["yoda", "add", "repo-name", "-u", "repo-url", "-p", "repo-path"],
             {
-                "add": "action",
-                "repo-name": "repo_name",
-                "repo-url": "url",
-                "repo-path": "path"
+                "action": "add",
+                "repo_name": "repo-name",
+                "url": "repo-url",
+                "path": "repo-path"
             }
         )
 
@@ -199,15 +199,14 @@ class TestWorkspacesSubcommands(SubcommandTestHelper):
         """Test parse remove subcommands."""
         self.assert_subcommand_parsing(
             ["yoda", "remove", "repo-name"], {
-                "remove": "action",
-                "repo-name": "repo_name",
-            }
+                "action": "remove",
+                "repo_name": "repo-name"}
         )
 
     def test_parse_sync(self):
         """Test parse sync subcommands."""
         self.assert_subcommand_parsing(
-            ["yoda", "sync"], {"sync": "action"})
+            ["yoda", "sync"], {"action": "sync"})
 
     def test_exec_without_command(self):
         """Test repository execute without subcommand."""
@@ -262,12 +261,6 @@ class TestWorkspacesSubcommands(SubcommandTestHelper):
 
         args = self.parser.parse_args(["yoda", "remove", "1377"])
         self.assertRaises(ValueError, lambda: self.subcommand.execute(args))
-
-    def test_parse_sync_subcommand(self):
-        """Test synchronize workspace."""
-        self.assert_subcommand_parsing(["yoda", "sync"], {
-            "sync": "action"
-        })
 
     def test_execute_sync_subcommand(self):
         """Test execute sync subcommand."""

@@ -47,14 +47,14 @@ class TestSubcommandStatus(SubcommandTestHelper):
     def test_parse_status(self):
         """Test parse status subcommand."""
         self.assert_subcommand_parsing(["status", "ws1/repo1"], {
-            "status": "subcommand",
-            "ws1/repo1": "name"})
+            "subcommand": "status",
+            "name": "ws1/repo1"})
 
     def test_parse_status_all(self):
         """Test show status of all workspaces"""
         self.assert_subcommand_parsing(["status", "--all"], {
-            "status": "subcommand",
-            True: "all"})
+            "subcommand": "status",
+            "all": True})
 
     def test_parse_status_raises_error(self):
         """

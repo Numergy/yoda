@@ -53,7 +53,7 @@ class SubcommandTestHelper(unittest.TestCase):
         args = self.parser.parse_args(commands)
 
         for k, v in expected.items():
-            self.assertEqual(k, getattr(args, v))
+            self.assertEqual(v, getattr(args, k))
 
     def assert_subcommand_parsing_raises_error(self, commands, error_expected):
         """This method provides a way to assert subcommand parsing."""

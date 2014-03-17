@@ -36,17 +36,17 @@ class TestSubcommandConfig(SubcommandTestHelper):
     def test_parse_config_set(self):
         """Test config set."""
         self.assert_subcommand_parsing(["config", "set", "test", "test2"], {
-            "config": "subcommand",
-            "set": "action",
-            "test": "key",
-            "test2": "value"})
+            "subcommand": "config",
+            "action": "set",
+            "key": "test",
+            "value": "test2"})
 
     def test_parse_config_get(self):
         """Test config set."""
         self.assert_subcommand_parsing(["config", "get", "test"], {
-            "config": "subcommand",
-            "get": "action",
-            "test": "key"})
+            "subcommand": "config",
+            "action": "get",
+            "key": "test"})
 
     def test_exec_config_with_undefined_action(self):
         """Test exec config with undefined subcommand."""

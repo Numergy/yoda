@@ -38,9 +38,8 @@ class TestSubcommandJump(SubcommandTestHelper):
     def test_parse_jump(self):
         """Test jump to workspace."""
         self.assert_subcommand_parsing(["jump", "yoda"], {
-            "jump": "subcommand",
-            "yoda": "name"
-        })
+            "subcommand": "jump",
+            "name": "yoda"})
 
     def test_exec_jump(self):
         """Test exec jump subcommand."""

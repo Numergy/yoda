@@ -57,14 +57,14 @@ class TestSubcommandShow(SubcommandTestHelper):
     def test_parse_show(self):
         """Test show to workspace."""
         self.assert_subcommand_parsing(["show", "ws1"], {
-            "show": "subcommand",
-            "ws1": "name"})
+            "subcommand": "show",
+            "name": "ws1"})
 
     def test_parse_show_all(self):
         """Test show all workspaces"""
         self.assert_subcommand_parsing(["show", "--all"], {
-            "show": "subcommand",
-            True: "all"})
+            "subcommand": "show",
+            "all": True})
 
     def test_parse_show_raises_error(self):
         """
