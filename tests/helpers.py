@@ -78,7 +78,6 @@ class YodaTestHelper(unittest.TestCase):
 class SubcommandTestHelper(YodaTestHelper):
     """Subcommand test helper class."""
     config = None
-    sandbox = None
     parser = None
     subparser = None
     subcommand = None
@@ -86,11 +85,10 @@ class SubcommandTestHelper(YodaTestHelper):
 
     def setUp(self):
         """Setup test suite."""
-
+        super(SubcommandTestHelper, self).setUp()
         self.parser = argparse.ArgumentParser(prog="yoda_test")
         self.subparser = self.parser.add_subparsers(dest="subcommand")
 
-        self.sandbox = Sandbox()
         self.config = Config(self.sandbox.path + "/config")
 
         if self.subcommand is not None and self.subcommand_str is not None:
@@ -99,7 +97,7 @@ class SubcommandTestHelper(YodaTestHelper):
 
     def tearDown(self):
         """Tear down test suite."""
-        self.sandbox.destroy()
+        super(SubcommandTestHelper, self).tearDown()
         self.parser = None
         self.subcommand = None
 
@@ -127,13 +125,12 @@ class SubcommandTestHelper(YodaTestHelper):
 
 class AdapterTestHelper(YodaTestHelper):
     """Adapter test helper class."""
-    sandbox = None
     adapter_class = None
     adapter = None
 
     def setUp(self):
         """Generic setup for adapter test cases."""
-        self.sandbox = Sandbox()
+        super(AdapterTestHelper, self).setUp()
         self.sandbox.mkdir("repository")
 
         self.adapter = self.adapter_class(
@@ -142,7 +139,7 @@ class AdapterTestHelper(YodaTestHelper):
 
     def tearDown(self):
         """Unset test object."""
-        self.sandbox.destroy()
+        super(AdapterTestHelper, self).tearDown()
         self.adapter_class = None
         self.adapter = None
 
