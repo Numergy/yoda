@@ -53,7 +53,20 @@ class Sandbox:
             shutil.rmtree(self.path)
 
 
-class SubcommandTestHelper(unittest.TestCase):
+class YodaTestHelper(unittest.TestCase):
+    """Yoda test helper class.
+    This class provides custom assertions for yoda's tests suite.
+    """
+    def assert_config_file_contains(self, config_file, expected):
+        """Custom assert to check content of config_file"""
+        file = open(config_file)
+        config = yaml.load(file.read())
+        file.close()
+        self.assertEquals(config, expected)
+
+
+class SubcommandTestHelper(YodaTestHelper):
+    """Subcommand test helper class."""
     config = None
     sandbox = None
     parser = None

@@ -18,12 +18,13 @@ import unittest
 import yaml
 
 from tests.helpers import Sandbox
-from tests.utils import assert_config_file_contains
+from tests.helpers import YodaTestHelper
+
 from yoda import Config
 from yoda import Workspace
 
 
-class TestWorkspace(unittest.TestCase):
+class TestWorkspace(YodaTestHelper):
     """Test workspace commands."""
 
     config = None
@@ -51,8 +52,7 @@ class TestWorkspace(unittest.TestCase):
         ws = Workspace(self.config)
         ws.add("bar", os.path.join(self.sandbox.path, "bar"))
 
-        assert_config_file_contains(
-            self,
+        self.assert_config_file_contains(
             self.config.config_file, {
                 "workspaces": {
                     "foo": {
@@ -84,8 +84,7 @@ class TestWorkspace(unittest.TestCase):
         ws = Workspace(self.config)
         ws.remove("foo")
 
-        assert_config_file_contains(
-            self,
+        self.assert_config_file_contains(
             self.config.config_file,
             {"workspaces": {}})
 
@@ -189,8 +188,7 @@ class TestWorkspace(unittest.TestCase):
         ws = Workspace(self.config)
         ws.sync("my_ws")
 
-        assert_config_file_contains(
-            self,
+        self.assert_config_file_contains(
             self.config.config_file,
             {"workspaces": {
                 "my_ws": {
@@ -233,8 +231,7 @@ class TestWorkspace(unittest.TestCase):
                    return_value=None):
             ws.rm_repo("my_ws", "my_repo")
 
-        assert_config_file_contains(
-            self,
+        self.assert_config_file_contains(
             self.config.config_file,
             {"workspaces": {
                 "my_ws": {
@@ -273,8 +270,7 @@ class TestWorkspace(unittest.TestCase):
                 "https://fake.url",
                 os.path.join(self.sandbox.path, "my_ws", "my_repo"))
 
-        assert_config_file_contains(
-            self,
+        self.assert_config_file_contains(
             self.config.config_file,
             {"workspaces": {
                 "my_ws": {
@@ -298,8 +294,7 @@ class TestWorkspace(unittest.TestCase):
                     "repo",
                     path=os.path.join(self.sandbox.path, "repository"))
 
-        assert_config_file_contains(
-            self,
+        self.assert_config_file_contains(
             self.config.config_file,
             {"workspaces": {
                 "my_ws": {

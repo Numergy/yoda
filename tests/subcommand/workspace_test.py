@@ -20,7 +20,6 @@ from tests.helpers import SubcommandTestHelper
 
 from mock import Mock
 from mock import patch
-from tests.utils import assert_config_file_contains
 from yoda import Config
 from yoda.subcommand import Workspace
 from yoda.subcommand import WorkspaceSubcommands
