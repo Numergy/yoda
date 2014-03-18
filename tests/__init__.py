@@ -16,22 +16,19 @@
 import os
 import sys
 import unittest
-
 from mock import Mock
 from mock import patch
-
-from tests.helpers import Sandbox
+from tests.helpers import YodaTestHelper
 from yoda import Config
 from yoda import find_path
 from yoda import yn_choice
 
 
-class TestFindPathFunction(unittest.TestCase):
+class TestFindPathFunction(YodaTestHelper):
     """Test suite for find_path function."""
-
     def setUp(self):
         """Setup test suite."""
-        self.sandbox = Sandbox()
+        super(TestFindPathFunction, self).setUp()
         self.sandbox.mkdir("yoda")
         self.sandbox.mkdir("yoda/yoda")
         self.sandbox.mkdir("yoda/other")
@@ -60,13 +57,8 @@ class TestFindPathFunction(unittest.TestCase):
             }
         }
 
-        self.sandbox = Sandbox()
         self.config = Config(self.sandbox.path + "/config")
         self.config.update(config_data)
-
-    def tearDown(self):
-        """Destroy sandbox."""
-        self.sandbox.destroy()
 
     def test_find_path_workspace(self):
         """Test find_path for workspace."""

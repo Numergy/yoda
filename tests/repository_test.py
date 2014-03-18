@@ -14,10 +14,8 @@
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 import os
-import unittest
-
 from mock import patch
-from tests.helpers import Sandbox
+from tests.helpers import YodaTestHelper
 from yoda.adapter import Git as GitAdapter
 from yoda.adapter import Svn as SvnAdapter
 from yoda import Repository
@@ -26,17 +24,8 @@ from yoda import RepositoryAdapterNotFound
 from yoda import RepositoryPathInvalid
 
 
-class TestRepository(unittest.TestCase):
+class TestRepository(YodaTestHelper):
     """Repository object test suite."""
-
-    def setUp(self):
-        """Setup sandbox."""
-        self.sandbox = Sandbox()
-
-    def tearDown(self):
-        """Destroy sandbox."""
-        self.sandbox.destroy()
-
     def test_path_not_exists(self):
         """Test repository path when doesn't exists."""
         self.assertRaises(
@@ -76,13 +65,21 @@ class TestRepository(unittest.TestCase):
         repo = Repository("%s/svn_repo" % self.sandbox.path)
         self.assertIsInstance(repo.adapter, SvnAdapter)
 
-    def test_get_scm(self):
+    def test_get_git_scm(self):
         """Test get scm for a repository."""
         self.sandbox.mkdir("git_repo")
         self.sandbox.mkdir("git_repo/.git")
 
         repo = Repository("%s/git_repo" % self.sandbox.path)
         self.assertEqual("Git", repo.get_scm())
+
+    def test_get_svn_scm(self):
+        """Test get scm for a repository."""
+        self.sandbox.mkdir("svn_repo")
+        self.sandbox.mkdir("svn_repo/.svn")
+
+        repo = Repository("%s/svn_repo" % self.sandbox.path)
+        self.assertEqual("Svn", repo.get_scm())
 
     def test_get_scm_none(self):
         """Test get scm for a repository when adapter is None."""
@@ -94,17 +91,8 @@ class TestRepository(unittest.TestCase):
         self.assertEqual(None, repo.get_scm())
 
 
-class TestClone(unittest.TestCase):
+class TestClone(YodaTestHelper):
     """Clone function test suite."""
-
-    def setUp(self):
-        """Setup sandbox."""
-        self.sandbox = Sandbox()
-
-    def tearDown(self):
-        """Destroy sandbox."""
-        self.sandbox.destroy()
-
     def test_clone_git_repository_http(self):
         """Test clone git repository over http."""
         with patch("yoda.repository.Git.clone") as patch_clone:
@@ -123,15 +111,7 @@ class TestClone(unittest.TestCase):
             patch_clone.assert_called_once_with(
                 "git@project.org:foo/bar")
 
-    def test_clone_git_repository_adapter_not_found(self):
-        """Test clone git repository when adapter not found."""
-        self.assertRaises(
-            RepositoryAdapterNotFound,
-            clone,
-            "https://project.org/foo/bar",
-            "%s/bar" % self.sandbox.path)
-
-    def test_clone_svn_repository(self):
+    def test_clone_svn_repository_http(self):
         """Test clone svn repository over http."""
         with patch("yoda.repository.Svn.clone") as patch_clone:
             clone(
@@ -139,3 +119,11 @@ class TestClone(unittest.TestCase):
                 "%s/bar" % self.sandbox.path)
             patch_clone.assert_called_once_with(
                 "svn://numergy/yoda")
+
+    def test_clone_repository_adapter_not_found(self):
+        """Test clone repository when adapter not found."""
+        self.assertRaises(
+            RepositoryAdapterNotFound,
+            clone,
+            "https://project.org/foo/bar",
+            "%s/bar" % self.sandbox.path)

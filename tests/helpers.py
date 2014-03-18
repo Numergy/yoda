@@ -13,14 +13,12 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
+import argparse
 import os
 import shutil
-import yaml
-import argparse
 import unittest
-
+import yaml
 from mock import Mock
-
 from yoda import Config
 
 
@@ -59,6 +57,16 @@ class YodaTestHelper(unittest.TestCase):
     """Yoda test helper class.
     This class provides custom assertions for yoda's tests suite.
     """
+    sandbox = None
+
+    def setUp(self):
+        """Setup sandbox."""
+        self.sandbox = Sandbox()
+
+    def tearDown(self):
+        """Destroy sandbox."""
+        self.sandbox.destroy()
+
     def assert_config_file_contains(self, config_file, expected):
         """Custom assert to check content of config_file"""
         file = open(config_file)

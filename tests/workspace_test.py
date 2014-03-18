@@ -12,33 +12,24 @@
 #
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
-from mock import patch
+
 import os.path
-import unittest
-import yaml
-
-from tests.helpers import Sandbox
+from mock import patch
 from tests.helpers import YodaTestHelper
-
 from yoda import Config
 from yoda import Workspace
 
 
 class TestWorkspace(YodaTestHelper):
     """Test workspace commands."""
-
     config = None
-    sandbox = None
 
     def setUp(self):
-        self.sandbox = Sandbox()
+        super(TestWorkspace, self).setUp()
         self.sandbox.mkdir("my_ws")
         self.sandbox.mkdir("my_ws/my_repo")
         self.sandbox.mkdir("my_ws/my_repo/.git")
         self.config = Config(self.sandbox.path + "/config")
-
-    def tearDown(self):
-        self.sandbox.destroy()
 
     def test_add(self):
         """Test add workspace."""
