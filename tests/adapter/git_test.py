@@ -40,5 +40,5 @@ class TestGit(AdapterTestHelper):
         self.adapter.clone("git@project.org:foo/bar")
         self.assert_executed_command("git clone %s %s" % (
             "git@project.org:foo/bar",
-            os.path.join(self.sandbox.path, "repository")),
-                                     with_path=False)
+            os.path.join(self.sandbox.path, "repository")
+        ), with_path=False)

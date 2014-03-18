@@ -40,5 +40,5 @@ class TestSvn(AdapterTestHelper):
         self.adapter.clone("svn@project.org:foo/bar")
         self.assert_executed_command("svn checkout %s %s" % (
             "svn@project.org:foo/bar",
-            os.path.join(self.sandbox.path, "repository")),
-                                     with_path=False)
+            os.path.join(self.sandbox.path, "repository")
+        ), with_path=False)
