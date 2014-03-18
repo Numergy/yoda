@@ -14,15 +14,8 @@
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 import logging
-import os
-
-from os import listdir
-from os.path import join
 from prettytable import PrettyTable
 from pycolorizer import Color
-
-from yoda import Repository
-from yoda import RepositoryError
 from yoda.subcommands import Subcommand
 from yoda import Workspace as Ws
 

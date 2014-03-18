@@ -14,8 +14,6 @@
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 import logging
-import os
-
 from yoda.subcommands import Subcommand
 
 
