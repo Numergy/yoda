@@ -14,34 +14,28 @@
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 import os
-import unittest
-
-from tests.utils import Sandbox
+from tests.helpers import YodaTestHelper
 from yoda import Config
 
 
-class TestConfig(unittest.TestCase):
+class TestConfig(YodaTestHelper):
     """Yoda configuration test suite."""
-
-    file = None
+    filename = None
 
     def setUp(self):
         """Setup test file."""
-        self.sandbox = Sandbox()
-        self.file = self.sandbox.path + "/yoda_config_test.txt"
-        file = open(self.file, "w")
-        file.write("foobar: \n  bar: baz\n  bur: buz\n")
-        file.close()
-
-    def tearDown(self):
-        """Remove test file."""
-        os.remove(self.file)
+        super(TestConfig, self).setUp()
+        self.filename = self.sandbox.path + "/yoda_config_test.txt"
+        f = open(self.filename, "w")
+        f.write("foobar: \n  bar: baz\n  bur: buz\n")
+        f.close()
 
     def test_init(self):
-        file = "/tmp/yoda_config.txt"
-        Config(file)
-        self.assertTrue(os.path.exists(file))
-        os.remove(file)
+        """Test init config instance."""
+        filename = "/tmp/yoda_config.txt"
+        Config(filename)
+        self.assertTrue(os.path.exists(filename))
+        os.remove(filename)
 
     def test_write(self):
         """Test write configuration."""
@@ -52,7 +46,7 @@ class TestConfig(unittest.TestCase):
             }
         }
 
-        conf = Config(self.file)
+        conf = Config(self.filename)
         conf.update(config)
         self.assertEqual("foobar:\n  baz: foo\n  foo: bar\n", self.read_file())
 
@@ -61,7 +55,7 @@ class TestConfig(unittest.TestCase):
         self.assertEqual("foo: bar\n", self.read_file())
 
     def read_file(self):
-        file = open(self.file, "r")
+        file = open(self.filename, "r")
         content = file.read()
         file.close()
         return content

@@ -14,51 +14,30 @@
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 import os
-import unittest
-
-from mock import Mock
-
-from tests.utils import Sandbox
-
+from tests.helpers import AdapterTestHelper
 from yoda.adapter import Svn
 
 
-class TestGit(unittest.TestCase):
+class TestSvn(AdapterTestHelper):
     """Svn adapter test suite."""
-    sandbox = None
-    svn = None
-
     def setUp(self):
         """Set up svn adapter and sandbox."""
-        self.sandbox = Sandbox()
-        self.sandbox.mkdir("repo")
-
-        self.svn = Svn(os.path.join(self.sandbox.path, "repo"))
-        self.svn.execute = Mock(return_value=None)
-
-    def tearDown(self):
-        """Unset test object."""
-        self.sandbox.destroy()
-        self.svn = None
+        super(TestSvn, self).setUp(Svn)
 
     def test_status(self):
         """Test svn status."""
-        self.svn.status()
-        self.svn.execute.assert_called_once_with(
-            "svn status",
-            os.path.join(self.sandbox.path, "repo"))
+        self.adapter.status()
+        self.assert_executed_command("svn status")
 
     def test_update(self):
         """Test svn update."""
-        self.svn.update()
-        self.svn.execute.assert_called_once_with(
-            "svn update",
-            os.path.join(self.sandbox.path, "repo"))
+        self.adapter.update()
+        self.assert_executed_command("svn update")
 
     def test_clone(self):
         """Test svn clone."""
-        self.svn.clone("svn@project.org:foo/bar")
-        self.svn.execute.assert_called_once_with(
-            "svn checkout %s %s" % (
-                "svn@project.org:foo/bar",
-                os.path.join(self.sandbox.path, "repo")))
+        self.adapter.clone("svn@project.org:foo/bar")
+        self.assert_executed_command("svn checkout %s %s" % (
+            "svn@project.org:foo/bar",
+            os.path.join(self.sandbox.path, "repository")
+        ), with_path=False)

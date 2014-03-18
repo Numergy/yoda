@@ -13,32 +13,20 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
-import argparse
-import unittest
-
 from mock import call
 from mock import Mock
-from mock import patch
-from tests.utils import Sandbox
-from yoda import Config
+from tests.helpers import SubcommandTestHelper
 from yoda.subcommand import Show
 
 
-class TestSubcommandShow(unittest.TestCase):
+class TestSubcommandShow(SubcommandTestHelper):
     """Show subcommand test suite."""
-    config = None
-    sandbox = None
-    parser = None
-    subparser = None
-    show = None
 
     def setUp(self):
         """Setup test suite."""
-        self.parser = argparse.ArgumentParser(prog="yoda_test")
-        self.subparser = self.parser.add_subparsers(dest="show_subcommand")
-
-        self.sandbox = Sandbox()
-        self.config = Config(self.sandbox.path + "/config")
+        self.subcommand = Show()
+        self.subcommand_str = "show"
+        super(TestSubcommandShow, self).setUp()
 
         config_data = {
             "workspaces": {
@@ -63,43 +51,35 @@ class TestSubcommandShow(unittest.TestCase):
         self.sandbox.mkdir("another_workspace/repo1")
         self.config.update(config_data)
 
-        self.show = Show()
-        self.show.setup("show", self.config, self.subparser)
-
-    def tearDown(self):
-        """Tear down test suite."""
-        self.sandbox.destroy()
-        self.parser = None
-        self.show = None
-
     def test_parse_show(self):
         """Test show to workspace."""
+        self.assert_subcommand_parsing(["show", "ws1"], {
+            "subcommand": "show",
+            "name": "ws1"})
 
-        self.show.parse()
+    def test_parse_show_all(self):
+        """Test show all workspaces"""
+        self.assert_subcommand_parsing(["show", "--all"], {
+            "subcommand": "show",
+            "all": True})
 
-        args = self.parser.parse_args(["show", "ws1"])
-
-        self.assertEqual("show", args.show_subcommand)
-        self.assertEqual("ws1", args.name)
-
-        args = self.parser.parse_args(["show", "--all"])
-
-        self.assertEqual("show", args.show_subcommand)
-        self.assertTrue(args.all)
-
-        self.assertRaises(
-            SystemExit,
-            self.parser.parse_args, ["show", "--all", "ws1/repo1"]
-        )
+    def test_parse_show_raises_error(self):
+        """
+        Test parse show subcommand raises error when --all specified
+        with workspace name.
+        """
+        self.assert_subcommand_parsing_raises_error(
+            ["show", "--all", "ws1/repo1"],
+            SystemExit)
 
     def test_exec_show(self):
         """Test exec show subcommand."""
         args = Mock()
         args.name = "my_workspace"
 
-        self.show.show_workspace = Mock()
-        self.show.execute(args)
-        self.show.show_workspace.assert_called_once_with("my_workspace")
+        self.subcommand.show_workspace = Mock()
+        self.subcommand.execute(args)
+        self.subcommand.show_workspace.assert_called_once_with("my_workspace")
 
     def test_exec_show_all(self):
         """Test exec show all workspace details subcommand."""
@@ -107,30 +87,33 @@ class TestSubcommandShow(unittest.TestCase):
         args.name = None
         args.all = True
 
-        self.show.show_workspace = Mock()
-        self.show.execute(args)
+        self.subcommand.show_workspace = Mock()
+        self.subcommand.execute(args)
 
-        self.show.show_workspace.assert_has_calls([call("my_workspace")])
-        self.show.show_workspace.assert_has_calls([call("another_workspace")])
+        self.subcommand.show_workspace.assert_has_calls(
+            [call("my_workspace")])
+        self.subcommand.show_workspace.assert_has_calls(
+            [call("another_workspace")])
 
     def test_show_workspace_no_matches(self):
         """Test exec show subcommand when no matches."""
         args = Mock()
         args.name = "not_exists"
 
-        self.assertRaises(ValueError, self.show.execute, args)
+        self.assert_subcommand_exec_raises_error(
+            args, ValueError)
 
     def test_show_workspace(self):
         """Test exec show subcommand with workspaces."""
         args = Mock()
         args.name = "my_workspace"
 
-        self.show.logger = Mock()
-        self.show.execute(args)
+        self.subcommand.logger = Mock()
+        self.subcommand.execute(args)
 
         calls = [
             call("<== \x1b[32mmy_workspace\x1b[0m workspace ==>"),
             call("\tPath: /my_workspace"),
             call("\tNumber of repositories: \x1b[33m1\x1b[0m")
         ]
-        self.show.logger.info.assert_has_calls(calls)
+        self.subcommand.logger.info.assert_has_calls(calls)

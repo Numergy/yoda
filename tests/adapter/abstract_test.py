@@ -14,24 +14,20 @@
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 import os
-import unittest
-
-import mock
-from mock import Mock
-from mock import patch
 import subprocess
-from tests.utils import Sandbox
+import mock
+from mock import patch
+from tests.helpers import YodaTestHelper
 from yoda.adapter import Abstract
 
 
-class TestAdapterAbstract(unittest.TestCase):
+class TestAdapterAbstract(YodaTestHelper):
     """Git adapter test suite."""
-    sandbox = None
     adapter = None
 
     def setUp(self):
         """Set up git adapter and sandbox."""
-        self.sandbox = Sandbox()
+        super(TestAdapterAbstract, self).setUp()
         self.sandbox.mkdir("repo")
 
         self.adapter = Abstract(os.path.join(self.sandbox.path, "repo"))
@@ -39,12 +35,12 @@ class TestAdapterAbstract(unittest.TestCase):
 
     def tearDown(self):
         """Unset test object."""
-        self.sandbox.destroy()
+        super(TestAdapterAbstract, self).tearDown()
         self.adapter = None
 
     @patch("yoda.adapter.abstract.subprocess.Popen",
            return_value=mock.create_autospec(
-               subprocess.Popen, return_value=Mock()))
+               subprocess.Popen, return_value=mock.Mock()))
     def test_execute(self, mock_proc):
         """Test execute with two diffrents commands."""
         mock_com = mock_proc.return_value.communicate
@@ -83,7 +79,7 @@ class TestAdapterAbstract(unittest.TestCase):
         self.assertIsNone(self.adapter.show())
 
     def test_update(self):
-        """Test git update."""
+        """Test abstract update."""
         self.assertIsNone(self.adapter.update())
 
     def test_clone(self):

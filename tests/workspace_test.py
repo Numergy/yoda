@@ -12,32 +12,24 @@
 #
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
-from mock import patch
-import os.path
-import unittest
-import yaml
 
-from tests.utils import Sandbox
-from tests.utils import assert_config_file_contains
+import os.path
+from mock import patch
+from tests.helpers import YodaTestHelper
 from yoda import Config
 from yoda import Workspace
 
 
-class TestWorkspace(unittest.TestCase):
+class TestWorkspace(YodaTestHelper):
     """Test workspace commands."""
-
     config = None
-    sandbox = None
 
     def setUp(self):
-        self.sandbox = Sandbox()
+        super(TestWorkspace, self).setUp()
         self.sandbox.mkdir("my_ws")
         self.sandbox.mkdir("my_ws/my_repo")
         self.sandbox.mkdir("my_ws/my_repo/.git")
         self.config = Config(self.sandbox.path + "/config")
-
-    def tearDown(self):
-        self.sandbox.destroy()
 
     def test_add(self):
         """Test add workspace."""
@@ -51,8 +43,7 @@ class TestWorkspace(unittest.TestCase):
         ws = Workspace(self.config)
         ws.add("bar", os.path.join(self.sandbox.path, "bar"))
 
-        assert_config_file_contains(
-            self,
+        self.assert_config_file_contains(
             self.config.config_file, {
                 "workspaces": {
                     "foo": {
@@ -84,8 +75,7 @@ class TestWorkspace(unittest.TestCase):
         ws = Workspace(self.config)
         ws.remove("foo")
 
-        assert_config_file_contains(
-            self,
+        self.assert_config_file_contains(
             self.config.config_file,
             {"workspaces": {}})
 
@@ -189,8 +179,7 @@ class TestWorkspace(unittest.TestCase):
         ws = Workspace(self.config)
         ws.sync("my_ws")
 
-        assert_config_file_contains(
-            self,
+        self.assert_config_file_contains(
             self.config.config_file,
             {"workspaces": {
                 "my_ws": {
@@ -233,8 +222,7 @@ class TestWorkspace(unittest.TestCase):
                    return_value=None):
             ws.rm_repo("my_ws", "my_repo")
 
-        assert_config_file_contains(
-            self,
+        self.assert_config_file_contains(
             self.config.config_file,
             {"workspaces": {
                 "my_ws": {
@@ -273,8 +261,7 @@ class TestWorkspace(unittest.TestCase):
                 "https://fake.url",
                 os.path.join(self.sandbox.path, "my_ws", "my_repo"))
 
-        assert_config_file_contains(
-            self,
+        self.assert_config_file_contains(
             self.config.config_file,
             {"workspaces": {
                 "my_ws": {
@@ -298,8 +285,7 @@ class TestWorkspace(unittest.TestCase):
                     "repo",
                     path=os.path.join(self.sandbox.path, "repository"))
 
-        assert_config_file_contains(
-            self,
+        self.assert_config_file_contains(
             self.config.config_file,
             {"workspaces": {
                 "my_ws": {

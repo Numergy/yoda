@@ -13,31 +13,21 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
-import argparse
-import unittest
-
 from mock import call
 from mock import Mock
 from mock import patch
-from tests.utils import Sandbox
-from yoda import Config
+from tests.helpers import SubcommandTestHelper
 from yoda.subcommand import Update
 
 
-class TestSubcommandUpdate(unittest.TestCase):
+class TestSubcommandUpdate(SubcommandTestHelper):
     """Update subcommand test suite."""
-    sandbox = None
-    config = None
-    parser = None
-    subparser = None
-    update = None
-
     def setUp(self):
         """Setup test suite."""
-        self.parser = argparse.ArgumentParser(prog="yoda_test")
-        self.subparser = self.parser.add_subparsers(dest="subcommand_test")
+        self.subcommand = Update()
+        self.subcommand_str = "update"
+        super(TestSubcommandUpdate, self).setUp()
 
-        self.update = Update()
         config_data = {
             "workspaces": {
                 "yoda": {
@@ -49,35 +39,28 @@ class TestSubcommandUpdate(unittest.TestCase):
             }
         }
 
-        self.sandbox = Sandbox()
-        self.config = Config(self.sandbox.path + "/config")
         self.config.update(config_data)
-        self.update.setup("update", self.config, self.subparser)
-
-    def tearDown(self):
-        """Tear down test suite."""
-        self.sandbox.destroy()
-        self.parser = None
-        self.update = None
 
     def test_parse_update(self):
         """Test parse update subcommand."""
-        self.update.parse()
+        self.assert_subcommand_parsing(["update", "ws1/repo1"], {
+            "subcommand": "update",
+            "name": "ws1/repo1"})
 
-        args = self.parser.parse_args(["update", "ws1/repo1"])
+    def test_parse_update_all(self):
+        """Test update all workspaces"""
+        self.assert_subcommand_parsing(["update", "--all"], {
+            "subcommand": "update",
+            "all": True})
 
-        self.assertEqual("update", args.subcommand_test)
-        self.assertEqual("ws1/repo1", args.name)
-
-        args = self.parser.parse_args(["update", "--all"])
-
-        self.assertEqual("update", args.subcommand_test)
-        self.assertEqual(True, args.all)
-
-        self.assertRaises(
-            SystemExit,
-            self.parser.parse_args, ["update", "--all", "ws1/repo1"]
-        )
+    def test_parse_update_raises_error(self):
+        """
+        Test parse update subcommand raises error when --all specified
+        with workspace or repository name.
+        """
+        self.assert_subcommand_parsing_raises_error(
+            ["update", "--all", "ws1/repo1"],
+            SystemExit)
 
     def test_exec_update_workspace_only(self):
         """Test exec update subcommand."""
@@ -86,13 +69,13 @@ class TestSubcommandUpdate(unittest.TestCase):
 
         mock_path = {"foo/bar": "/tmp/foo/bar"}
 
-        self.update.print_update = Mock()
+        self.subcommand.print_update = Mock()
 
         with patch("yoda.subcommand.update.find_path",
                    return_value=mock_path) as patch_fp:
-            self.update.execute(args)
-            patch_fp.assert_called_once_with("foo/bar", self.update.config)
-            self.update.print_update.assert_called_once_with(
+            self.subcommand.execute(args)
+            patch_fp.assert_called_once_with("foo/bar", self.subcommand.config)
+            self.subcommand.print_update.assert_called_once_with(
                 "foo/bar", "/tmp/foo/bar")
 
     def test_exec_update_all_workspaces(self):
@@ -103,29 +86,29 @@ class TestSubcommandUpdate(unittest.TestCase):
 
         mock_path = {"foo/bar": "/tmp/foo/bar"}
 
-        self.update.print_update = Mock()
+        self.subcommand.print_update = Mock()
 
         with patch("yoda.subcommand.update.find_path",
                    return_value=mock_path):
-            self.update.execute(args)
+            self.subcommand.execute(args)
 
     def test_exec_update_no_matches(self):
         """Test exec update subcommand with no matches."""
         args = Mock()
         args.name = "foobar"
 
-        self.update.logger = Mock()
-        self.update.print_update = Mock()
+        self.subcommand.logger = Mock()
+        self.subcommand.print_update = Mock()
 
         with patch("yoda.subcommand.update.find_path", return_value={}):
-            self.assertFalse(self.update.execute(args))
-            self.update.logger.error.assert_called_once_with(
+            self.assertFalse(self.subcommand.execute(args))
+            self.subcommand.logger.error.assert_called_once_with(
                 "No matches for `foobar`")
 
     def test_print_update(self):
         """Test print_update."""
-        self.update.logger = Mock()
+        self.subcommand.logger = Mock()
         with patch("yoda.subcommand.update.Repository"):
-            self.update.print_update("foo", "bar")
-            self.update.logger.info.assert_has_calls(
+            self.subcommand.print_update("foo", "bar")
+            self.subcommand.logger.info.assert_has_calls(
                 [call("\033[32m=> [foo] bar\033[0m")])
