@@ -31,6 +31,7 @@ case "$state" in
       'status:Show repositories status.'
       'update:Update some repositories.'
       'show:Show workspace details.'
+      'config:Configuration settings.'
      )
 
      for ws in $YODA_WORKSPACE_LIST; do; commands+=$ws; done
@@ -70,6 +71,12 @@ case "$state" in
             for ws in $YODA_WORKSPACE_LIST; do; stats+=$ws; done
             for repo in $YODA_REPOSITORY_LIST; do; stats+=$repo; done
             _describe -t stats 'status' stats && ret=0
+            ;;
+        (config)
+            local config; config=(
+                'set:Set configuration item'
+                'get:Get configuration item')
+            _describe -t config 'config' config && ret=0
             ;;
         (*)
             for ws in $YODA_WORKSPACES; do
