@@ -19,6 +19,8 @@ import yaml
 import argparse
 import unittest
 
+from mock import Mock
+
 from yoda import Config
 
 
@@ -113,3 +115,34 @@ class SubcommandTestHelper(YodaTestHelper):
         """Asserts an error when execute subcommand with passed args."""
         self.subcommand.parse()
         self.assertRaises(error_expected, self.subcommand.execute, args)
+
+
+class AdapterTestHelper(YodaTestHelper):
+    """Adapter test helper class."""
+    sandbox = None
+    adapter_class = None
+    adapter = None
+
+    def setUp(self):
+        """Generic setup for adapter test cases."""
+        self.sandbox = Sandbox()
+        self.sandbox.mkdir("repository")
+
+        self.adapter = self.adapter_class(
+            os.path.join(self.sandbox.path, "repository"))
+        self.adapter.execute = Mock(return_value=None)
+
+    def tearDown(self):
+        """Unset test object."""
+        self.sandbox.destroy()
+        self.adapter_class = None
+        self.adapter = None
+
+    def assert_executed_command(self, expected_cmd, with_path=True):
+        """Assert that adapter has executed expected command."""
+        if not with_path:
+            self.adapter.execute.assert_called_once_with(expected_cmd)
+        else:
+            self.adapter.execute.assert_called_once_with(
+                expected_cmd,
+                os.path.join(self.sandbox.path, "repository"))

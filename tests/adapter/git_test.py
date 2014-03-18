@@ -14,51 +14,31 @@
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 import os
-import unittest
-
-from mock import Mock
-
-from tests.helpers import Sandbox
-
+from tests.helpers import AdapterTestHelper
 from yoda.adapter import Git
 
 
-class TestGit(unittest.TestCase):
+class TestGit(AdapterTestHelper):
     """Git adapter test suite."""
-    sandbox = None
-    git = None
-
     def setUp(self):
         """Set up git adapter and sandbox."""
-        self.sandbox = Sandbox()
-        self.sandbox.mkdir("repo")
-
-        self.git = Git(os.path.join(self.sandbox.path, "repo"))
-        self.git.execute = Mock(return_value=None)
-
-    def tearDown(self):
-        """Unset test object."""
-        self.sandbox.destroy()
-        self.git = None
+        self.adapter_class = Git
+        super(TestGit, self).setUp()
 
     def test_status(self):
         """Test git status."""
-        self.git.status()
-        self.git.execute.assert_called_once_with(
-            "git status",
-            os.path.join(self.sandbox.path, "repo"))
+        self.adapter.status()
+        self.assert_executed_command("git status")
 
     def test_update(self):
         """Test git update."""
-        self.git.update()
-        self.git.execute.assert_called_once_with(
-            "git pull --rebase",
-            os.path.join(self.sandbox.path, "repo"))
+        self.adapter.update()
+        self.assert_executed_command("git pull --rebase")
 
     def test_clone(self):
-        """Test git status."""
-        self.git.clone("git@project.org:foo/bar")
-        self.git.execute.assert_called_once_with(
-            "git clone %s %s" % (
-                "git@project.org:foo/bar",
-                os.path.join(self.sandbox.path, "repo")))
+        """Test git clone."""
+        self.adapter.clone("git@project.org:foo/bar")
+        self.assert_executed_command("git clone %s %s" % (
+            "git@project.org:foo/bar",
+            os.path.join(self.sandbox.path, "repository")),
+                                     with_path=False)
