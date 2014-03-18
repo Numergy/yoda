@@ -13,14 +13,8 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
-from logging import RootLogger
-
-from tests.helpers import SubcommandTestHelper
-
-from mock import call
 from mock import Mock
-from mock import patch
-from yoda import Config
+from tests.helpers import SubcommandTestHelper
 from yoda.subcommand import Config as CfgSubcommand
 
 

@@ -15,12 +15,9 @@
 
 import os
 import sys
-
-from tests.helpers import SubcommandTestHelper
-
 from mock import Mock
 from mock import patch
-from yoda import Config
+from tests.helpers import SubcommandTestHelper
 from yoda.subcommand import Workspace
 from yoda.subcommand import WorkspaceSubcommands
 

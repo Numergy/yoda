@@ -13,16 +13,10 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
-import argparse
-import unittest
-
-from tests.helpers import SubcommandTestHelper
-
 from mock import call
 from mock import Mock
 from mock import patch
-from tests.helpers import Sandbox
-from yoda import Config
+from tests.helpers import SubcommandTestHelper
 from yoda.subcommand import Jump
 
 
