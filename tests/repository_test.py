@@ -18,6 +18,7 @@ from mock import patch
 from tests.helpers import YodaTestHelper
 from yoda.adapter import Git as GitAdapter
 from yoda.adapter import Svn as SvnAdapter
+from yoda.adapter import Bzr as BzrAdapter
 from yoda import Repository
 from yoda.repository import clone
 from yoda import RepositoryAdapterNotFound
@@ -34,7 +35,6 @@ class TestRepository(YodaTestHelper):
     def test_repository_not_valid_path_isfile(self):
         """Test repository is not valid because path is file."""
         self.sandbox.touch("invalid_repo")
-
         self.assertRaises(
             RepositoryPathInvalid, Repository,
             os.path.join(self.sandbox.path, "invalid_repo"))
@@ -58,12 +58,20 @@ class TestRepository(YodaTestHelper):
         self.assertIsInstance(repo.adapter, GitAdapter)
 
     def test_repository_valid_scm_svn(self):
-        """Test repository is valid and is a git repository."""
+        """Test repository is valid and is a svn repository."""
         self.sandbox.mkdir("svn_repo")
         self.sandbox.mkdir("svn_repo/.svn")
 
         repo = Repository("%s/svn_repo" % self.sandbox.path)
         self.assertIsInstance(repo.adapter, SvnAdapter)
+
+    def test_repository_valid_scm_bzr(self):
+        """Test repository is valid and is a bzr repository."""
+        self.sandbox.mkdir("bzr_repo")
+        self.sandbox.mkdir("bzr_repo/.bzr")
+
+        repo = Repository("%s/bzr_repo" % self.sandbox.path)
+        self.assertIsInstance(repo.adapter, BzrAdapter)
 
     def test_get_git_scm(self):
         """Test get scm for a repository."""
@@ -80,6 +88,14 @@ class TestRepository(YodaTestHelper):
 
         repo = Repository("%s/svn_repo" % self.sandbox.path)
         self.assertEqual("Svn", repo.get_scm())
+
+    def test_get_bzr_scm(self):
+        """Test get scm for a bzr repository."""
+        self.sandbox.mkdir("bzr_repo")
+        self.sandbox.mkdir("bzr_repo/.bzr")
+
+        repo = Repository("%s/bzr_repo" % self.sandbox.path)
+        self.assertEqual("Bzr", repo.get_scm())
 
     def test_get_scm_none(self):
         """Test get scm for a repository when adapter is None."""
@@ -111,14 +127,23 @@ class TestClone(YodaTestHelper):
             patch_clone.assert_called_once_with(
                 "git@project.org:foo/bar")
 
-    def test_clone_svn_repository_http(self):
-        """Test clone svn repository over http."""
+    def test_clone_svn_repository(self):
+        """Test clone svn repository."""
         with patch("yoda.repository.Svn.clone") as patch_clone:
             clone(
                 "svn://numergy/yoda",
                 "%s/bar" % self.sandbox.path)
             patch_clone.assert_called_once_with(
                 "svn://numergy/yoda")
+
+    def test_clone_bzr_repository(self):
+        """Test clone bzr repository."""
+        with patch("yoda.repository.Bzr.clone") as patch_clone:
+            clone(
+                "bzr://project.org/foo/bar",
+                "%s/bar" % self.sandbox.path)
+            patch_clone.assert_called_once_with(
+                "bzr://project.org/foo/bar")
 
     def test_clone_repository_adapter_not_found(self):
         """Test clone repository when adapter not found."""

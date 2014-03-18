@@ -13,7 +13,22 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
-from yoda.adapter.abstract import Abstract
-from yoda.adapter.bzr import Bzr
-from yoda.adapter.git import Git
-from yoda.adapter.svn import Svn
+from yoda.adapter import Abstract
+
+
+class Bzr(Abstract):
+    """Bzr Adapter."""
+    executable = "bzr"
+
+    def status(self):
+        """Show bzr status."""
+        return self.exec_on_path("%s status" % self.executable)
+
+    def update(self):
+        """Update repository."""
+        return self.exec_on_path("%s pull" % self.executable)
+
+    def clone(self, url):
+        """Clone repository from url."""
+        return self.execute("%s branch %s %s" % (self.executable,
+                                                 url, self.path))
