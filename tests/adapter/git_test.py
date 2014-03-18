@@ -22,8 +22,7 @@ class TestGit(AdapterTestHelper):
     """Git adapter test suite."""
     def setUp(self):
         """Set up git adapter and sandbox."""
-        self.adapter_class = Git
-        super(TestGit, self).setUp()
+        super(TestGit, self).setUp(Git)
 
     def test_status(self):
         """Test git status."""

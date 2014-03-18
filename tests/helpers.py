@@ -125,22 +125,20 @@ class SubcommandTestHelper(YodaTestHelper):
 
 class AdapterTestHelper(YodaTestHelper):
     """Adapter test helper class."""
-    adapter_class = None
     adapter = None
 
-    def setUp(self):
+    def setUp(self, adapter):
         """Generic setup for adapter test cases."""
         super(AdapterTestHelper, self).setUp()
         self.sandbox.mkdir("repository")
 
-        self.adapter = self.adapter_class(
+        self.adapter = adapter(
             os.path.join(self.sandbox.path, "repository"))
         self.adapter.execute = Mock(return_value=None)
 
     def tearDown(self):
         """Unset test object."""
         super(AdapterTestHelper, self).tearDown()
-        self.adapter_class = None
         self.adapter = None
 
     def assert_executed_command(self, expected_cmd, with_path=True):

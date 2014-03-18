@@ -22,8 +22,7 @@ class TestSvn(AdapterTestHelper):
     """Svn adapter test suite."""
     def setUp(self):
         """Set up svn adapter and sandbox."""
-        self.adapter_class = Svn
-        super(TestSvn, self).setUp()
+        super(TestSvn, self).setUp(Svn)
 
     def test_status(self):
         """Test svn status."""
