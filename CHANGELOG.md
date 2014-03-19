@@ -1,5 +1,11 @@
 # CHANGELOG
 
+##0.1.3 (19 March 2014)
+- Implemented mercurial adapter [#11](https://github.com/Numergy/yoda/issues/11)
+- Implemented bazaar adapter [#12](https://github.com/Numergy/yoda/issues/12)
+- Implemented subversion adapter [#16](https://github.com/Numergy/yoda/issues/16)
+- Tests refactoring
+
 ##0.1.2.1 (15 Feb 2014)
 - Fixed issue [#14](https://github.com/Numergy/yoda/issues/14) for following commands:
   - yoda `ws_name` sync
