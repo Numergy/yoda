@@ -29,7 +29,8 @@
     <div class="container">
       <section id="main_content">
         <h1>
-<a name="yoda" class="anchor" href="#yoda"><span class="octicon octicon-link"></span></a>YODA</h1>
+<a name="yoda----" class="anchor" href="#yoda----"><span class="octicon octicon-link"></span></a>YODA | <a href="http://badge.fury.io/py/yoda"><img src="http://badge.fury.io/py/yoda.png" alt="Pypi package"></a> <a href="https://travis-ci.org/Numergy/yoda"><img src="https://travis-ci.org/Numergy/yoda.png?branch=master" alt="Build Status"></a> <a href="https://coveralls.io/r/Numergy/yoda"><img src="https://coveralls.io/repos/Numergy/yoda/badge.png?branch=master" alt="Coverage Status"></a>
+</h1>
 
 <pre><code> ::\`--._,'.::.`._.--'/:: Multiple
  ::::.  ` __::__ '  .::::    repositories
@@ -39,6 +40,14 @@
 
 <h2>
 <a name="requirements" class="anchor" href="#requirements"><span class="octicon octicon-link"></span></a>Requirements</h2>
+
+<p>Yoda is compatible with following python versions:</p>
+
+<ul>
+<li>Python 2.7.x</li>
+<li>Python 3.x</li>
+</ul><h3>
+<a name="dependencies" class="anchor" href="#dependencies"><span class="octicon octicon-link"></span></a>Dependencies</h3>
 
 <ul>
 <li>PyYaml</li>
@@ -58,35 +67,38 @@
 </ul><h2>
 <a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
 
-<p>Yoda is available only on Pypi and is compatible with following python version:</p>
+<p>Yoda is packaged on Pypi, so you can install it with the following command:  </p>
 
-<ul>
-<li>Python 2.7.x</li>
-<li>Python 3.x</li>
-</ul><div class="highlight highlight-bash"><pre>pip install yoda
+<div class="highlight highlight-bash"><pre>pip install yoda
 </pre></div>
 
-<p>Uninstall yoda:</p>
+<p>to uninstall yoda:</p>
 
 <div class="highlight highlight-bash"><pre>pip uninstall yoda
+</pre></div>
+
+<p>You can also install development version:</p>
+
+<div class="highlight highlight-bash"><pre>pip install https://github.com/Numergy/yoda/archive/master.zip
 </pre></div>
 
 <h2>
 <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
 
 <div class="highlight highlight-bash"><pre><span class="nv">$ </span>yoda --help
-usage: yoda <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-d<span class="o">]</span> <span class="o">[</span>--version<span class="o">]</span> <span class="o">[</span>subcommand<span class="o">]</span> ...
+usage: Yoda <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-d<span class="o">]</span> <span class="o">[</span>--version<span class="o">]</span> <span class="o">[</span>subcommand<span class="o">]</span> ...
 
 Manage your repositories easier. Each workspaces are subcommands, <span class="nb">type</span> <span class="sb">`</span>yoda
 workspace_name -h<span class="sb">`</span> to show help.
 
 positional arguments:
   <span class="o">[</span>subcommand<span class="o">]</span>
+    config      Get and <span class="nb">set </span>global configurations
+    workspace   Workspace managment
     jump        Jump to directory
     update      Update repositories
-    status      Show repositories status
-    workspace   Workspace managment
     show        Show workspace details
+    status      Show repositories status
 
 optional arguments:
   -h, --help    show this <span class="nb">help </span>message and <span class="nb">exit</span>
@@ -121,6 +133,16 @@ A workspace contains some properties (path, repositories list).</p>
 <p><code>show</code> subcommand allows you to print a workspace details. You can pass --all options to show details for all registered workspaces.</p>
 
 <div class="highlight highlight-bash"><pre>yoda show my_ws
+</pre></div>
+
+<h4>
+<a name="yoda-config" class="anchor" href="#yoda-config"><span class="octicon octicon-link"></span></a>yoda config</h4>
+
+<p><code>config</code> subcommand allows you to <code>set</code> and <code>get</code> yoda's configuration.</p>
+
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span>yoda config <span class="nb">set </span>logfile /var/log/yoda.log
+<span class="nv">$ </span>yoda config get logfile
+/var/log/yoda.log
 </pre></div>
 
 <h4>
@@ -229,12 +251,15 @@ compinit -i
 <h2>
 <a name="running-tests" class="anchor" href="#running-tests"><span class="octicon octicon-link"></span></a>Running tests</h2>
 
-<p>In project root directory, run following command to</p>
+<p>Yoda use <a href="http://tox.readthedocs.org">tox</a>, a test command line tool.<br>
+Run <code>tox</code> command in the project's root directory to run unittests, and flake8/pep8 checkers.</p>
+
+<p>You can also run each tests independently:</p>
 
 <p>To run unittests:
 <code>$ nosetests</code></p>
 
-<p>To check code style:</p>
+<p>To run checkers:</p>
 
 <div class="highlight highlight-bash"><pre><span class="nv">$ </span>pep8 ./
 <span class="nv">$ </span>flake8 ./
@@ -244,6 +269,11 @@ compinit -i
 <a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
 
 <p>See <a href="https://github.com/Numergy/yoda/blob/master/COPYING">COPYING</a> file.</p>
+
+<h2>
+<a name="changelog" class="anchor" href="#changelog"><span class="octicon octicon-link"></span></a>Changelog</h2>
+
+<p>To see what has changed in recent versions of yoda, see the <a href="https://github.com/Numergy/yoda/blob/master/CHANGELOG.md">CHANGELOG</a></p>
       </section>
     </div>
 
