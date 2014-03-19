@@ -32,7 +32,10 @@ class Abstract:
 
     def execute(self, command, path=None):
         """Execute command with os.popen and return output."""
+        logger = logging.getLogger(__name__)
+
         self.check_executable()
+        logger.debug("Executing command `%s` (cwd: %s)" % (command, path))
         stdout, stderr = subprocess.Popen(
             command,
             shell=True,
@@ -41,7 +44,6 @@ class Abstract:
             stderr=subprocess.PIPE
         ).communicate()
 
-        logger = logging.getLogger(__name__)
         if stdout:
             logger.info(stdout.decode("utf-8"))
 
@@ -50,7 +52,7 @@ class Abstract:
 
     def exec_on_path(self, command):
         """Execute command in repository path."""
-        self.execute("%s" % (command), self.path)
+        self.execute("%s" % command, self.path)
 
     def check_executable(self):
         """Check adapter executable exists."""
