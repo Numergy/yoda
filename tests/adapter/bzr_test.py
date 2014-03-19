@@ -35,7 +35,7 @@ class TestBzr(AdapterTestHelper):
         self.assert_executed_command("bzr pull")
 
     def test_clone(self):
-        """Test git clone."""
+        """Test clone bzr repository."""
         self.adapter.clone("bzr://project.org/foo/bar")
         self.assert_executed_command("bzr branch %s %s" % (
             "bzr://project.org/foo/bar",
