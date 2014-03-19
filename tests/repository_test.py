@@ -19,6 +19,7 @@ from tests.helpers import YodaTestHelper
 from yoda.adapter import Git as GitAdapter
 from yoda.adapter import Svn as SvnAdapter
 from yoda.adapter import Bzr as BzrAdapter
+from yoda.adapter import Hg as HgAdapter
 from yoda import Repository
 from yoda.repository import clone
 from yoda import RepositoryAdapterNotFound
@@ -73,6 +74,14 @@ class TestRepository(YodaTestHelper):
         repo = Repository("%s/bzr_repo" % self.sandbox.path)
         self.assertIsInstance(repo.adapter, BzrAdapter)
 
+    def test_repository_valid_scm_hg(self):
+        """Test repository is valid and is a mercurial repository."""
+        self.sandbox.mkdir("hg_repo")
+        self.sandbox.mkdir("hg_repo/.hg")
+
+        repo = Repository("%s/hg_repo" % self.sandbox.path)
+        self.assertIsInstance(repo.adapter, HgAdapter)
+
     def test_get_git_scm(self):
         """Test get scm for a repository."""
         self.sandbox.mkdir("git_repo")
@@ -96,6 +105,14 @@ class TestRepository(YodaTestHelper):
 
         repo = Repository("%s/bzr_repo" % self.sandbox.path)
         self.assertEqual("Bzr", repo.get_scm())
+
+    def test_get_hg_scm(self):
+        """Test get scm for a mercurial repository."""
+        self.sandbox.mkdir("hg_repo")
+        self.sandbox.mkdir("hg_repo/.hg")
+
+        repo = Repository("%s/hg_repo" % self.sandbox.path)
+        self.assertEqual("Hg", repo.get_scm())
 
     def test_get_scm_none(self):
         """Test get scm for a repository when adapter is None."""
@@ -144,6 +161,15 @@ class TestClone(YodaTestHelper):
                 "%s/bar" % self.sandbox.path)
             patch_clone.assert_called_once_with(
                 "bzr://project.org/foo/bar")
+
+    def test_clone_hg_repository(self):
+        """Test clone hg repository."""
+        with patch("yoda.repository.Hg.clone") as patch_clone:
+            clone(
+                "ssh://hg@project.org/foo/bar",
+                "%s/bar" % self.sandbox.path)
+            patch_clone.assert_called_once_with(
+                "ssh://hg@project.org/foo/bar")
 
     def test_clone_repository_adapter_not_found(self):
         """Test clone repository when adapter not found."""
