@@ -13,12 +13,13 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
-import os
-import subprocess
 import mock
 from mock import patch
+import os
+import subprocess
 from tests.helpers import YodaTestHelper
 from yoda.adapter import Abstract
+from yoda.adapter import ExecutableNotFoundException
 
 
 class TestAdapterAbstract(YodaTestHelper):
@@ -74,7 +75,10 @@ class TestAdapterAbstract(YodaTestHelper):
         self.adapter.executable = "wrong_executable"
         with patch("yoda.adapter.abstract.find_executable",
                    return_value=False):
-            self.assertRaises(Exception, self.adapter.check_executable)
+            self.assertRaises(
+                ExecutableNotFoundException,
+                self.adapter.check_executable
+            )
 
     def test_status(self):
         """Test abstract status."""

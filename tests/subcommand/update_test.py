@@ -48,7 +48,7 @@ class TestSubcommandUpdate(SubcommandTestHelper):
             "name": "ws1/repo1"})
 
     def test_parse_update_all(self):
-        """Test update all workspaces"""
+        """Test update all workspaces."""
         self.assert_subcommand_parsing(["update", "--all"], {
             "subcommand": "update",
             "all": True})

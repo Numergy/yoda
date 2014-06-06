@@ -48,7 +48,7 @@ class TestSubcommandStatus(SubcommandTestHelper):
             "name": "ws1/repo1"})
 
     def test_parse_status_all(self):
-        """Test show status of all workspaces"""
+        """Test show status of all workspaces."""
         self.assert_subcommand_parsing(["status", "--all"], {
             "subcommand": "status",
             "all": True})

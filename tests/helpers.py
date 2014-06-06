@@ -18,6 +18,7 @@ import os
 import shutil
 import unittest
 import yaml
+
 from mock import Mock
 from yoda import Config
 
@@ -68,11 +69,11 @@ class YodaTestHelper(unittest.TestCase):
         self.sandbox.destroy()
 
     def assert_config_file_contains(self, config_file, expected):
-        """Custom assert to check content of config_file"""
+        """Custom assert to check content of config_file."""
         file = open(config_file)
         config = yaml.load(file.read())
         file.close()
-        self.assertEquals(config, expected)
+        self.assertEqual(config, expected)
 
 
 class SubcommandTestHelper(YodaTestHelper):

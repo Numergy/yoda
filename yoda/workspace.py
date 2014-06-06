@@ -20,9 +20,9 @@ import os
 from pycolorizer import Color
 from yoda import Config
 from yoda import Repository
+from yoda.repository import clone
 from yoda import RepositoryError
 from yoda import yn_choice
-from yoda.repository import clone
 
 
 class Workspace:

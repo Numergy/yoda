@@ -20,6 +20,10 @@ import logging
 import subprocess
 
 
+class ExecutableNotFoundException(OSError):
+    pass
+
+
 class Abstract:
     """SCM Adapter interface."""
     __metaclass__ = ABCMeta
@@ -60,7 +64,9 @@ class Abstract:
     def check_executable(self):
         """Check adapter executable exists."""
         if not find_executable(self.executable):
-            raise Exception("Executable %s not found" % self.executable)
+            raise ExecutableNotFoundException(
+                "Executable %s not found" % self.executable
+            )
 
     @abstractmethod
     def status(self):

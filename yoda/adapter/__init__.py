@@ -14,6 +14,7 @@
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 from yoda.adapter.abstract import Abstract
+from yoda.adapter.abstract import ExecutableNotFoundException
 from yoda.adapter.bzr import Bzr
 from yoda.adapter.git import Git
 from yoda.adapter.hg import Hg
