@@ -15,9 +15,11 @@
 
 import os
 import sys
+
 from mock import Mock
 from mock import patch
 from tests.helpers import SubcommandTestHelper
+from yoda.repository import RepositoryError
 from yoda.subcommand import Workspace
 from yoda.subcommand import WorkspaceSubcommands
 
@@ -236,7 +238,7 @@ class TestWorkspacesSubcommands(SubcommandTestHelper):
         with patch(
                 "yoda.workspace.clone") as patch_clone:
             self.sandbox.mkdir("tmp")
-            self.subcommand.execute(args)
+            self.assertRaises(RepositoryError, self.subcommand.execute, args)
             patch_clone.assert_called_once_with(
                 "repo-url",
                 "%s/repo-name" % self.sandbox.path)

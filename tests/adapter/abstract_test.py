@@ -47,7 +47,10 @@ class TestAdapterAbstract(YodaTestHelper):
         mock_com.return_value = [b"Yoda", b"Rosk"]
         with patch("yoda.adapter.abstract.find_executable",
                    return_value=True):
-            self.assertIsNone(self.adapter.execute("git log"))
+            self.assertEqual(
+                self.adapter.execute("git log"),
+                mock_proc.return_value
+            )
             mock_proc.assert_called_with(
                 "git log",
                 stderr=subprocess.PIPE,
@@ -55,7 +58,10 @@ class TestAdapterAbstract(YodaTestHelper):
                 cwd=None,
                 shell=True)
             #Wrong command
-            self.assertIsNone(self.adapter.execute("git ls"))
+            self.assertEqual(
+                self.adapter.execute("git ls"),
+                mock_proc.return_value
+            )
             mock_proc.assert_called_with(
                 "git ls",
                 stderr=subprocess.PIPE,

@@ -131,8 +131,12 @@ class Workspace:
         if (rname in ws["repositories"]):
             raise ValueError("Repository %s already exists" % rname)
 
+        result = None
         if url is not None:
-            clone(url, repo_path)
+            result = clone(url, repo_path)
+
+        if result is not None and result.returncode != 0:
+            raise RepositoryError("Can't clone this repository")
 
         if (os.path.exists(repo_path) is False):
             os.mkdir(repo_path)

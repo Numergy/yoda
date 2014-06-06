@@ -36,19 +36,22 @@ class Abstract:
 
         self.check_executable()
         logger.debug("Executing command `%s` (cwd: %s)" % (command, path))
-        stdout, stderr = subprocess.Popen(
+        process = subprocess.Popen(
             command,
             shell=True,
             cwd=path,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
-        ).communicate()
+        )
+        stdout, stderr = process.communicate()
 
         if stdout:
             logger.info(stdout.decode("utf-8"))
 
         if stderr:
             logger.error(stderr.decode("utf-8"))
+
+        return process
 
     def exec_on_path(self, command):
         """Execute command in repository path."""
