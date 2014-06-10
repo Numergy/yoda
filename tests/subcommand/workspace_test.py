@@ -214,7 +214,7 @@ class TestWorkspacesSubcommands(SubcommandTestHelper):
             args = self.parser.parse_args(["yoda"])
             self.assertIsNone(self.subcommand.execute(args))
         except SystemExit:
-            #Raised in Python 2.7.x
+            # Raised in Python 2.7.x
             self.assertEqual("2.7", sys.version[:3])
 
     def test_execute_add_subcommand_repo_already_exists(self):

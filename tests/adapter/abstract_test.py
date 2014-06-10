@@ -58,7 +58,7 @@ class TestAdapterAbstract(YodaTestHelper):
                 stdout=subprocess.PIPE,
                 cwd=None,
                 shell=True)
-            #Wrong command
+            # Wrong command
             self.assertEqual(
                 self.adapter.execute("git ls"),
                 mock_proc.return_value
