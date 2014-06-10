@@ -15,9 +15,11 @@
 
 import os
 import sys
+
 from mock import Mock
 from mock import patch
 from tests.helpers import SubcommandTestHelper
+from yoda.repository import RepositoryError
 from yoda.subcommand import Workspace
 from yoda.subcommand import WorkspaceSubcommands
 
@@ -212,7 +214,7 @@ class TestWorkspacesSubcommands(SubcommandTestHelper):
             args = self.parser.parse_args(["yoda"])
             self.assertIsNone(self.subcommand.execute(args))
         except SystemExit:
-            #Raised in Python 2.7.x
+            # Raised in Python 2.7.x
             self.assertEqual("2.7", sys.version[:3])
 
     def test_execute_add_subcommand_repo_already_exists(self):
@@ -236,7 +238,7 @@ class TestWorkspacesSubcommands(SubcommandTestHelper):
         with patch(
                 "yoda.workspace.clone") as patch_clone:
             self.sandbox.mkdir("tmp")
-            self.subcommand.execute(args)
+            self.assertRaises(RepositoryError, self.subcommand.execute, args)
             patch_clone.assert_called_once_with(
                 "repo-url",
                 "%s/repo-name" % self.sandbox.path)

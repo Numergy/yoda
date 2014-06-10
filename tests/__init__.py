@@ -16,6 +16,7 @@
 import os
 import sys
 import unittest
+
 from mock import Mock
 from mock import patch
 from tests.helpers import YodaTestHelper

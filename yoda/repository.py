@@ -91,4 +91,4 @@ def clone(url, path):
         raise RepositoryAdapterNotFound(
             "Can't find adapter for `%s` repository url" % url)
 
-    adapter.clone(url)
+    return adapter.clone(url)

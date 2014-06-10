@@ -13,8 +13,8 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
-import os.path
 from mock import patch
+import os.path
 from tests.helpers import YodaTestHelper
 from yoda import Config
 from yoda import Workspace

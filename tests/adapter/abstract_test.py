@@ -13,12 +13,13 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
-import os
-import subprocess
 import mock
 from mock import patch
+import os
+import subprocess
 from tests.helpers import YodaTestHelper
 from yoda.adapter import Abstract
+from yoda.adapter import ExecutableNotFoundException
 
 
 class TestAdapterAbstract(YodaTestHelper):
@@ -47,15 +48,21 @@ class TestAdapterAbstract(YodaTestHelper):
         mock_com.return_value = [b"Yoda", b"Rosk"]
         with patch("yoda.adapter.abstract.find_executable",
                    return_value=True):
-            self.assertIsNone(self.adapter.execute("git log"))
+            self.assertEqual(
+                self.adapter.execute("git log"),
+                mock_proc.return_value
+            )
             mock_proc.assert_called_with(
                 "git log",
                 stderr=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 cwd=None,
                 shell=True)
-            #Wrong command
-            self.assertIsNone(self.adapter.execute("git ls"))
+            # Wrong command
+            self.assertEqual(
+                self.adapter.execute("git ls"),
+                mock_proc.return_value
+            )
             mock_proc.assert_called_with(
                 "git ls",
                 stderr=subprocess.PIPE,
@@ -68,7 +75,10 @@ class TestAdapterAbstract(YodaTestHelper):
         self.adapter.executable = "wrong_executable"
         with patch("yoda.adapter.abstract.find_executable",
                    return_value=False):
-            self.assertRaises(Exception, self.adapter.check_executable)
+            self.assertRaises(
+                ExecutableNotFoundException,
+                self.adapter.check_executable
+            )
 
     def test_status(self):
         """Test abstract status."""

@@ -13,13 +13,13 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
-import os
 from mock import patch
+import os
 from tests.helpers import YodaTestHelper
-from yoda.adapter import Git as GitAdapter
-from yoda.adapter import Svn as SvnAdapter
 from yoda.adapter import Bzr as BzrAdapter
+from yoda.adapter import Git as GitAdapter
 from yoda.adapter import Hg as HgAdapter
+from yoda.adapter import Svn as SvnAdapter
 from yoda import Repository
 from yoda.repository import clone
 from yoda import RepositoryAdapterNotFound

@@ -13,8 +13,8 @@
 # You should have received a copy of the GNU General Public License along with
 # Yoda. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
-import unittest
 from mock import Mock
+import unittest
 from yoda import Subcommand
 from yoda import Subcommands
 
