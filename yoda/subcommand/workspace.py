@@ -130,7 +130,10 @@ class WorkspaceSubcommands():
 
         if (args.action == "add"):
             ws.add_repo(args.subcommand, args.repo_name, args.url, args.path)
+            self.logger.info("Repository `%s` added." % args.repo_name)
         elif (args.action == "remove"):
             ws.rm_repo(args.subcommand, args.repo_name)
+            self.logger.info("Repository `%s` removed." % args.repo_name)
         elif (args.action == "sync"):
             ws.sync(args.subcommand)
+            self.logger.info("Workspace `%s` synchronized." % args.subcommand)
