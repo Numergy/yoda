@@ -99,7 +99,6 @@ class Workspace:
             else:
                 repositories[r] = repo.path
 
-        logger.info("Workspace `%s` synchronized" % ws_name)
         for repo_name, path in repositories.items():
             logger.info(color.colored(
                 " - %s" % repo_name, "blue"))
@@ -121,7 +120,6 @@ class Workspace:
             shutil.rmtree(repo_path)
 
     def add_repo(self, wname, rname, url=None, path=None):
-        logger = logging.getLogger(__name__)
         ws = self.config["workspaces"][wname]
         repo_path = ws["path"] + "/" + rname if path is None else path
 
@@ -144,5 +142,3 @@ class Workspace:
         self.config["workspaces"][wname] = ws
         self.config["workspaces"][wname]["repositories"][rname] = repo_path
         self.config.write()
-
-        logger.info("Repository %s added" % rname)

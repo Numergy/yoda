@@ -16,6 +16,7 @@
 import os
 import sys
 
+from mock import call
 from mock import Mock
 from mock import patch
 from tests.helpers import SubcommandTestHelper
@@ -227,9 +228,10 @@ class TestWorkspacesSubcommands(SubcommandTestHelper):
         self.assertTrue(os.path.exists(self.sandbox.path + "/repo-name"))
         self.assertRaises(ValueError, lambda: self.subcommand.execute(args))
 
-    def test_execute_add_subcommand(self):
-        """Test execute add subcommand."""
+    def test_execute_add_subcommand_raises_exception(self):
+        """Test execute add subcommand raises exception."""
         self.subcommand.parse()
+        self.subcommand.logger = Mock()
 
         args = self.parser.parse_args(
             ["yoda", "add", "other-repo", "-p",
@@ -243,10 +245,23 @@ class TestWorkspacesSubcommands(SubcommandTestHelper):
                 "repo-url",
                 "%s/repo-name" % self.sandbox.path)
 
+    def test_execute_add_subcommand(self):
+        """Test execute add subcommand."""
+        self.subcommand.parse()
+        self.subcommand.logger = Mock()
+
+        args = self.parser.parse_args(
+            ["yoda", "add", "other-repo", "-p",
+             "%s/repo-name" % self.sandbox.path])
+        self.subcommand.execute(args)
+        self.subcommand.logger.info.assert_called_once_with(
+            "Repository `other-repo` added.")
+
     @patch("%s.input" % builtins_module,
            Mock(side_effect=["n", "y"]))
-    def test_execute_remove_subcommand(self):
-        """Test execute remove subcommand."""
+    def test_execute_remove_subcommand_raises_exception(self):
+        """Test execute remove subcommand raises exception."""
+        self.subcommand.logger = Mock()
         self.subcommand.parse()
 
         self.config_data["workspaces"]["yoda"]["repositories"] = {
@@ -257,11 +272,21 @@ class TestWorkspacesSubcommands(SubcommandTestHelper):
         self.subcommand.execute(args)
         self.assertFalse(os.path.exists(self.sandbox.path + "/repo-name"))
 
+        self.subcommand.logger.info.assert_called_once_with(
+            "Repository `repo-name` removed.")
+
+    def test_execute_remove_subcommand_when_not_exists(self):
+        """Test execute remove subcommand when repository doesn't exists."""
+        self.subcommand.parse()
+        self.config_data["workspaces"]["yoda"]["repositories"] = {
+            "repo-name": self.sandbox.path + "/repo-name"
+        }
         args = self.parser.parse_args(["yoda", "remove", "1377"])
         self.assertRaises(ValueError, lambda: self.subcommand.execute(args))
 
     def test_execute_sync_subcommand(self):
         """Test execute sync subcommand."""
+        self.subcommand.logger = Mock()
         self.subcommand.parse()
 
         self.config_data["workspaces"]["yoda"]["repositories"] = {
@@ -276,3 +301,6 @@ class TestWorkspacesSubcommands(SubcommandTestHelper):
                 "yoda.subcommand.workspace.Ws.sync",
                 return_value=None):
             self.subcommand.execute(args)
+
+        self.subcommand.logger.info.assert_has_calls(
+            [call("Workspace `yoda` synchronized.")])
