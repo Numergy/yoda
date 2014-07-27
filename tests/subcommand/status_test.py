@@ -111,3 +111,11 @@ class TestSubcommandStatus(SubcommandTestHelper):
             self.subcommand.print_status("foo", "bar")
             self.subcommand.logger.info.assert_has_calls(
                 [call("\033[32m=> [foo] bar\033[0m")])
+
+    def test_print_status_log_error_message(self):
+        """Test that print_status logs the error message."""
+        self.subcommand.logger = Mock()
+        self.subcommand.print_status("foo", "/path/doesnot/exists")
+        self.subcommand.logger.error.assert_called_with(
+            "Path doesn't exists or isn't a directory (/path/doesnot/exists)\n"
+        )
