@@ -23,12 +23,10 @@ from yoda import Workspace as Ws
 class Workspace(Subcommand, object):
     ws = None
     subparser = None
-    logger = None
 
     def setup(self, name, config, subparser):
         self.ws = Ws(config)
         self.subparser = subparser
-        self.logger = logging.getLogger(__name__)
         super(Workspace, self).setup(name, config, subparser)
 
     def parse(self):
@@ -51,6 +49,7 @@ class Workspace(Subcommand, object):
         rm_parser.add_argument("name", type=str, help="Workspace name")
 
     def execute(self, args):
+        logger = logging.getLogger(__name__)
         if args.workspace_subcommand is None:
             self.parser.print_help()
             return None
@@ -58,11 +57,11 @@ class Workspace(Subcommand, object):
         color = Color()
         if (args.workspace_subcommand == "add"):
             self.ws.add(args.name, args.path)
-            self.logger.info(color.colored(
+            logger.info(color.colored(
                 "Workspace `%s` successfuly added" % args.name, "green"))
         elif (args.workspace_subcommand == "remove"):
             self.ws.remove(args.name)
-            self.logger.info(color.colored(
+            logger.info(color.colored(
                 "Workspace `%s` successfuly removed" % args.name, "green"))
         elif (args.workspace_subcommand == "list"):
             table = PrettyTable(["Name", "Path"])
@@ -71,7 +70,7 @@ class Workspace(Subcommand, object):
             for key, ws in sorted(self.ws.list().items()):
                 table.add_row([key, ws["path"]])
 
-            self.logger.info(table)
+            logger.info(table)
 
     def load_workspaces_subcommands(self, subcmd):
         for key, value in self.ws.list().items():
@@ -83,7 +82,6 @@ class WorkspaceSubcommands():
     name = None
     parser = None
     config = None
-    logger = None
 
     def __init__(self, name, subparser, config):
         """Initialize workspace name."""
@@ -92,7 +90,6 @@ class WorkspaceSubcommands():
             name,
             description="Manage repositories in %s workspace" % name)
         self.config = config
-        self.logger = logging.getLogger(__name__)
 
     def parse(self):
         subparser = self.parser.add_subparsers(dest="action")
@@ -126,14 +123,15 @@ class WorkspaceSubcommands():
         )
 
     def execute(self, args):
+        logger = logging.getLogger(__name__)
         ws = Ws(self.config)
 
         if (args.action == "add"):
             ws.add_repo(args.subcommand, args.repo_name, args.url, args.path)
-            self.logger.info("Repository `%s` added." % args.repo_name)
+            logger.info("Repository `%s` added." % args.repo_name)
         elif (args.action == "remove"):
             ws.rm_repo(args.subcommand, args.repo_name)
-            self.logger.info("Repository `%s` removed." % args.repo_name)
+            logger.info("Repository `%s` removed." % args.repo_name)
         elif (args.action == "sync"):
             ws.sync(args.subcommand)
-            self.logger.info("Workspace `%s` synchronized." % args.subcommand)
+            logger.info("Workspace `%s` synchronized." % args.subcommand)

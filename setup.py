@@ -37,6 +37,7 @@ setup(
         u"flake8",
         u"pep8",
         u"tox",
-        u"coverage"
+        u"coverage",
+        u"testfixtures"
     ],
 )
