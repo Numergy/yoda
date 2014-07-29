@@ -41,7 +41,7 @@ if log_file is None or os.access(os.path.dirname(log_file), os.W_OK) is False:
         os.mkdir(yoda_dir)
 
 logging.setLoggerClass(Logger)
-logger = logging.getLogger("yoda")
+logger = logging.getLogger(__name__)
 logger.set_file_handler(log_file)
 
 subcmd = Subcommands(yoda_config)
