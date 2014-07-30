@@ -16,6 +16,7 @@
 from mock import call
 from mock import Mock
 from mock import patch
+from testfixtures import LogCapture
 from tests.helpers import SubcommandTestHelper
 from yoda.subcommand import Jump
 
@@ -57,30 +58,31 @@ class TestSubcommandJump(SubcommandTestHelper):
         args = Mock()
         args.name = "foo/bar"
 
-        self.subcommand.logger = Mock()
-
         with patch("yoda.subcommand.jump.find_path", return_value={}):
-            self.assertFalse(self.subcommand.execute(args))
-            self.subcommand.logger.error.assert_called_once_with(
-                "No matches for `foo/bar`")
+            with LogCapture() as lcap:
+                self.assertFalse(self.subcommand.execute(args))
+        lcap.check(("yoda.subcommand.jump", "ERROR",
+                   "No matches for `foo/bar`"))
 
     def test_exec_jump_method(self):
         """Test exec jump subcommand when no matches."""
         args = Mock()
         args.name = "foo/bar"
-
-        self.subcommand.logger = Mock()
         os_system = Mock()
 
         with patch("os.system", return_value=os_system):
             mock_path = {"yoda/baz": "/tmp/yoda/baz"}
             with patch("yoda.subcommand.jump.find_path",
                        return_value=mock_path):
-                self.subcommand.execute(args)
-                os_system.assert_called_once
-                calls = [
-                    call("Spawn new shell on `/tmp/yoda/baz`"),
-                    call("Use Ctrl-D to exit and go "
-                         "back to the previous directory"),
-                    call("Shell on `/tmp/yoda/baz` closed.")]
-                assert self.subcommand.logger.info.mock_calls == calls
+                with LogCapture() as lcap:
+                    self.subcommand.execute(args)
+
+        lcap.check(("yoda.subcommand.jump", "INFO",
+                    "Spawn new shell on `/tmp/yoda/baz`"),
+                   ("yoda.subcommand.jump", "INFO",
+                    "Use Ctrl-D to exit and go "
+                    "back to the previous directory"),
+                   ("yoda.subcommand.jump", "INFO",
+                    "Shell on `/tmp/yoda/baz` closed."))
+
+        os_system.assert_called_once

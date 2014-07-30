@@ -16,6 +16,7 @@
 from mock import call
 from mock import Mock
 from mock import patch
+from testfixtures import LogCapture
 from tests.helpers import SubcommandTestHelper
 from yoda.subcommand import Status
 
@@ -96,26 +97,30 @@ class TestSubcommandStatus(SubcommandTestHelper):
         args = Mock()
         args.name = "foobar"
 
-        self.subcommand.logger = Mock()
         self.subcommand.print_status = Mock()
-
         with patch("yoda.subcommand.status.find_path", return_value={}):
-            self.assertFalse(self.subcommand.execute(args))
-            self.subcommand.logger.error.assert_called_once_with(
-                "No matches for `foobar`")
+            with LogCapture() as lcap:
+                self.assertFalse(self.subcommand.execute(args))
+
+        lcap.check(("yoda.subcommand.status", "ERROR",
+                    "No matches for `foobar`"))
 
     def test_print_status(self):
         """Test print_status."""
-        self.subcommand.logger = Mock()
         with patch("yoda.subcommand.status.Repository"):
-            self.subcommand.print_status("foo", "bar")
-            self.subcommand.logger.info.assert_has_calls(
-                [call("\033[32m=> [foo] bar\033[0m")])
+            with LogCapture() as lcap:
+                self.subcommand.print_status("foo", "bar")
+
+        lcap.check(("yoda.subcommand.status", "INFO",
+                    "\033[32m=> [foo] bar\033[0m"))
 
     def test_print_status_log_error_message(self):
         """Test that print_status logs the error message."""
-        self.subcommand.logger = Mock()
-        self.subcommand.print_status("foo", "/path/doesnot/exists")
-        self.subcommand.logger.error.assert_called_with(
-            "Path doesn't exists or isn't a directory (/path/doesnot/exists)\n"
-        )
+        with LogCapture() as lcap:
+            self.subcommand.print_status("foo", "/path/doesnot/exists")
+
+        lcap.check(("yoda.subcommand.status", "INFO",
+                    "\033[32m=> [foo] /path/doesnot/exists\033[0m"),
+                   ("yoda.subcommand.status", "ERROR",
+                    "Path doesn't exists or isn't a directory "
+                    "(/path/doesnot/exists)\n"))

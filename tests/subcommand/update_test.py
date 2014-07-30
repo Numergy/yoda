@@ -16,6 +16,7 @@
 from mock import call
 from mock import Mock
 from mock import patch
+from testfixtures import LogCapture
 from tests.helpers import SubcommandTestHelper
 from yoda.subcommand import Update
 
@@ -97,18 +98,30 @@ class TestSubcommandUpdate(SubcommandTestHelper):
         args = Mock()
         args.name = "foobar"
 
-        self.subcommand.logger = Mock()
         self.subcommand.print_update = Mock()
-
         with patch("yoda.subcommand.update.find_path", return_value={}):
-            self.assertFalse(self.subcommand.execute(args))
-            self.subcommand.logger.error.assert_called_once_with(
-                "No matches for `foobar`")
+            with LogCapture() as lcap:
+                self.assertFalse(self.subcommand.execute(args))
+
+        lcap.check(("yoda.subcommand.update", "ERROR",
+                    "No matches for `foobar`"))
 
     def test_print_update(self):
         """Test print_update."""
-        self.subcommand.logger = Mock()
         with patch("yoda.subcommand.update.Repository"):
-            self.subcommand.print_update("foo", "bar")
-            self.subcommand.logger.info.assert_has_calls(
-                [call("\033[32m=> [foo] bar\033[0m")])
+            with LogCapture() as lcap:
+                self.subcommand.print_update("foo", "bar")
+
+        lcap.check(("yoda.subcommand.update", "INFO",
+                    "\033[32m=> [foo] bar\033[0m"))
+
+    def test_print_update_log_error_message(self):
+        """Test that print_update logs the error message."""
+        with LogCapture() as lcap:
+            self.subcommand.print_update("foo", "/path/doesnot/exists")
+
+        lcap.check(("yoda.subcommand.update", "INFO",
+                    "\033[32m=> [foo] /path/doesnot/exists\033[0m"),
+                   ("yoda.subcommand.update", "ERROR",
+                    "Path doesn't exists or isn't a directory "
+                    "(/path/doesnot/exists)\n"))

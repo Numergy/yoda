@@ -19,6 +19,7 @@ from pycolorizer import Color
 
 from yoda import find_path
 from yoda import Repository
+from yoda import RepositoryError
 from yoda.subcommands import Subcommand
 
 
@@ -66,12 +67,12 @@ class Update(Subcommand, object):
     def print_update(self, repo_name, repo_path):
         """Print repository update."""
         color = Color()
+        self.logger.info(color.colored(
+            "=> [%s] %s" % (repo_name, repo_path), "green"))
         try:
             repo = Repository(repo_path)
-            self.logger.info(color.colored(
-                "=> [%s] %s" % (repo_name, repo_path), "green"))
             repo.update()
-            print("\n")
-        except ValueError as e:
+        except RepositoryError as e:
             self.logger.error(e)
             pass
+        print("\n")

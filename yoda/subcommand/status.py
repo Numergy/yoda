@@ -73,6 +73,6 @@ class Status(Subcommand, object):
             repo = Repository(repo_path)
             repo.status()
         except RepositoryError as e:
-            self.logger.error(str(e))
+            self.logger.error(e)
             pass
         print("\n")
