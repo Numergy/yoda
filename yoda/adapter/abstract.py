@@ -48,12 +48,16 @@ class Abstract:
             stderr=subprocess.PIPE
         )
         stdout, stderr = process.communicate()
+        exit_code = process.wait()
 
         if stdout:
             logger.info(stdout.decode("utf-8"))
 
         if stderr:
-            logger.error(stderr.decode("utf-8"))
+            if exit_code != 0:
+                logger.error(stderr.decode("utf-8"))
+            else:
+                logger.info(stderr.decode("utf-8"))
 
         return process
 

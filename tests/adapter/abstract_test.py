@@ -43,10 +43,42 @@ class TestAdapterAbstract(YodaTestHelper):
     @patch("yoda.adapter.abstract.subprocess.Popen",
            return_value=mock.create_autospec(
                subprocess.Popen, return_value=mock.Mock()))
-    def test_execute(self, mock_proc):
-        """Test execute with two diffrents commands."""
+    def test_execute_success(self, mock_proc):
+        """Test execute with success."""
         mock_com = mock_proc.return_value.communicate
         mock_com.return_value = [b"Yoda", b"Rosk"]
+        mock_wait = mock_proc.return_value.wait
+        mock_wait.return_value = 0
+        with patch("yoda.adapter.abstract.find_executable",
+                   return_value=True):
+            with LogCapture() as lcap:
+                self.assertEqual(
+                    self.adapter.execute("git log"),
+                    mock_proc.return_value)
+
+        lcap.check(("yoda.adapter.abstract", "DEBUG",
+                    "Executing command `git log` (cwd: None)"),
+                   ("yoda.adapter.abstract", "INFO",
+                    "Yoda"),
+                   ("yoda.adapter.abstract", "INFO",
+                    "Rosk"))
+
+        mock_proc.assert_called_with(
+            "git log",
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            cwd=None,
+            shell=True)
+
+    @patch("yoda.adapter.abstract.subprocess.Popen",
+           return_value=mock.create_autospec(
+               subprocess.Popen, return_value=mock.Mock()))
+    def test_execute_failure(self, mock_proc):
+        """Test execute with error."""
+        mock_com = mock_proc.return_value.communicate
+        mock_com.return_value = [b"Yoda", b"Rosk"]
+        mock_wait = mock_proc.return_value.wait
+        mock_wait.return_value = 1
         with patch("yoda.adapter.abstract.find_executable",
                    return_value=True):
             with LogCapture() as lcap:
@@ -60,13 +92,6 @@ class TestAdapterAbstract(YodaTestHelper):
                     "Yoda"),
                    ("yoda.adapter.abstract", "ERROR",
                     "Rosk"))
-
-        mock_proc.assert_called_with(
-            "git log",
-            stderr=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            cwd=None,
-            shell=True)
 
     def test_check_executable_with_wrong_executable(self):
         """Test check executable with wrong command."""
