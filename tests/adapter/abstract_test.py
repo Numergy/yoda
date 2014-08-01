@@ -17,6 +17,7 @@ import mock
 from mock import patch
 import os
 import subprocess
+from testfixtures import LogCapture
 from tests.helpers import YodaTestHelper
 from yoda.adapter import Abstract
 from yoda.adapter import ExecutableNotFoundException
@@ -48,27 +49,24 @@ class TestAdapterAbstract(YodaTestHelper):
         mock_com.return_value = [b"Yoda", b"Rosk"]
         with patch("yoda.adapter.abstract.find_executable",
                    return_value=True):
-            self.assertEqual(
-                self.adapter.execute("git log"),
-                mock_proc.return_value
-            )
-            mock_proc.assert_called_with(
-                "git log",
-                stderr=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                cwd=None,
-                shell=True)
-            # Wrong command
-            self.assertEqual(
-                self.adapter.execute("git ls"),
-                mock_proc.return_value
-            )
-            mock_proc.assert_called_with(
-                "git ls",
-                stderr=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                cwd=None,
-                shell=True)
+            with LogCapture() as lcap:
+                self.assertEqual(
+                    self.adapter.execute("git log"),
+                    mock_proc.return_value)
+
+        lcap.check(("yoda.adapter.abstract", "DEBUG",
+                    "Executing command `git log` (cwd: None)"),
+                   ("yoda.adapter.abstract", "INFO",
+                    "Yoda"),
+                   ("yoda.adapter.abstract", "ERROR",
+                    "Rosk"))
+
+        mock_proc.assert_called_with(
+            "git log",
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            cwd=None,
+            shell=True)
 
     def test_check_executable_with_wrong_executable(self):
         """Test check executable with wrong command."""

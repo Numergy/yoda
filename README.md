@@ -25,6 +25,7 @@ Yoda is compatible with following python versions:
 - tox
 - nose
 - coverage
+- testfixtures
 
 ## Installation
 Yoda is packaged on Pypi, so you can install it with the following command:  
