@@ -288,7 +288,7 @@ class TestWorkspacesSubcommands(SubcommandTestHelper):
 
         lcap.check(
             ("yoda.subcommand.workspace", "INFO",
-             "Repository `other-repo` added in `yoda`."))
+             "Repository `other-repo` added to `yoda` workspace."))
 
     def test_execute_add_subcommand_call_slashes2dash(self):
         """Test execute add subcommand call slashes2dash function."""
@@ -317,7 +317,7 @@ class TestWorkspacesSubcommands(SubcommandTestHelper):
         self.assertFalse(os.path.exists(self.sandbox.path + "/repo-name"))
         lcap.check(
             ("yoda.subcommand.workspace", "INFO",
-             "Repository `repo-name` removed in `yoda`."))
+             "Repository `repo-name` removed from `yoda` workspace."))
 
     def test_execute_remove_subcommand_when_not_exists(self):
         """Test execute remove subcommand when repository doesn't exists."""
