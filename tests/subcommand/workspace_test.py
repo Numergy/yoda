@@ -288,7 +288,7 @@ class TestWorkspacesSubcommands(SubcommandTestHelper):
 
         lcap.check(
             ("yoda.subcommand.workspace", "INFO",
-             "Repository `other-repo` added."))
+             "Repository `other-repo` added in `yoda`."))
 
     def test_execute_add_subcommand_call_slashes2dash(self):
         """Test execute add subcommand call slashes2dash function."""
@@ -304,7 +304,7 @@ class TestWorkspacesSubcommands(SubcommandTestHelper):
 
     @patch("%s.input" % builtins_module,
            Mock(side_effect=["n", "y"]))
-    def test_execute_remove_subcommand_raises_exception(self):
+    def test_execute_remove_subcommand(self):
         """Test execute remove subcommand raises exception."""
         self.subcommand.parse()
         self.config_data["workspaces"]["yoda"]["repositories"] = {
@@ -317,7 +317,7 @@ class TestWorkspacesSubcommands(SubcommandTestHelper):
         self.assertFalse(os.path.exists(self.sandbox.path + "/repo-name"))
         lcap.check(
             ("yoda.subcommand.workspace", "INFO",
-             "Repository `repo-name` removed."))
+             "Repository `repo-name` removed in `yoda`."))
 
     def test_execute_remove_subcommand_when_not_exists(self):
         """Test execute remove subcommand when repository doesn't exists."""
@@ -327,22 +327,6 @@ class TestWorkspacesSubcommands(SubcommandTestHelper):
         }
         args = self.parser.parse_args(["yoda", "remove", "1377"])
         self.assertRaises(ValueError, lambda: self.subcommand.execute(args))
-
-    @patch("%s.input" % builtins_module,
-           Mock(side_effect=["n", "y"]))
-    def test_execute_remove_subcommand(self):
-        """Test execute remove subcommand."""
-        self.subcommand.parse()
-        self.config_data["workspaces"]["yoda"]["repositories"] = {
-            "repo-name": self.sandbox.path + "/repo-name"
-        }
-        args = self.parser.parse_args(["yoda", "remove", "repo-name"])
-
-        with LogCapture() as lcap:
-            self.subcommand.execute(args)
-
-        lcap.check(("yoda.subcommand.workspace", "INFO",
-                    "Repository `repo-name` removed."))
 
     @patch("%s.input" % builtins_module,
            Mock(side_effect=["n", "y"]))
