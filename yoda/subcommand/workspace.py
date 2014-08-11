@@ -17,6 +17,7 @@ import logging
 from prettytable import PrettyTable
 from pycolorizer import Color
 from yoda.subcommands import Subcommand
+from yoda import slashes2dash
 from yoda import Workspace as Ws
 
 
@@ -56,13 +57,15 @@ class Workspace(Subcommand, object):
 
         color = Color()
         if (args.workspace_subcommand == "add"):
-            self.ws.add(args.name, args.path)
+            ws_name = slashes2dash(args.name)
+            self.ws.add(ws_name, args.path)
             logger.info(color.colored(
-                "Workspace `%s` successfuly added" % args.name, "green"))
+                "Workspace `%s` successfuly added" % ws_name, "green"))
         elif (args.workspace_subcommand == "remove"):
-            self.ws.remove(args.name)
+            ws_name = slashes2dash(args.name)
+            self.ws.remove(ws_name)
             logger.info(color.colored(
-                "Workspace `%s` successfuly removed" % args.name, "green"))
+                "Workspace `%s` successfuly removed" % ws_name, "green"))
         elif (args.workspace_subcommand == "list"):
             table = PrettyTable(["Name", "Path"])
             table.align["Name"] = "l"

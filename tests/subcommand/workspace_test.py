@@ -87,6 +87,22 @@ class TestSubcommandWorkspace(SubcommandTestHelper):
 
         ws.add.assert_called_with("foo", "/foo")
 
+    def test_exec_add_call_slashes2dash(self):
+        """
+        Test workspace add execution call slashes2dash function
+        for name argument.
+        """
+        args = Mock()
+        args.workspace_subcommand = "add"
+        args.name = "foo"
+        args.path = "/foo"
+        self.subcommand.ws = Mock()
+
+        with patch("yoda.subcommand.workspace.slashes2dash") as s2d:
+            self.subcommand.execute(args)
+
+        s2d.assert_called_once_with("foo")
+
     def test_exec_remove(self):
         """Test workspace remove execution."""
         ws = Mock()
@@ -100,6 +116,21 @@ class TestSubcommandWorkspace(SubcommandTestHelper):
         self.subcommand.execute(args)
 
         ws.remove.assert_called_with("foo")
+
+    def test_exec_remove_call_slashes2dash(self):
+        """
+        Test workspace remove execution call slashes2dash function
+        for name argument.
+        """
+        args = Mock()
+        args.workspace_subcommand = "remove"
+        args.name = "bar"
+        self.subcommand.ws = Mock()
+
+        with patch("yoda.subcommand.workspace.slashes2dash") as s2d:
+            self.subcommand.execute(args)
+
+        s2d.assert_called_once_with("bar")
 
     def test_exec_list(self):
         """Test workspace list execution."""
