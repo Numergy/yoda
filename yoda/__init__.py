@@ -45,6 +45,11 @@ def find_path(name, config, wsonly=False):
     return path_list
 
 
+def slashes2dash(string):
+    """Replace slashes in given string to dash."""
+    return string.replace("/", "-")
+
+
 def yn_choice(message, default='n'):
     choices = 'Y/n' if default.lower() in ('y', 'yes') else 'y/N'
     choice = input("%s (%s) " % (message, choices))

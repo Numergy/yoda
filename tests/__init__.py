@@ -22,6 +22,7 @@ from mock import patch
 from tests.helpers import YodaTestHelper
 from yoda import Config
 from yoda import find_path
+from yoda import slashes2dash
 from yoda import yn_choice
 
 
@@ -97,6 +98,17 @@ class TestFindPathFunction(YodaTestHelper):
         self.config = Config(self.sandbox.path + "/fake-config")
         self.assertEqual({}, find_path(
             "yoda/yoda", self.config))
+
+
+class TestSlashesToDashFunction(YodaTestHelper):
+    """Test suite for slashes2dash function."""
+    def test_without_slashes(self):
+        """Test slashes2dash function without slashes in string."""
+        self.assertEqual("foo", slashes2dash("foo"))
+
+    def test_with_slashes(self):
+        """Test slashes2dash function with slashes in string."""
+        self.assertEqual("foo-bar", slashes2dash("foo/bar"))
 
 builtins_module = "builtins" if sys.version[:1] == "3" else "__builtin__"
 
