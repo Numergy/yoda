@@ -1,5 +1,13 @@
 # CHANGELOG
 
+##0.1.4 (11 August 2014)
+- Fixed repository cloning.
+- Fixed adapters logging [#17](https://github.com/Numergy/yoda/issues/17).
+- Improved logging unit testing [#20](https://github.com/Numergy/yoda/issues/20).
+- Don't stop process when error occured in status/update subcommands.
+- Prohibits the use of slahes in workspace and repository names.
+- Logging improvements.
+
 ##0.1.3 (19 March 2014)
 - Implemented mercurial adapter [#11](https://github.com/Numergy/yoda/issues/11)
 - Implemented bazaar adapter [#12](https://github.com/Numergy/yoda/issues/12)
