@@ -23,7 +23,11 @@ def find_path(name, config, wsonly=False):
 
     if name.find('/') != -1:
         wsonly = False
-        ws, repo = name.split('/')
+        try:
+            ws, repo = name.split('/')
+        except ValueError:
+            raise ValueError("There is too many / in `name` argument. "
+                             "Argument syntax: `workspace/repository`.")
         if (workspace.exists(ws)):
             if (repo in config[ws]["repositories"]):
                 path_name = "%s/%s" % (ws, repo)

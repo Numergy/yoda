@@ -99,6 +99,12 @@ class TestFindPathFunction(YodaTestHelper):
         self.assertEqual({}, find_path(
             "yoda/yoda", self.config))
 
+    def test_find_path_raise_value_error(self):
+        """
+        Test find_path raises a ValueError when there is more than one slash.
+        """
+        self.assertRaises(ValueError, find_path, "foo/bar/baz", self.config)
+
 
 class TestSlashesToDashFunction(YodaTestHelper):
     """Test suite for slashes2dash function."""
