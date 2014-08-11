@@ -16,8 +16,8 @@
 import logging
 from prettytable import PrettyTable
 from pycolorizer import Color
-from yoda.subcommands import Subcommand
 from yoda import slashes2dash
+from yoda.subcommands import Subcommand
 from yoda import Workspace as Ws
 
 
@@ -130,11 +130,13 @@ class WorkspaceSubcommands():
         ws = Ws(self.config)
 
         if (args.action == "add"):
-            ws.add_repo(args.subcommand, args.repo_name, args.url, args.path)
-            logger.info("Repository `%s` added." % args.repo_name)
+            repo_name = slashes2dash(args.repo_name)
+            ws.add_repo(args.subcommand, repo_name, args.url, args.path)
+            logger.info("Repository `%s` added." % repo_name)
         elif (args.action == "remove"):
-            ws.rm_repo(args.subcommand, args.repo_name)
-            logger.info("Repository `%s` removed." % args.repo_name)
+            repo_name = slashes2dash(args.repo_name)
+            ws.rm_repo(args.subcommand, repo_name)
+            logger.info("Repository `%s` removed." % repo_name)
         elif (args.action == "sync"):
             ws.sync(args.subcommand)
             logger.info("Workspace `%s` synchronized." % args.subcommand)

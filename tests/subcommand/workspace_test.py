@@ -282,11 +282,25 @@ class TestWorkspacesSubcommands(SubcommandTestHelper):
         args = self.parser.parse_args(
             ["yoda", "add", "other-repo", "-p",
              "%s/repo-name" % self.sandbox.path])
+
         with LogCapture() as lcap:
             self.subcommand.execute(args)
+
         lcap.check(
             ("yoda.subcommand.workspace", "INFO",
              "Repository `other-repo` added."))
+
+    def test_execute_add_subcommand_call_slashes2dash(self):
+        """Test execute add subcommand call slashes2dash function."""
+        self.subcommand.parse()
+        args = self.parser.parse_args(
+            ["yoda", "add", "my_repository", "-p",
+             "%s/repo-name" % self.sandbox.path])
+
+        with patch("yoda.subcommand.workspace.slashes2dash",
+                   return_value="repo-name") as s2d:
+            self.subcommand.execute(args)
+        s2d.assert_called_once_with("my_repository")
 
     @patch("%s.input" % builtins_module,
            Mock(side_effect=["n", "y"]))
@@ -313,6 +327,41 @@ class TestWorkspacesSubcommands(SubcommandTestHelper):
         }
         args = self.parser.parse_args(["yoda", "remove", "1377"])
         self.assertRaises(ValueError, lambda: self.subcommand.execute(args))
+
+    @patch("%s.input" % builtins_module,
+           Mock(side_effect=["n", "y"]))
+    def test_execute_remove_subcommand(self):
+        """Test execute remove subcommand."""
+        self.subcommand.parse()
+        self.config_data["workspaces"]["yoda"]["repositories"] = {
+            "repo-name": self.sandbox.path + "/repo-name"
+        }
+        args = self.parser.parse_args(["yoda", "remove", "repo-name"])
+
+        with LogCapture() as lcap:
+            self.subcommand.execute(args)
+
+        lcap.check(("yoda.subcommand.workspace", "INFO",
+                    "Repository `repo-name` removed."))
+
+    @patch("%s.input" % builtins_module,
+           Mock(side_effect=["n", "y"]))
+    def test_execute_remove_subcommand_call_slashes2dash(self):
+        """
+        Test execute remove subcommand call slashes2dash function
+        for name argument.
+        """
+        self.subcommand.parse()
+        self.config_data["workspaces"]["yoda"]["repositories"] = {
+            "repo-name": self.sandbox.path + "/repo-name"
+        }
+        args = self.parser.parse_args(["yoda", "remove", "repo-name"])
+
+        with patch("yoda.subcommand.workspace.slashes2dash",
+                   return_value="repo-name") as s2d:
+            self.subcommand.execute(args)
+
+        s2d.assert_called_once_with("repo-name")
 
     def test_execute_sync_subcommand(self):
         """Test execute sync subcommand."""
