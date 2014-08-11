@@ -15,6 +15,7 @@
 
 from mock import call
 from mock import Mock
+from mock import patch
 from tests.helpers import SubcommandTestHelper
 from yoda.subcommand import Show
 
@@ -104,12 +105,17 @@ class TestSubcommandShow(SubcommandTestHelper):
             args, ValueError)
 
     def test_show_workspace(self):
-        """Test exec show subcommand with workspaces."""
+        """Test exec show subcommand with workspace."""
         args = Mock()
         args.name = "my_workspace"
 
         self.subcommand.logger = Mock()
-        self.subcommand.execute(args)
+
+        with patch("yoda.subcommand.show.slashes2dash",
+                   return_value="my_workspace") as s2d:
+            self.subcommand.execute(args)
+
+        s2d.assert_called_once_with("my_workspace")
 
         calls = [
             call("<== \x1b[32mmy_workspace\x1b[0m workspace ==>"),

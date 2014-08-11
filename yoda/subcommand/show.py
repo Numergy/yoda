@@ -21,6 +21,7 @@ from pycolorizer import Color
 from yoda import find_path
 from yoda import Repository
 from yoda import RepositoryAdapterNotFound
+from yoda import slashes2dash
 from yoda.subcommands import Subcommand
 from yoda import Workspace
 
@@ -50,7 +51,7 @@ class Show(Subcommand, object):
     def execute(self, args):
         """Execute show subcommand."""
         if args.name is not None:
-            self.show_workspace(args.name)
+            self.show_workspace(slashes2dash(args.name))
         elif args.all is not None:
             self.show_all()
 
