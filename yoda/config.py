@@ -30,7 +30,7 @@ class Config(dict):
             self.write()
         else:
             file = open(self.config_file)
-            config = yaml.load(file.read())
+            config = yaml.safe_load(file.read())
             file.close()
             if config is not None:
                 self.update(config)
