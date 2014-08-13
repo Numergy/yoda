@@ -71,7 +71,7 @@ class YodaTestHelper(unittest.TestCase):
     def assert_config_file_contains(self, config_file, expected):
         """Custom assert to check content of config_file."""
         file = open(config_file)
-        config = yaml.load(file.read())
+        config = yaml.safe_load(file.read())
         file.close()
         self.assertEqual(config, expected)
 
