@@ -19,7 +19,7 @@ from setuptools import setup
 
 setup(
     name="yoda",
-    version="0.1.4",
+    version="0.1.5",
     description="Multiple repositories management",
     url="https://github.com/Numergy/yoda",
     license="GPLv3",

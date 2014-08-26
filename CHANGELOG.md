@@ -1,5 +1,8 @@
 # CHANGELOG
 
+##0.1.5 (26 August 2014)
+- Switch to yaml.safe_load() [#21](https://github.com/Numergy/yoda/issues/21).
+
 ##0.1.4 (11 August 2014)
 - Fixed repository cloning.
 - Fixed adapters logging [#17](https://github.com/Numergy/yoda/issues/17).
