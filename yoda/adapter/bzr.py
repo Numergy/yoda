@@ -32,3 +32,7 @@ class Bzr(Abstract):
         """Clone repository from url."""
         return self.execute("%s branch %s %s" % (self.executable,
                                                  url, self.path))
+
+    def show(self):
+        """Show repository details."""
+        raise NotImplemented("TODO: Not implemented")

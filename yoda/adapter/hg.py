@@ -32,3 +32,7 @@ class Hg(Abstract):
         """Clone repository from url."""
         return self.execute("%s clone %s %s" % (self.executable,
                                                 url, self.path))
+
+    def show(self):
+        """Show repository details."""
+        raise NotImplemented("TODO: Not implemented")

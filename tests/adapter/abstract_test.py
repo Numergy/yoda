@@ -23,6 +23,23 @@ from yoda.adapter import Abstract
 from yoda.adapter import ExecutableNotFoundException
 
 
+class TestAdapter(Abstract):
+    def __init__(self, path):
+        super(TestAdapter, self).__init__(path)
+
+    def status(self):
+        pass
+
+    def update(self):
+        pass
+
+    def show(self):
+        pass
+
+    def clone(self):
+        pass
+
+
 class TestAdapterAbstract(YodaTestHelper):
     """Git adapter test suite."""
     adapter = None
@@ -32,7 +49,7 @@ class TestAdapterAbstract(YodaTestHelper):
         super(TestAdapterAbstract, self).setUp()
         self.sandbox.mkdir("repo")
 
-        self.adapter = Abstract(os.path.join(self.sandbox.path, "repo"))
+        self.adapter = TestAdapter(os.path.join(self.sandbox.path, "repo"))
         self.adapter.executable = "git"
 
     def tearDown(self):
